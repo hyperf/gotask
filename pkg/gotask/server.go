@@ -1,0 +1,104 @@
+package gotask
+
+import (
+	"flag"
+	"github.com/spiral/goridge"
+	"log"
+	"net"
+	"net/rpc"
+	"os"
+	"os/signal"
+	"strings"
+	"syscall"
+	"time"
+)
+
+var (
+	Address *string
+)
+
+func init() {
+	Address = flag.String("address", "/tmp/gotask23.sock", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
+	flag.Parse()
+}
+
+func checkProcess(pid int, quit chan bool) {
+	process, err := os.FindProcess(int(pid))
+	if err != nil {
+		log.Printf("Failed to find process: %s\n", err)
+		close(quit)
+		return
+	}
+	err = process.Signal(syscall.Signal(0))
+	if err != nil {
+		log.Printf("process.Signal on pid %d returned: %v\n", pid, err)
+		close(quit)
+	}
+}
+
+func Register(receiver interface{}) error {
+	return rpc.Register(receiver)
+}
+
+func Run(){
+	var (
+		termChan chan os.Signal
+		ppid int
+		pdeadChan chan bool
+		connChan chan net.Conn
+		ticker *time.Ticker
+		network string
+	)
+	termChan = make(chan os.Signal)
+	signal.Notify(termChan, os.Interrupt, os.Kill)
+	ppid = os.Getppid()
+	pdeadChan = make(chan bool)
+	ticker = time.NewTicker(500 * time.Millisecond)
+	connChan = make(chan net.Conn)
+
+	if strings.Contains(*Address, ":") {
+		network = "tcp"
+	} else {
+		network = "unix"
+	}
+	ln, err := net.Listen(network, *Address)
+	if err != nil {
+		panic(err)
+	}
+	defer ln.Close()
+
+	go func() {
+		for {
+			select {
+			case <-pdeadChan:
+				return
+			case <-ticker.C:
+				checkProcess(ppid, pdeadChan)
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			conn, err := ln.Accept()
+			if err != nil {
+				log.Printf("on accept: %s\n", err.Error())
+				continue
+			}
+			connChan <- conn
+		}
+	}()
+
+	for {
+		select {
+		case sig := <-termChan:
+			log.Printf("received system call:%+v, shutting down\n", sig)
+			return
+		case <-pdeadChan:
+			log.Printf("parent process dead\n")
+			return
+		case conn := <-connChan:
+			go rpc.ServeCodec(goridge.NewCodec(conn))
+		}
+	}
+}

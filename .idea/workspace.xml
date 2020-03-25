@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="57601a85-6979-4e76-bde3-d93c8000d8fc" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+    <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
+    <execution>
+      <executable path="composer" />
+    </execution>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package.json" />
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="/usr/local/Cellar/go/1.14/libexec" />
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="QiMdlDZG" />
+  </component>
+  <component name="PhpWorkspaceProjectConfiguration">
+    <include_path>
+      <path value="$PROJECT_DIR$/vendor/github.com/pkg" />
+      <path value="$PROJECT_DIR$/vendor/github.com/spiral" />
+    </include_path>
+  </component>
+  <component name="ProjectId" id="1ZbN0sGUXZaNjuIXDF0bm3nbd8d" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="go.sdk.automatically.set" value="true" />
+    <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
+    <property name="go.vendoring.notification.had.been.shown" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build main.go">
+    <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="gotask" />
+      <working_directory value="$PROJECT_DIR$/" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        </ENTRIES>
+      </EXTENSION>
+      <kind value="FILE" />
+      <filePath value="$PROJECT_DIR$/cmd/app.go" />
+      <directory value="$PROJECT_DIR$/" />
+      <method v="2" />
+    </configuration>
+    <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+      <TestRunner scope="XML" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build main.go" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="57601a85-6979-4e76-bde3-d93c8000d8fc" name="Default Changelist" comment="" />
+      <created>1585103613293</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585103613293</updated>
+      <workItem from="1585103615691" duration="15401000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="440" y="190" key="#Go_Modules_(vgo)" timestamp="1585106209315">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="440" y="190" key="#Go_Modules_(vgo)/0.0.1680.1050@0.0.1680.1050" timestamp="1585106209315" />
+    <state x="304" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585119538712">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="304" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1585119538712" />
+    <state x="578" y="287" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1585114997771">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="578" y="287" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1585114997771" />
+    <state x="549" y="175" key="#go_build_main.go" timestamp="1585119416846">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="549" y="175" key="#go_build_main.go/0.0.1680.1050@0.0.1680.1050" timestamp="1585119416846" />
+    <state x="672" y="445" key="ComposerInitDialogKey" timestamp="1585106460956">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="672" y="445" key="ComposerInitDialogKey/0.0.1680.1050@0.0.1680.1050" timestamp="1585106460956" />
+    <state width="1638" height="295" key="GridCell.Tab.0.bottom" timestamp="1585119637911">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state width="1638" height="295" key="GridCell.Tab.0.bottom/0.0.1680.1050@0.0.1680.1050" timestamp="1585119637911" />
+    <state width="1638" height="295" key="GridCell.Tab.0.center" timestamp="1585119637910">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state width="1638" height="295" key="GridCell.Tab.0.center/0.0.1680.1050@0.0.1680.1050" timestamp="1585119637910" />
+    <state width="1638" height="295" key="GridCell.Tab.0.left" timestamp="1585119637909">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state width="1638" height="295" key="GridCell.Tab.0.left/0.0.1680.1050@0.0.1680.1050" timestamp="1585119637909" />
+    <state width="1638" height="295" key="GridCell.Tab.0.right" timestamp="1585119637910">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state width="1638" height="295" key="GridCell.Tab.0.right/0.0.1680.1050@0.0.1680.1050" timestamp="1585119637910" />
+    <state x="637" y="348" key="NewPhpClassDialog" timestamp="1585116684214">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="637" y="348" key="NewPhpClassDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1585116684214" />
+    <state x="661" y="455" key="NewPhpFileDialog" timestamp="1585111025371">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="661" y="455" key="NewPhpFileDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1585111025371" />
+    <state x="386" y="130" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1585113468907">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="386" y="130" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1680.1050@0.0.1680.1050" timestamp="1585113468907" />
+    <state x="506" y="282" width="816" height="550" key="find.popup" timestamp="1585110832181">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="506" y="282" width="816" height="550" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1585110832181" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/example/Server.go</url>
+          <line>17</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/example/Server.go</url>
+          <line>18</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
