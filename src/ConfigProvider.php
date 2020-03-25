@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Reasno\GoTask;
 
 use Reasno\GoTask\Process\GoTaskProcess;
+use Spiral\Goridge\RPC;
 
 class ConfigProvider
 {
@@ -20,7 +21,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                GoTask::class => GoTaskFactory::class
+                RPC::class => RPCFactory::class
             ],
             'commands' => [
             ],
@@ -50,7 +51,7 @@ class ConfigProvider
                 [
                     'id' => 'gomod',
                     'description' => 'The go.mod for gotask.',
-                    'source' => __DIR__ . '/../go.mod',
+                    'source' => __DIR__ . '/../publish/go.mod',
                     'destination' => BASE_PATH . '/gotask/go.mod',
                 ],
             ],
