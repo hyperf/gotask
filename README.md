@@ -168,19 +168,18 @@ Server Hostname:        localhost
 Server Port:            9501
 
 Document Path:          /
-Document Length:        11 bytes
+Document Length:        19 bytes
 
 Concurrency Level:      100
-Time taken for tests:   0.600 seconds
+Time taken for tests:   0.636 seconds
 Complete requests:      10000
-Failed requests:        1564
-   (Connect: 0, Receive: 0, Length: 1564, Exceptions: 0)
+Failed requests:        0
 Keep-Alive requests:    10000
-Total transferred:      1591564 bytes
-HTML transferred:       111564 bytes
-Requests per second:    16658.34 [#/sec] (mean)
-Time per request:       6.003 [ms] (mean)
-Time per request:       0.060 [ms] (mean, across all concurrent requests)
-Transfer rate:          2589.14 [Kbytes/sec] received
+Total transferred:      1670000 bytes
+HTML transferred:       190000 bytes
+Requests per second:    15719.29 [#/sec] (mean)
+Time per request:       6.362 [ms] (mean)
+Time per request:       0.064 [ms] (mean, across all concurrent requests)
+Transfer rate:          2563.60 [Kbytes/sec] received
 ```
 
