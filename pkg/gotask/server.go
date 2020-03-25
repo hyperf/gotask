@@ -18,7 +18,7 @@ var (
 )
 
 func init() {
-	Address = flag.String("address", "/tmp/gotask23.sock", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
+	Address = flag.String("address", "127.0.0.1:6001", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
 	flag.Parse()
 }
 
@@ -40,14 +40,14 @@ func Register(receiver interface{}) error {
 	return rpc.Register(receiver)
 }
 
-func Run(){
+func Run() {
 	var (
-		termChan chan os.Signal
-		ppid int
+		termChan  chan os.Signal
+		ppid      int
 		pdeadChan chan bool
-		connChan chan net.Conn
-		ticker *time.Ticker
-		network string
+		connChan  chan net.Conn
+		ticker    *time.Ticker
+		network   string
 	)
 	termChan = make(chan os.Signal)
 	signal.Notify(termChan, os.Interrupt, os.Kill)

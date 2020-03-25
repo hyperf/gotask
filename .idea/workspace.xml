@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="57601a85-6979-4e76-bde3-d93c8000d8fc" name="Default Changelist" comment="add connection pool">
-      <change afterPath="$PROJECT_DIR$/.idea/hyperf-plugin.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+    <list default="true" id="57601a85-6979-4e76-bde3-d93c8000d8fc" name="Default Changelist" comment="fix outdated example">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/Client.php" beforeDir="false" afterPath="$PROJECT_DIR$/example/Client.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/gotask/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/gotask/server.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +191,7 @@
       <option name="presentableId" value="Default" />
       <updated>1585103613293</updated>
       <workItem from="1585103615691" duration="18776000" />
-      <workItem from="1585123928414" duration="3467000" />
+      <workItem from="1585123928414" duration="7042000" />
     </task>
     <task id="LOCAL-00001" summary="add connection pool">
       <created>1585127467100</created>
@@ -200,7 +200,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585127467100</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="fix outdated example">
+      <created>1585127761300</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1585127761300</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -208,7 +215,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add connection pool" />
-    <option name="LAST_COMMIT_MESSAGE" value="add connection pool" />
+    <MESSAGE value="fix outdated example" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix outdated example" />
   </component>
   <component name="WindowStateProjectService">
     <state x="440" y="190" key="#Go_Modules_(vgo)" timestamp="1585106209315">
@@ -235,10 +243,10 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="549" y="175" key="#go_build_main.go/0.0.1680.1050@0.0.1680.1050" timestamp="1585119416846" />
-    <state x="434" y="124" key="CommitChangelistDialog2" timestamp="1585127484380">
+    <state x="434" y="124" key="CommitChangelistDialog2" timestamp="1585127898387">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="434" y="124" key="CommitChangelistDialog2/0.0.1680.1050@0.0.1680.1050" timestamp="1585127484380" />
+    <state x="434" y="124" key="CommitChangelistDialog2/0.0.1680.1050@0.0.1680.1050" timestamp="1585127898387" />
     <state x="672" y="445" key="ComposerInitDialogKey" timestamp="1585106460956">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
