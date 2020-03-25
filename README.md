@@ -114,7 +114,7 @@ class IndexController extends AbstractController
 Q: 投递性能如何？
 
 A：采用与TaskWorker本身完全一致的跨进程通讯投递，默认Unix Socket，也支持TCP。
-根据Swoole的计算，100 万次通信仅需 1.02 秒。而到了Worker上以后，显然Go的速度只会比PHP更快，也没有阻塞函数的担忧。
+根据Swoole的计算，100 万次通信仅需 1.02 秒。而投递以后，显然Go的速度只会比PHP更快，也没有阻塞函数的担忧。
 未来会增加一些Benchmark。目前比较想测试的一个场景是，用Go来读取MongoDB，PHP来调用Go。
 
 Q：和RPC调用Go服务有什么区别？
