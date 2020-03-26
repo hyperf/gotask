@@ -30,7 +30,7 @@ install:
   - bash ./tests/swoole.install.sh
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - phpenv config-add ./tests/ci.ini
-  - go version
+  - gimme stable
   - go build -o app example/Server.go
 
 before_script:
