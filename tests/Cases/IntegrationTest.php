@@ -33,11 +33,11 @@ class IntegrationTest extends AbstractTestCase
     public function setUp()
     {
         $p = new Process(function (Process $process) {
-            $process->exec(__DIR__ . '/../../app', []);
+            $process->exec(__DIR__ . '/../../app', ['-address', '/tmp/test.sock']);
         });
         $p->start();
         $this->task = new RPC(
-            new CoroutineSocketRelay('127.0.0.1', 6001)
+            new CoroutineSocketRelay('/tmp/test.sock', null,CoroutineSocketRelay::SOCK_UNIX)
         );
     }
 
