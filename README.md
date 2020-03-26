@@ -124,11 +124,10 @@ Q: 投递性能如何？
 
 A：采用与TaskWorker本身完全一致的跨进程通讯投递，默认Unix Socket，也支持TCP。
 根据Swoole的计算，100 万次通信仅需 1.02 秒。而投递以后，显然Go的速度只会比PHP更快，也没有阻塞函数的担忧。
-未来会增加一些Benchmark。目前比较想测试的一个场景是，用Go来读取MongoDB，PHP来调用Go。
 
 Q：和RPC调用Go服务有什么区别？
 
-A：首先，IPC性能更强劲。其次结构上，Go完全是PHP的边车，生命周期全由PHP控制，没有分布式烦恼。
+A：RPC一般是两个团队干两件事，GoTask是一个团队干一件事，Go完全是PHP的边车，生命周期全由PHP控制，没有分布式烦恼。其次IPC性能更强劲。
 
 Q：为什么不直接用Go写整个服务？
 
@@ -138,57 +137,9 @@ Q：Go一定要写到PHP项目当中吗？
 
 A：不是的，Go项目可以分离出去独立部署，改一下配置文件就行了。
 
-## 初步测试
+## Benchmark
 
-```
-ab -k -c 100 -n 10000 http://localhost:9501/
-```
+https://github.com/reasno/gotask-benchmark
 
-macbook pro上执行上面的IPC例子，可以看到IPC后和裸跑hello world性能非常接近。
 
-直接HelloWorld，不投递GoTask：
-
-```
-Server Software:        Hyperf
-Server Hostname:        localhost
-Server Port:            9501
-
-Document Path:          /
-Document Length:        11 bytes
-
-Concurrency Level:      100
-Time taken for tests:   0.480 seconds
-Complete requests:      10000
-Failed requests:        0
-Keep-Alive requests:    10000
-Total transferred:      1530000 bytes
-HTML transferred:       110000 bytes
-Requests per second:    20834.20 [#/sec] (mean)
-Time per request:       4.800 [ms] (mean)
-Time per request:       0.048 [ms] (mean, across all concurrent requests)
-Transfer rate:          3112.92 [Kbytes/sec] received
-```
-
-投递GoTask：
-
-```
-Server Software:        Hyperf
-Server Hostname:        localhost
-Server Port:            9501
-
-Document Path:          /
-Document Length:        19 bytes
-
-Concurrency Level:      100
-Time taken for tests:   0.636 seconds
-Complete requests:      10000
-Failed requests:        0
-Keep-Alive requests:    10000
-Total transferred:      1670000 bytes
-HTML transferred:       190000 bytes
-Requests per second:    15719.29 [#/sec] (mean)
-Time per request:       6.362 [ms] (mean)
-Time per request:       0.064 [ms] (mean, across all concurrent requests)
-Transfer rate:          2563.60 [Kbytes/sec] received
-```
 
