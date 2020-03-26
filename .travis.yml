@@ -5,16 +5,17 @@ sudo: required
 matrix:
   include:
     - php: 7.2
-      env: SW_VERSION="4.4.16"
+      env:
+        - SW_VERSION="4.4.16"
+        - GIMME_GO_VERSION=1.13
     - php: 7.3
-      env: SW_VERSION="4.4.16"
+      env:
+        - SW_VERSION="4.4.16"
+        - GIMME_GO_VERSION=1.13
     - php: 7.4
-      env: SW_VERSION="4.4.16"
-    - php: master
-      env: SW_VERSION="4.4.16"
-
-  allow_failures:
-    - php: master
+      env:
+        - SW_VERSION="4.4.16"
+        - GIMME_GO_VERSION=1.13
 
 services: {}
 
@@ -24,10 +25,11 @@ before_install:
   - export PHP_MINOR="$(`phpenv which php` -r 'echo phpversion();' | cut -d '.' -f 2)"
   - echo $PHP_MAJOR
   - echo $PHP_MINOR
+  - go version
 
 install:
   - cd $TRAVIS_BUILD_DIR
-  - gimme stable && go build -o app example/Server.go
+  - go build -o app example/Server.go
   - bash ./tests/swoole.install.sh
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - phpenv config-add ./tests/ci.ini
