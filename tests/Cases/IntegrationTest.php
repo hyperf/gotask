@@ -33,7 +33,7 @@ class IntegrationTest extends AbstractTestCase
     public function setUp()
     {
         $p = new Process(function (Process $process) {
-            $process->exec(__DIR__ . '/../../app', ['-standalone']);
+            $process->exec(__DIR__ . '/../../app', ['-standalone', '-address', '127.0.0.1:6001']);
         });
         $p->start();
         $this->task = new RPC(
