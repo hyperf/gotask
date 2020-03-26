@@ -26,7 +26,7 @@ class RPCFactory
         $split = explode(':', $address, 2);
         if (count($split) === 1) {
             return new RPC(
-                new CoroutineSocketRelay($split[0], null, CoroutineSocketRelay::SOCK_UNIX)
+                new CoroutineSocketRelay($split[0], 0, CoroutineSocketRelay::SOCK_UNIX)
             );
         }
         [$host, $port] = $split;

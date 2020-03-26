@@ -11,11 +11,11 @@ declare(strict_types=1);
  */
 
 return [
-    'enable' => false,
+    'enable' => true,
     'executable' => BASE_PATH . '/gotask/app',
     'socket_address' => value(function () {
         $appName = env('APP_NAME');
-        $socketName = $appName . uniqid();
+        $socketName = $appName . '_' . uniqid();
         return "/tmp/{$socketName}.sock";
     }),
     'pool' => [

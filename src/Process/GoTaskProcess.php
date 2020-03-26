@@ -48,7 +48,10 @@ class GoTaskProcess extends AbstractProcess
     {
         $executable = $this->config->get('gotask.executable', BASE_PATH . '/app');
         $address = $this->config->get('gotask.socket_address', '/tmp/gotask.sock');
+        $args = $this->config->get('gotask.args', []);
         self::$taskPid->set($this->process->pid);
-        $this->process->exec($executable, ['-address',  $address]);
+        $argArr = ['-address',  $address];
+        array_push($argArr, ...$args);
+        $this->process->exec($executable, $argArr);
     }
 }

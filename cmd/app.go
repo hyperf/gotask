@@ -2,7 +2,9 @@ package main
 
 import (
 	"github.com/reasno/gotask/pkg/gotask"
+	"log"
 )
+
 // App sample
 type App struct{}
 
@@ -17,6 +19,7 @@ func (a *App) Hi(name interface{}, r *interface{}) error {
 
 func main() {
 	gotask.Register(new(App))
-	gotask.Run()
+	if err := gotask.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
-

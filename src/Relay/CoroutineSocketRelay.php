@@ -194,7 +194,8 @@ class CoroutineSocketRelay implements RelayInterface
 
         $this->socket = $this->createSocket();
         try {
-            if ($this->socket->connect($this->address, $this->port) === false) {
+            // Port type needs to be int, so we convert null to 0
+            if ($this->socket->connect($this->address, $this->port ?? 0) === false) {
                 throw new RelayException(sprintf('%s (%s)', $this->socket->errMsg, $this->socket->errCode));
             }
         } catch (\Exception $e) {
