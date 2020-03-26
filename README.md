@@ -138,7 +138,7 @@ A：不是的，Go项目可以分离出去独立部署，改一下配置文件�
 
 Q: 如何在Go和PHP之间共享配置？
 
-A: 可以共享同一个.env ：https://github.com/joho/godotenv
+A: Go进程是Swoole Server的子进程，继承了Swoole的环境变量。Hyperf的.env在Go里可以直接用。
 
 ## Benchmark
 
