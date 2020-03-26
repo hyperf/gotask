@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="57601a85-6979-4e76-bde3-d93c8000d8fc" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/gotask/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/gotask/server.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.travis.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.travis.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,7 +187,7 @@
       <option name="presentableId" value="Default" />
       <updated>1585103613293</updated>
       <workItem from="1585103615691" duration="18776000" />
-      <workItem from="1585123928414" duration="8694000" />
+      <workItem from="1585123928414" duration="8984000" />
     </task>
     <task id="LOCAL-00001" summary="add connection pool">
       <created>1585127467100</created>
@@ -225,17 +224,27 @@
       <option name="project" value="LOCAL" />
       <updated>1585132851782</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="publish 0.0.1 version">
+      <created>1585187932331</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1585187932331</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="add connection pool" />
     <MESSAGE value="fix outdated example" />
     <MESSAGE value="增加Readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="增加Readme" />
+    <MESSAGE value="publish 0.0.1 version" />
+    <option name="LAST_COMMIT_MESSAGE" value="publish 0.0.1 version" />
   </component>
   <component name="WindowStateProjectService">
     <state x="440" y="190" key="#Go_Modules_(vgo)" timestamp="1585106209315">
@@ -266,10 +275,10 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="498" y="186" key="#phpunit.xml/0.0.1680.1050@0.0.1680.1050" timestamp="1585132082344" />
-    <state x="434" y="124" key="CommitChangelistDialog2" timestamp="1585187692473">
+    <state x="434" y="124" key="CommitChangelistDialog2" timestamp="1585187932175">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="434" y="124" key="CommitChangelistDialog2/0.0.1680.1050@0.0.1680.1050" timestamp="1585187692473" />
+    <state x="434" y="124" key="CommitChangelistDialog2/0.0.1680.1050@0.0.1680.1050" timestamp="1585187932175" />
     <state x="672" y="445" key="ComposerInitDialogKey" timestamp="1585106460956">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
@@ -326,7 +335,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/src/GoTaskConnection.php</url>
-          <line>53</line>
+          <line>58</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
