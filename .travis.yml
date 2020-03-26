@@ -6,13 +6,10 @@ matrix:
   include:
     - php: 7.2
       env: SW_VERSION="4.4.16"
-      go: 1.13.x
     - php: 7.3
       env: SW_VERSION="4.4.16"
-      go: 1.13.x
     - php: 7.4
       env: SW_VERSION="4.4.16"
-      go: 1.13.x
 
 services: {}
 
@@ -22,6 +19,7 @@ before_install:
   - export PHP_MINOR="$(`phpenv which php` -r 'echo phpversion();' | cut -d '.' -f 2)"
   - echo $PHP_MAJOR
   - echo $PHP_MINOR
+  - eval "$(gimme 1.13.1)"
   - go version
 
 install:
