@@ -8,7 +8,7 @@ A lightning speed replacement for Swoole TaskWorker in Go ⚡️
 
 * PHP 7.2+
 * Go 1.13+
-* Swoole 4.4LTS+ 
+* Swoole 4.4LTS+
 * Hyperf 1.1+
 
 ## 为什么GoTask

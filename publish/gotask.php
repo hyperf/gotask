@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 return [
     'enable' => true,
-    'executable' => BASE_PATH . '/gotask/app',
+    'executable' => BASE_PATH . '/bin/app',
     'socket_address' => value(function () {
         $appName = env('APP_NAME');
         $socketName = $appName . '_' . uniqid();
