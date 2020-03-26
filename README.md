@@ -142,7 +142,7 @@ A：不是的，Go项目可以分离出去独立部署，改一下配置文件�
 https://github.com/reasno/gotask-benchmark
 
 ## 鸣谢
-* https://github.com/spiral/goridge 提供了IPC通讯的编码
+* https://github.com/spiral/goridge 提供了IPC通讯的编码和解码。
 
 
 
