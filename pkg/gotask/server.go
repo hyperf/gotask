@@ -2,6 +2,8 @@ package gotask
 
 import (
 	"flag"
+	"fmt"
+	"github.com/pkg/errors"
 	"github.com/spiral/goridge"
 	"log"
 	"net"
@@ -40,7 +42,7 @@ func Register(receiver interface{}) error {
 	return rpc.Register(receiver)
 }
 
-func Run() {
+func Run() error {
 	var (
 		termChan  chan os.Signal
 		ppid      int
@@ -63,7 +65,7 @@ func Run() {
 	}
 	ln, err := net.Listen(network, *Address)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "Unable to listen")
 	}
 	defer ln.Close()
 
@@ -92,11 +94,9 @@ func Run() {
 	for {
 		select {
 		case sig := <-termChan:
-			log.Printf("received system call:%+v, shutting down\n", sig)
-			return
+			return fmt.Errorf("received system call:%+v, shutting down\n", sig)
 		case <-pdeadChan:
-			log.Printf("parent process dead\n")
-			return
+			return fmt.Errorf("parent process dead\n")
 		case conn := <-connChan:
 			go rpc.ServeCodec(goridge.NewCodec(conn))
 		}

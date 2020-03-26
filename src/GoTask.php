@@ -1,10 +1,19 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Reasno/GoTask.
+ *
+ * @link     https://www.github.com/reasno/gotask
+ * @document  https://www.github.com/reasno/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace Reasno\GoTask;
 
 use Hyperf\Utils\Context;
-use Reasno\Gotask\Exception\InvalidGoTaskConnectionException;
+use Reasno\GoTask\Exception\InvalidGoTaskConnectionException;
 
 class GoTask
 {
@@ -28,7 +37,7 @@ class GoTask
             $result = $connection->call($method, $payload, $flags);
         } finally {
             // Release connection.
-            if (!$hasContextConnection) {
+            if (! $hasContextConnection) {
                 Context::set($this->getContextKey(), $connection);
                 defer(function () use ($connection) {
                     $connection->release();
@@ -48,11 +57,11 @@ class GoTask
         if ($hasContextConnection) {
             $connection = Context::get($this->getContextKey());
         }
-        if (!$connection instanceof GoTaskConnection) {
+        if (! $connection instanceof GoTaskConnection) {
             $pool = $this->pool;
             $connection = $pool->get();
         }
-        if (!$connection instanceof GoTaskConnection) {
+        if (! $connection instanceof GoTaskConnection) {
             throw new InvalidGoTaskConnectionException('The connection is not a valid RedisConnection.');
         }
         return $connection;
@@ -65,5 +74,4 @@ class GoTask
     {
         return 'gotask.connection';
     }
-
 }

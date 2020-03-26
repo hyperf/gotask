@@ -1,18 +1,27 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Reasno/GoTask.
+ *
+ * @link     https://www.github.com/reasno/gotask
+ * @document  https://www.github.com/reasno/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace Reasno\GoTask\Relay;
 
 use Spiral\Goridge\Exceptions\GoridgeException;
 use Spiral\Goridge\Exceptions\InvalidArgumentException;
-use Spiral\Goridge\Exceptions\TransportException;
 use Spiral\Goridge\Exceptions\PrefixException;
 use Spiral\Goridge\Exceptions\RelayException;
+use Spiral\Goridge\Exceptions\TransportException;
 use Spiral\Goridge\RelayInterface;
 use Swoole\Coroutine\Socket;
 
 /**
- * Communicates with remote server/client over be-directional socket using byte payload:
+ * Communicates with remote server/client over be-directional socket using byte payload:.
  *
  * [ prefix       ][ payload                               ]
  * [ 1+8+8 bytes  ][ message length|LE ][message length|BE ]
@@ -24,6 +33,7 @@ class CoroutineSocketRelay implements RelayInterface
 {
     /** Supported socket types. */
     const SOCK_TCP = 0;
+
     const SOCK_UNIX = 1;
 
     // @deprecated
@@ -32,7 +42,7 @@ class CoroutineSocketRelay implements RelayInterface
     /** @var string */
     private $address;
 
-    /** @var int|null */
+    /** @var null|int */
     private $port;
 
     /** @var int */
@@ -44,11 +54,11 @@ class CoroutineSocketRelay implements RelayInterface
     /**
      * Example:
      * $relay = new SocketRelay("localhost", 7000);
-     * $relay = new SocketRelay("/tmp/rpc.sock", null, Socket::UNIX_SOCKET);
+     * $relay = new SocketRelay("/tmp/rpc.sock", null, Socket::UNIX_SOCKET);.
      *
-     * @param string   $address Localhost, ip address or hostname.
-     * @param int|null $port    Ignored for UNIX sockets.
-     * @param int      $type    Default: TCP_SOCKET
+     * @param string $address localhost, ip address or hostname
+     * @param null|int $port ignored for UNIX sockets
+     * @param int $type Default: TCP_SOCKET
      *
      * @throws InvalidArgumentException
      */
@@ -80,6 +90,25 @@ class CoroutineSocketRelay implements RelayInterface
     }
 
     /**
+     * Destruct connection and disconnect.
+     */
+    public function __destruct()
+    {
+        if ($this->isConnected()) {
+            $this->close();
+        }
+    }
+
+    public function __toString(): string
+    {
+        if ($this->type == self::SOCK_TCP) {
+            return "tcp://{$this->address}:{$this->port}";
+        }
+
+        return "unix://{$this->address}";
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function send($payload, int $flags = null)
@@ -88,12 +117,12 @@ class CoroutineSocketRelay implements RelayInterface
 
         $size = strlen($payload);
         if ($flags & self::PAYLOAD_NONE && $size != 0) {
-            throw new TransportException("unable to send payload with PAYLOAD_NONE flag");
+            throw new TransportException('unable to send payload with PAYLOAD_NONE flag');
         }
 
         $body = pack('CPJ', $flags, $size, $size);
 
-        if (!($flags & self::PAYLOAD_NONE)) {
+        if (! ($flags & self::PAYLOAD_NONE)) {
             $body .= $payload;
         }
 
@@ -127,33 +156,24 @@ class CoroutineSocketRelay implements RelayInterface
         return $result;
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
     }
 
     /**
-     * @return int|null
+     * @return null|int
      */
     public function getPort()
     {
         return $this->port;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @return bool
-     */
     public function isConnected(): bool
     {
         return $this->socket != null;
@@ -163,10 +183,8 @@ class CoroutineSocketRelay implements RelayInterface
      * Ensure socket connection. Returns true if socket successfully connected
      * or have already been connected.
      *
-     * @return bool
-     *
      * @throws RelayException
-     * @throws \Error When sockets are used in unsupported environment.
+     * @throws \Error when sockets are used in unsupported environment
      */
     public function connect(): bool
     {
@@ -177,7 +195,7 @@ class CoroutineSocketRelay implements RelayInterface
         $this->socket = $this->createSocket();
         try {
             if ($this->socket->connect($this->address, $this->port) === false) {
-                throw new RelayException(sprintf("%s (%s)", $this->socket->errMsg, $this->socket->errCode));
+                throw new RelayException(sprintf('%s (%s)', $this->socket->errMsg, $this->socket->errCode));
             }
         } catch (\Exception $e) {
             throw new RelayException("unable to establish connection {$this}", 0, $e);
@@ -193,7 +211,7 @@ class CoroutineSocketRelay implements RelayInterface
      */
     public function close()
     {
-        if (!$this->isConnected()) {
+        if (! $this->isConnected()) {
             throw new RelayException("unable to close socket '{$this}', socket already closed");
         }
 
@@ -202,57 +220,35 @@ class CoroutineSocketRelay implements RelayInterface
     }
 
     /**
-     * Destruct connection and disconnect.
-     */
-    public function __destruct()
-    {
-        if ($this->isConnected()) {
-            $this->close();
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function __toString(): string
-    {
-        if ($this->type == self::SOCK_TCP) {
-            return "tcp://{$this->address}:{$this->port}";
-        }
-
-        return "unix://{$this->address}";
-    }
-
-    /**
-     * @return array Prefix [flag, length]
-     *
      * @throws PrefixException
+     * @return array Prefix [flag, length]
      */
     private function fetchPrefix(): array
     {
         $prefixBody = $this->socket->recv(17);
         if ($prefixBody === false || strlen($prefixBody) !== 17) {
             throw new PrefixException(sprintf(
-                "unable to read prefix from socket: %s (%s)",
-                $this->socket->errMsg, $this->socket->errCode
+                'unable to read prefix from socket: %s (%s)',
+                $this->socket->errMsg,
+                $this->socket->errCode
             ));
         }
 
-        $result = unpack("Cflags/Psize/Jrevs", $prefixBody);
-        if (!is_array($result)) {
-            throw new PrefixException("invalid prefix");
+        $result = unpack('Cflags/Psize/Jrevs', $prefixBody);
+        if (! is_array($result)) {
+            throw new PrefixException('invalid prefix');
         }
 
         if ($result['size'] != $result['revs']) {
-            throw new PrefixException("invalid prefix (checksum)");
+            throw new PrefixException('invalid prefix (checksum)');
         }
 
         return $result;
     }
 
     /**
-     * @return Socket
      * @throws GoridgeException
+     * @return Socket
      */
     private function createSocket()
     {

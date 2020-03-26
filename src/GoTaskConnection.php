@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Reasno/GoTask.
+ *
+ * @link     https://www.github.com/reasno/gotask
+ * @document  https://www.github.com/reasno/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace Reasno\GoTask;
 
@@ -12,8 +21,7 @@ use Psr\Container\ContainerInterface;
 use Spiral\Goridge\RPC;
 
 /**
- * Class GoTaskConnection
- * @package Reasno\Gotask
+ * Class GoTaskConnection.
  * @mixin RPC
  */
 class GoTaskConnection extends Connection implements ConnectionInterface
@@ -29,12 +37,6 @@ class GoTaskConnection extends Connection implements ConnectionInterface
         $this->reconnect();
     }
 
-    public function close(): bool
-    {
-        unset($this->connection);
-        return true;
-    }
-
     public function __call($name, $arguments)
     {
         try {
@@ -46,9 +48,12 @@ class GoTaskConnection extends Connection implements ConnectionInterface
         return $result;
     }
 
-    /**
-     * @return bool
-     */
+    public function close(): bool
+    {
+        unset($this->connection);
+        return true;
+    }
+
     public function reconnect(): bool
     {
         $this->connection = make(RPC::class);

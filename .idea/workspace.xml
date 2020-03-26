@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="57601a85-6979-4e76-bde3-d93c8000d8fc" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/gotask/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/gotask/server.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,7 +188,7 @@
       <option name="presentableId" value="Default" />
       <updated>1585103613293</updated>
       <workItem from="1585103615691" duration="18776000" />
-      <workItem from="1585123928414" duration="8019000" />
+      <workItem from="1585123928414" duration="8694000" />
     </task>
     <task id="LOCAL-00001" summary="add connection pool">
       <created>1585127467100</created>
@@ -211,7 +211,21 @@
       <option name="project" value="LOCAL" />
       <updated>1585131584394</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="增加Readme">
+      <created>1585132770343</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1585132770343</updated>
+    </task>
+    <task id="LOCAL-00005" summary="增加Readme">
+      <created>1585132851782</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1585132851782</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -228,10 +242,10 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="440" y="190" key="#Go_Modules_(vgo)/0.0.1680.1050@0.0.1680.1050" timestamp="1585106209315" />
-    <state x="304" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585119538712">
+    <state x="304" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585187700679">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="304" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1585119538712" />
+    <state x="304" y="187" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1585187700679" />
     <state x="646" y="217" key="#com.intellij.ide.util.MemberChooser" timestamp="1585123587148">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
@@ -252,10 +266,10 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="498" y="186" key="#phpunit.xml/0.0.1680.1050@0.0.1680.1050" timestamp="1585132082344" />
-    <state x="434" y="124" key="CommitChangelistDialog2" timestamp="1585132770221">
+    <state x="434" y="124" key="CommitChangelistDialog2" timestamp="1585187692473">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="434" y="124" key="CommitChangelistDialog2/0.0.1680.1050@0.0.1680.1050" timestamp="1585132770221" />
+    <state x="434" y="124" key="CommitChangelistDialog2/0.0.1680.1050@0.0.1680.1050" timestamp="1585187692473" />
     <state x="672" y="445" key="ComposerInitDialogKey" timestamp="1585106460956">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
@@ -284,10 +298,10 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="661" y="455" key="NewPhpFileDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1585111025371" />
-    <state x="440" y="265" key="Vcs.Push.Dialog.v2" timestamp="1585127474286">
+    <state x="440" y="265" key="Vcs.Push.Dialog.v2" timestamp="1585132857758">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="440" y="265" key="Vcs.Push.Dialog.v2/0.0.1680.1050@0.0.1680.1050" timestamp="1585127474286" />
+    <state x="440" y="265" key="Vcs.Push.Dialog.v2/0.0.1680.1050@0.0.1680.1050" timestamp="1585132857758" />
     <state x="386" y="130" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1585113468907">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
