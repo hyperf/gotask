@@ -88,7 +88,7 @@ php bin/hyperf.php vendor:publish
 在项目根目录执行构建：
 
 ```bash
-go build -o gotask/app gotask/cmd/app.go
+go build -o bin/app gotask/cmd/app.go
 ```
 
 然后按照正常流程启动Hyperf即可，`ps -ef | grep hyperf`会发现Go进程随Hyperf一起启动了。
