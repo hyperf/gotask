@@ -16,15 +16,20 @@ import (
 )
 
 var (
-	address *string
+	address    *string
+	standalone *bool
 )
 
 func init() {
+	standalone = flag.Bool("standalone", false, "ignore parent process status")
 	address = flag.String("address", "127.0.0.1:6001", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
 	flag.Parse()
 }
 
 func checkProcess(pid int, quit chan bool) {
+	if *standalone {
+		return
+	}
 	process, err := os.FindProcess(int(pid))
 	if err != nil {
 		log.Printf("Failed to find process: %s\n", err)
