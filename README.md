@@ -2,6 +2,8 @@
 
 A lightning speed replacement for Swoole TaskWorker in Go ⚡️
 
+[![Build Status](https://travis-ci.org/Reasno/gotask.svg?branch=master)](https://travis-ci.org/Reasno/gotask)
+
 ## requirement
 
 * PHP 7.2+
