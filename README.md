@@ -2,6 +2,13 @@
 
 A lightning speed replacement for Swoole TaskWorker in Go ⚡️
 
+## requirement
+
+PHP 7.2+
+Go 1.13+
+Swoole 4.4LTS+ 
+Hyperf 1.1+
+
 ## 为什么GoTask
 
 > 在php-fpm的应用中，经常会将一个任务异步投递到Redis等队列中，并在后台启动一些php进程异步地处理这些任务。Swoole提供的TaskWorker是一套更完整的方案，将任务的投递、队列、php任务处理进程管理合为一体。通过底层提供的API可以非常简单地实现异步任务的处理。另外TaskWorker还可以在任务执行完成后，再返回一个结果反馈到Worker。
