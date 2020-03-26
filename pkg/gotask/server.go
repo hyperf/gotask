@@ -16,11 +16,11 @@ import (
 )
 
 var (
-	Address *string
+	address *string
 )
 
 func init() {
-	Address = flag.String("address", "127.0.0.1:6001", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
+	address = flag.String("address", "127.0.0.1:6001", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
 	flag.Parse()
 }
 
@@ -42,6 +42,14 @@ func Register(receiver interface{}) error {
 	return rpc.Register(receiver)
 }
 
+func SetAddress(addr string) {
+	*address = addr
+}
+
+func GetAddress() string {
+	return *address
+}
+
 func Run() error {
 	var (
 		termChan  chan os.Signal
@@ -58,12 +66,12 @@ func Run() error {
 	ticker = time.NewTicker(500 * time.Millisecond)
 	connChan = make(chan net.Conn)
 
-	if strings.Contains(*Address, ":") {
+	if strings.Contains(*address, ":") {
 		network = "tcp"
 	} else {
 		network = "unix"
 	}
-	ln, err := net.Listen(network, *Address)
+	ln, err := net.Listen(network, *address)
 	if err != nil {
 		return errors.Wrap(err, "Unable to listen")
 	}

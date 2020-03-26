@@ -17,7 +17,6 @@ use Spiral\Goridge\Exceptions\InvalidArgumentException;
 use Spiral\Goridge\Exceptions\PrefixException;
 use Spiral\Goridge\Exceptions\RelayException;
 use Spiral\Goridge\Exceptions\TransportException;
-use Spiral\Goridge\RelayInterface;
 use Swoole\Coroutine\Socket;
 
 /**

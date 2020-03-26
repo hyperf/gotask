@@ -13,7 +13,6 @@ func (a *App) Hi(name interface{}, r *interface{}) error {
 	*r = map[string]interface{}{
 		"hello": name,
 	}
-	//also try: *r = fmt.Sprintf("Hello, %s!", name)
 	return nil
 }
 

@@ -10,18 +10,8 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace HyperfTest\Cases;
+namespace Reasno\GoTask\Relay;
 
-/**
- * @internal
- * @coversNothing
- */
-class ExampleTest extends AbstractTestCase
+interface RelayInterface extends \Spiral\Goridge\RelayInterface
 {
-    public function testExample()
-    {
-        $this->assertTrue(true);
-
-        $this->assertTrue(extension_loaded('swoole'));
-    }
 }
