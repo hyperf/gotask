@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/pkg/errors"
-	"github.com/spiral/goridge"
+	"github.com/spiral/goridge/v2"
 	"log"
 	"net"
 	"net/rpc"
