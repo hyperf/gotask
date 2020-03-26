@@ -136,6 +136,10 @@ Q：Go一定要写到PHP项目当中吗？
 
 A：不是的，Go项目可以分离出去独立部署，改一下配置文件就行了。
 
+Q: 如何在Go和PHP之间共享配置？
+
+A: 可以共享同一个.env ：https://github.com/joho/godotenv
+
 ## Benchmark
 
 https://github.com/reasno/gotask-benchmark
