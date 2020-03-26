@@ -36,4 +36,4 @@ before_script:
 
 script:
   - composer analyse
-  - composer test
+  - sudo phpunit
