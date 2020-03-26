@@ -32,18 +32,20 @@ class IntegrationTest extends AbstractTestCase
 
     public function setUp()
     {
-        $p = new Process(function (Process $process) {
-            $process->exec(__DIR__ . '/../../app', ['-address', '0.0.0.0:6001']);
+        $unixSocket = '/tmp/test.sock';
+        $p = new Process(function (Process $process) use ($unixSocket) {
+            $process->exec(__DIR__ . '/../../app', ['-address', $unixSocket]);
         });
         $p->start();
         $this->task = new RPC(
-            new CoroutineSocketRelay('127.0.0.1', 6001)
+            new CoroutineSocketRelay($unixSocket,  null, CoroutineSocketRelay::SOCK_UNIX)
         );
     }
 
     public function testExample()
     {
         \Swoole\Coroutine\run(function(){
+            sleep(1);
             $this->assertEquals(
                 'Hello, Reasno!',
                 $this->task->call('App.HelloString', 'Reasno')
