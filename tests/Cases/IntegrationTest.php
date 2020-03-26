@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace HyperfTest\Cases;
 
+use Reasno\GoTask\GoTask;
 use Reasno\GoTask\Relay\CoroutineSocketRelay;
 use Reasno\GoTask\Relay\RelayInterface;
 use Spiral\Goridge\Exceptions\ServiceException;
@@ -75,6 +76,5 @@ class IntegrationTest extends AbstractTestCase
             }
 
         });
-
     }
 }
