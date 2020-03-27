@@ -117,7 +117,7 @@ class IndexController extends AbstractController
 
 
 * https://github.com/Reasno/gotask/tree/master/example 可以找到全部用法。
-* https://github.com/Reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php 在Hyperf中的应用(实现了连接池，直接按常生命周期注入即可）
+* https://github.com/Reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php 在Hyperf中的应用(实现了连接池，直接按单例注入即可）
 
 ### FAQ
 
