@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/RemoteGoTask.
+ * This file is part of Reasno/GoTask.
  *
  * @link     https://www.github.com/reasno/gotask
  * @document  https://www.github.com/reasno/gotask
@@ -21,9 +21,9 @@ use Hyperf\Di\Definition\ScanConfig;
 use Hyperf\Framework\Logger\StdoutLogger;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\WaitGroup;
-use Reasno\GoTask\RemoteGoTask;
 use Reasno\GoTask\Relay\CoroutineSocketRelay;
 use Reasno\GoTask\Relay\RelayInterface;
+use Reasno\GoTask\RemoteGoTask;
 use Reasno\GoTask\RPCFactory;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Spiral\Goridge\RPC;
@@ -36,6 +36,7 @@ use Swoole\Process;
 class CoroutineSocketTest extends AbstractTestCase
 {
     const UNIX_SOCKET = '/tmp/test.sock';
+
     /**
      * @var Process
      */
@@ -45,7 +46,7 @@ class CoroutineSocketTest extends AbstractTestCase
     {
         ! defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
         @unlink(self::UNIX_SOCKET);
-        $this->p = new Process(function (Process $process)  {
+        $this->p = new Process(function (Process $process) {
             $process->exec(__DIR__ . '/../../app', ['-address', self::UNIX_SOCKET]);
         });
         $this->p->start();
@@ -57,7 +58,6 @@ class CoroutineSocketTest extends AbstractTestCase
         Process::kill($this->p->pid);
     }
 
-
     public function testOnCoroutine()
     {
         \Swoole\Coroutine\run(function () {
@@ -68,8 +68,8 @@ class CoroutineSocketTest extends AbstractTestCase
         });
     }
 
-    public function testConcurrently(){
-
+    public function testConcurrently()
+    {
         $container = new Container(new DefinitionSource([], new ScanConfig()));
         $container->set(ConfigInterface::class, new Config([
             'gotask' => [
@@ -83,11 +83,13 @@ class CoroutineSocketTest extends AbstractTestCase
                     'heartbeat' => -1,
                     'max_idle_time' => (float) env('GOTASK_MAX_IDLE_TIME', 60),
                 ],
-            ]
+            ],
         ]));
-        $container->define(RPC::class,RPCFactory::class);
-        $container->define(StdoutLoggerInterface::class,
-            StdoutLogger::class);
+        $container->define(RPC::class, RPCFactory::class);
+        $container->define(
+            StdoutLoggerInterface::class,
+            StdoutLogger::class
+        );
         ApplicationContext::setContainer($container);
 
         \Swoole\Coroutine\run(function () {
@@ -96,12 +98,12 @@ class CoroutineSocketTest extends AbstractTestCase
             $wg = new WaitGroup();
             $wg->add();
             $this->baseExample($task);
-            go(function() use ($wg, $task) {
+            go(function () use ($wg, $task) {
                 $this->baseExample($task);
                 $wg->done();
             });
             $wg->add();
-            go(function() use ($wg, $task) {
+            go(function () use ($wg, $task) {
                 $this->baseExample($task);
                 $wg->done();
             });
@@ -109,7 +111,8 @@ class CoroutineSocketTest extends AbstractTestCase
         });
     }
 
-    public function baseExample($task){
+    public function baseExample($task)
+    {
         $this->assertEquals(
             'Hello, Reasno!',
             $task->call('App.HelloString', 'Reasno')

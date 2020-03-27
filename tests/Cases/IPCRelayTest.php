@@ -1,18 +1,29 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Reasno/GoTask.
+ *
+ * @link     https://www.github.com/reasno/gotask
+ * @document  https://www.github.com/reasno/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace HyperfTest\Cases;
 
-
 use Hyperf\Utils\WaitGroup;
 use Reasno\GoTask\LocalGoTask;
-use Reasno\GoTask\Relay\CoroutineSocketRelay;
 use Reasno\GoTask\Relay\IPCRelay;
 use Reasno\GoTask\Relay\RelayInterface;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Spiral\Goridge\RPC;
 use Swoole\Process;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class IPCRelayTest extends AbstractTestCase
 {
     /**
@@ -53,12 +64,12 @@ class IPCRelayTest extends AbstractTestCase
             ]);
             $wg = new WaitGroup();
             $wg->add();
-            go(function() use ($wg, $task) {
+            go(function () use ($wg, $task) {
                 $this->baseExample($task);
                 $wg->done();
             });
             $wg->add();
-            go(function() use ($wg, $task) {
+            go(function () use ($wg, $task) {
                 $this->baseExample($task);
                 $wg->done();
             });
@@ -66,7 +77,8 @@ class IPCRelayTest extends AbstractTestCase
         });
     }
 
-    public function baseExample($task){
+    public function baseExample($task)
+    {
         $this->assertEquals(
             'Hello, Reasno!',
             $task->call('App.HelloString', 'Reasno')

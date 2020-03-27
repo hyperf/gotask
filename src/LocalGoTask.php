@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Reasno/GoTask.
+ *
+ * @link     https://www.github.com/reasno/gotask
+ * @document  https://www.github.com/reasno/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace Reasno\GoTask;
 
@@ -15,27 +24,29 @@ class LocalGoTask implements GoTask
      * @var
      */
     private $taskChannel;
+
     /**
-     * @var Process|null
+     * @var null|Process
      */
     private $process;
 
     public function __construct(?Process $process)
     {
-        $this->process= $process;
+        $this->process = $process;
     }
 
-    public function call(string $method, $payload, int $flags = 0){
-        if ($this->taskChannel == null){
+    public function call(string $method, $payload, int $flags = 0)
+    {
+        if ($this->taskChannel == null) {
             $this->taskChannel = new Channel(100);
-            go(function(){
+            go(function () {
                 $this->start();
             });
         }
         $returnChannel = new Channel(1);
         $this->taskChannel->push([$method, $payload, $flags, $returnChannel]);
         $result = $returnChannel->pop();
-        if ($result instanceof \Throwable){
+        if ($result instanceof \Throwable) {
             throw $result;
         }
         return $result;
@@ -43,7 +54,7 @@ class LocalGoTask implements GoTask
 
     private function start()
     {
-        if ($this->process == null){
+        if ($this->process == null) {
             $this->process = ProcessCollector::get('gotask')[0];
         }
         $task = new RPC(
@@ -51,10 +62,10 @@ class LocalGoTask implements GoTask
         );
         while (true) {
             [$method, $payload, $flag, $returnChannel] = $this->taskChannel->pop();
-            try{
+            try {
                 $result = $task->call($method, $payload, $flag);
                 $returnChannel->push($result);
-            } catch (\Throwable $e){
+            } catch (\Throwable $e) {
                 $returnChannel->push($e);
             }
         }

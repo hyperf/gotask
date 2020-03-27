@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/RemoteGoTask.
+ * This file is part of Reasno/GoTask.
  *
  * @link     https://www.github.com/reasno/gotask
  * @document  https://www.github.com/reasno/gotask
@@ -30,6 +30,7 @@ class GoTaskConnection extends Connection implements ConnectionInterface
      * @var RPC
      */
     private $connection;
+
     /**
      * @var RPCFactory
      */
