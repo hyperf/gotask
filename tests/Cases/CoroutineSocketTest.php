@@ -36,22 +36,27 @@ use Swoole\Process;
 class CoroutineSocketTest extends AbstractTestCase
 {
     const UNIX_SOCKET = '/tmp/test.sock';
-
     /**
-     * @var RPC
+     * @var Process
      */
-    private $task;
+    private $p;
 
     public function setUp()
     {
         ! defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
         @unlink(self::UNIX_SOCKET);
-        $p = new Process(function (Process $process)  {
-            $process->exec(__DIR__ . '/../../app', ['-address', self::UNIX_SOCKET, '-standalone']);
+        $this->p = new Process(function (Process $process)  {
+            $process->exec(__DIR__ . '/../../app', ['-address', self::UNIX_SOCKET]);
         });
-        $p->start();
+        $this->p->start();
         sleep(1);
     }
+
+    public function tearDown()
+    {
+        Process::kill($this->p->pid);
+    }
+
 
     public function testOnCoroutine()
     {

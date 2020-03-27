@@ -57,8 +57,6 @@ class LocalGoTask implements GoTask
             } catch (\Throwable $e){
                 $returnChannel->push($e);
             }
-
-
         }
     }
 }
