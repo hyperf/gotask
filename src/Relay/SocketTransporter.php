@@ -20,15 +20,6 @@ trait SocketTransporter
         }
     }
 
-    public function __toString(): string
-    {
-        if ($this->type == self::SOCK_TCP) {
-            return "tcp://{$this->address}:{$this->port}";
-        }
-
-        return "unix://{$this->address}";
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -80,32 +71,6 @@ trait SocketTransporter
     public function isConnected(): bool
     {
         return $this->socket != null;
-    }
-
-    /**
-     * Ensure socket connection. Returns true if socket successfully connected
-     * or have already been connected.
-     *
-     * @throws RelayException
-     * @throws \Error when sockets are used in unsupported environment
-     */
-    public function connect(): bool
-    {
-        if ($this->isConnected()) {
-            return true;
-        }
-
-        $this->socket = $this->createSocket();
-        try {
-            // Port type needs to be int, so we convert null to 0
-            if ($this->socket->connect($this->address, $this->port ?? 0) === false) {
-                throw new RelayException(sprintf('%s (%s)', $this->socket->errMsg, $this->socket->errCode));
-            }
-        } catch (\Exception $e) {
-            throw new RelayException("unable to establish connection {$this}", 0, $e);
-        }
-
-        return true;
     }
 
     /**

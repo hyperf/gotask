@@ -42,13 +42,12 @@ class CoroutineSocketTest extends AbstractTestCase
      */
     private $task;
 
-
     public function setUp()
     {
         ! defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
         @unlink(self::UNIX_SOCKET);
         $p = new Process(function (Process $process)  {
-            $process->exec(__DIR__ . '/../../app', ['-address', self::UNIX_SOCKET]);
+            $process->exec(__DIR__ . '/../../app', ['-address', self::UNIX_SOCKET, '-standalone']);
         });
         $p->start();
         sleep(1);
