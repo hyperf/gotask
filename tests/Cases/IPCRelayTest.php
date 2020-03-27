@@ -29,6 +29,11 @@ class IPCRelayTest extends AbstractTestCase
         sleep(1);
     }
 
+    public function tearDown()
+    {
+        Process::kill($this->p->pid);
+    }
+
     public function testOnCoroutine()
     {
         \Swoole\Coroutine\run(function () {

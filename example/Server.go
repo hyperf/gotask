@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/reasno/gotask/pkg/gotask"
 	"io/ioutil"
+	"log"
 )
 
 // App sample
@@ -49,5 +50,7 @@ func (a *App) HelloError(name interface{}, r *interface{}) error {
 
 func main() {
 	gotask.Register(new(App))
-	gotask.Run()
+	if err := gotask.Run(); err != nil {
+		log.Fatal(err)
+	}
 }

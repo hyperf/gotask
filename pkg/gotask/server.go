@@ -56,12 +56,12 @@ func GetAddress() string {
 
 func Run() error {
 	var g run.Group
-	{
+	if *address == "" {
 		relay := goridge.NewPipeRelay(os.Stdin, os.Stdout)
 		codec := goridge.NewCodecWithRelay(relay)
 		g.Add(func() error {
 			rpc.ServeCodec(codec)
-			return nil
+			return fmt.Errorf("pipe is closed")
 		}, func(err error) {
 			_ = os.Stdin.Close()
 			_ = os.Stdout.Close()
