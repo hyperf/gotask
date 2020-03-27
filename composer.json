@@ -29,7 +29,7 @@
         "hyperf/config": "^1.1",
         "hyperf/di": "^1.1",
         "hyperf/testing": "1.1.*",
-        "phpstan/phpstan": "^0.10.5",
+        "phpstan/phpstan": "^0.12",
         "swoft/swoole-ide-helper": "dev-master"
     },
     "config": {
