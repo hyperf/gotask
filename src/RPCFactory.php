@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/GoTask.
+ * This file is part of Reasno/RemoteGoTask.
  *
  * @link     https://www.github.com/reasno/gotask
  * @document  https://www.github.com/reasno/gotask
@@ -19,9 +19,19 @@ use Spiral\Goridge\RPC;
 
 class RPCFactory
 {
-    public function __invoke(ContainerInterface $container)
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
     {
-        $config = $container->get(ConfigInterface::class);
+        $this->container = $container;
+    }
+
+    public function make()
+    {
+        $config = $this->container->get(ConfigInterface::class);
         $address = $config->get('gotask.socket_address', '/tmp/gotask.sock');
         $split = explode(':', $address, 2);
         if (count($split) === 1) {

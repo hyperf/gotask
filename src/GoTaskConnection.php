@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/GoTask.
+ * This file is part of Reasno/RemoteGoTask.
  *
  * @link     https://www.github.com/reasno/gotask
  * @document  https://www.github.com/reasno/gotask
@@ -30,10 +30,15 @@ class GoTaskConnection extends Connection implements ConnectionInterface
      * @var RPC
      */
     private $connection;
+    /**
+     * @var RPCFactory
+     */
+    private $factory;
 
-    public function __construct(ContainerInterface $container, Pool $pool)
+    public function __construct(ContainerInterface $container, Pool $pool, RPCFactory $factory)
     {
         parent::__construct($container, $pool);
+        $this->factory = $factory;
         $this->reconnect();
     }
 
@@ -56,7 +61,7 @@ class GoTaskConnection extends Connection implements ConnectionInterface
 
     public function reconnect(): bool
     {
-        $this->connection = make(RPC::class);
+        $this->connection = $this->factory->make();
         $this->lastUseTime = microtime(true);
         return true;
     }
@@ -77,7 +82,7 @@ class GoTaskConnection extends Connection implements ConnectionInterface
     protected function retry($name, $arguments, \Throwable $exception)
     {
         $logger = $this->container->get(StdoutLoggerInterface::class);
-        $logger->warning(sprintf('GoTask::__call failed, because ' . $exception->getMessage()));
+        $logger->warning(sprintf('RemoteGoTask::__call failed, because ' . $exception->getMessage()));
 
         try {
             $this->reconnect();

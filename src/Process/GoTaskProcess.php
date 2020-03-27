@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/GoTask.
+ * This file is part of Reasno/RemoteGoTask.
  *
  * @link     https://www.github.com/reasno/gotask
  * @document  https://www.github.com/reasno/gotask
@@ -19,6 +19,10 @@ use Swoole\Atomic;
 
 class GoTaskProcess extends AbstractProcess
 {
+    /**
+     * @var string
+     */
+    public $name = 'gotask';
     /**
      * @var Atomic
      */

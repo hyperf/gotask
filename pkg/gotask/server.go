@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"github.com/spiral/goridge/v2"
-	"log"
 	"net"
 	"net/rpc"
 	"os"
@@ -22,7 +21,7 @@ var (
 
 func init() {
 	standalone = flag.Bool("standalone", false, "ignore parent process status")
-	address = flag.String("address", "127.0.0.1:6001", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
+	address = flag.String("address", "", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
 	flag.Parse()
 }
 
@@ -32,15 +31,36 @@ func checkProcess(pid int, quit chan bool) {
 	}
 	process, err := os.FindProcess(int(pid))
 	if err != nil {
-		log.Printf("Failed to find process: %s\n", err)
 		close(quit)
 		return
 	}
 	err = process.Signal(syscall.Signal(0))
 	if err != nil {
-		log.Printf("process.Signal on pid %d returned: %v\n", pid, err)
 		close(quit)
 	}
+}
+
+func listen(connChan chan net.Conn) (closer func() error, err error) {
+	var network string
+	if strings.Contains(*address, ":") {
+		network = "tcp"
+	} else {
+		network = "unix"
+	}
+	ln, err := net.Listen(network, *address)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to listen")
+	}
+	go func() {
+		for {
+			conn, err := ln.Accept()
+			if err != nil {
+				continue
+			}
+			connChan <- conn
+		}
+	}()
+	return ln.Close, nil
 }
 
 func Register(receiver interface{}) error {
@@ -62,7 +82,6 @@ func Run() error {
 		pdeadChan chan bool
 		connChan  chan net.Conn
 		ticker    *time.Ticker
-		network   string
 	)
 	termChan = make(chan os.Signal)
 	signal.Notify(termChan, os.Interrupt, os.Kill)
@@ -71,16 +90,17 @@ func Run() error {
 	ticker = time.NewTicker(500 * time.Millisecond)
 	connChan = make(chan net.Conn)
 
-	if strings.Contains(*address, ":") {
-		network = "tcp"
+	if *address == "" {
+		relay := goridge.NewPipeRelay(os.Stdin, os.Stdout)
+		codec := goridge.NewCodecWithRelay(relay)
+		go rpc.ServeCodec(codec)
 	} else {
-		network = "unix"
+		closer, err := listen(connChan)
+		if err != nil {
+			return err
+		}
+		defer closer()
 	}
-	ln, err := net.Listen(network, *address)
-	if err != nil {
-		return errors.Wrap(err, "Unable to listen")
-	}
-	defer ln.Close()
 
 	go func() {
 		for {
@@ -90,17 +110,6 @@ func Run() error {
 			case <-ticker.C:
 				checkProcess(ppid, pdeadChan)
 			}
-		}
-	}()
-
-	go func() {
-		for {
-			conn, err := ln.Accept()
-			if err != nil {
-				log.Printf("on accept: %s\n", err.Error())
-				continue
-			}
-			connChan <- conn
 		}
 	}()
 
