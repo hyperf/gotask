@@ -1,8 +1,10 @@
 package gotask
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"github.com/oklog/run"
 	"github.com/pkg/errors"
 	"github.com/spiral/goridge/v2"
 	"net"
@@ -40,29 +42,6 @@ func checkProcess(pid int, quit chan bool) {
 	}
 }
 
-func listen(connChan chan net.Conn) (closer func() error, err error) {
-	var network string
-	if strings.Contains(*address, ":") {
-		network = "tcp"
-	} else {
-		network = "unix"
-	}
-	ln, err := net.Listen(network, *address)
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to listen")
-	}
-	go func() {
-		for {
-			conn, err := ln.Accept()
-			if err != nil {
-				continue
-			}
-			connChan <- conn
-		}
-	}()
-	return ln.Close, nil
-}
-
 func Register(receiver interface{}) error {
 	return rpc.Register(receiver)
 }
@@ -76,51 +55,74 @@ func GetAddress() string {
 }
 
 func Run() error {
-	var (
-		termChan  chan os.Signal
-		ppid      int
-		pdeadChan chan bool
-		connChan  chan net.Conn
-		ticker    *time.Ticker
-	)
-	termChan = make(chan os.Signal)
-	signal.Notify(termChan, os.Interrupt, os.Kill)
-	ppid = os.Getppid()
-	pdeadChan = make(chan bool)
-	ticker = time.NewTicker(500 * time.Millisecond)
-	connChan = make(chan net.Conn)
-
-	if *address == "" {
+	var g run.Group
+	{
 		relay := goridge.NewPipeRelay(os.Stdin, os.Stdout)
 		codec := goridge.NewCodecWithRelay(relay)
-		go rpc.ServeCodec(codec)
-	} else {
-		closer, err := listen(connChan)
+		g.Add(func() error {
+			rpc.ServeCodec(codec)
+			return nil
+		}, func(err error) {
+			_ = os.Stdin.Close()
+			_ = os.Stdout.Close()
+			_ = codec.Close()
+		})
+	}
+
+	if *address != "" {
+		var network string
+		if strings.Contains(*address, ":") {
+			network = "tcp"
+		} else {
+			network = "unix"
+		}
+		ln, err := net.Listen(network, *address)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "Unable to listen")
 		}
-		defer closer()
-	}
-
-	go func() {
-		for {
-			select {
-			case <-pdeadChan:
-				return
-			case <-ticker.C:
-				checkProcess(ppid, pdeadChan)
+		g.Add(func() error {
+			for {
+				conn, err := ln.Accept()
+				if err != nil {
+					return err
+				}
+				go rpc.ServeCodec(goridge.NewCodec(conn))
 			}
-		}
-	}()
-
-	for {
-		select {
-		case sig := <-termChan:
-			return fmt.Errorf("received system call:%+v, shutting down\n", sig)
-		case <-pdeadChan:
-			return fmt.Errorf("parent process dead\n")
-		case conn := <-connChan:
-			go rpc.ServeCodec(goridge.NewCodec(conn))
-		}
+		}, func(err error) {
+			_ = ln.Close()
+		})
 	}
+
+	{
+		var (
+			termChan  chan os.Signal
+			ppid      int
+			pdeadChan chan bool
+			ticker    *time.Ticker
+		)
+		termChan = make(chan os.Signal)
+		signal.Notify(termChan, os.Interrupt, os.Kill)
+		ppid = os.Getppid()
+		pdeadChan = make(chan bool)
+		ticker = time.NewTicker(500 * time.Millisecond)
+		ctx, cancel := context.WithCancel(context.Background())
+		g.Add(func() error {
+			for {
+				select {
+				case sig := <-termChan:
+					return fmt.Errorf("received system call:%+v, shutting down\n", sig)
+				case <-pdeadChan:
+					return fmt.Errorf("parent process dead")
+				case <-ticker.C:
+					checkProcess(ppid, pdeadChan)
+				case <-ctx.Done():
+					return ctx.Err()
+				}
+			}
+		}, func(err error) {
+			cancel()
+		})
+	}
+
+	return g.Run()
 }
