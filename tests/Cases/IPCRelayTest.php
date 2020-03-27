@@ -18,6 +18,7 @@ use Reasno\GoTask\Relay\IPCRelay;
 use Reasno\GoTask\Relay\RelayInterface;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Spiral\Goridge\RPC;
+use Swoole\Lock;
 use Swoole\Process;
 
 /**
@@ -33,6 +34,7 @@ class IPCRelayTest extends AbstractTestCase
 
     public function setUp()
     {
+        LocalGoTask::$lock = new Lock(SWOOLE_SEM);
         $this->p = new Process(function (Process $process) {
             $process->exec(__DIR__ . '/../../app', []);
         }, true);

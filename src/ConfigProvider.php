@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Reasno\GoTask;
 
+use Reasno\GoTask\Listener\BootApplicationListener;
 use Reasno\GoTask\Process\GoTaskProcess;
 
 class ConfigProvider
@@ -26,6 +27,9 @@ class ConfigProvider
             ],
             'processes' => [
                 GoTaskProcess::class,
+            ],
+            'listener' => [
+                BootApplicationListener::class,
             ],
             'annotations' => [
                 'scan' => [

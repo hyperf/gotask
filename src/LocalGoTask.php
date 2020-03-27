@@ -16,10 +16,16 @@ use Hyperf\Process\ProcessCollector;
 use Reasno\GoTask\Relay\IPCRelay;
 use Spiral\Goridge\RPC;
 use Swoole\Coroutine\Channel;
+use Swoole\Lock;
 use Swoole\Process;
 
 class LocalGoTask implements GoTask
 {
+    /**
+     * @var Lock
+     */
+    public static $lock;
+
     /**
      * @var
      */
@@ -62,11 +68,14 @@ class LocalGoTask implements GoTask
         );
         while (true) {
             [$method, $payload, $flag, $returnChannel] = $this->taskChannel->pop();
+            self::$lock->lock();
             try {
                 $result = $task->call($method, $payload, $flag);
                 $returnChannel->push($result);
             } catch (\Throwable $e) {
                 $returnChannel->push($e);
+            } finally {
+                self::$lock->unlock();
             }
         }
     }
