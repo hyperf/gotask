@@ -34,7 +34,11 @@ class LocalGoTask implements GoTask
         }
         $returnChannel = new Channel(1);
         $this->taskChannel->push([$method, $payload, $flags, $returnChannel]);
-        return $returnChannel->pop();
+        $result = $returnChannel->pop();
+        if ($result instanceof \Throwable){
+            throw $result;
+        }
+        return $result;
     }
 
     private function start()
@@ -47,8 +51,14 @@ class LocalGoTask implements GoTask
         );
         while (true) {
             [$method, $payload, $flag, $returnChannel] = $this->taskChannel->pop();
-            $result = $task->call($method, $payload, $flag);
-            $returnChannel->push($result);
+            try{
+                $result = $task->call($method, $payload, $flag);
+                $returnChannel->push($result);
+            } catch (\Throwable $e){
+                $returnChannel->push($e);
+            }
+
+
         }
     }
 }
