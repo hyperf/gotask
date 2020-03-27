@@ -148,7 +148,7 @@ https://github.com/reasno/gotask-benchmark
 
 ## 鸣谢
 * https://github.com/spiral/goridge 提供了IPC通讯的编码和解码。
-* https://github.com/twose 提供了人肉答疑支持
+* https://github.com/twose 提供了人肉答疑支持。
 
 
 
