@@ -20,9 +20,9 @@ return [
     }),
     'pool' => [
         'min_connections' => 1,
-        'max_connections' => 100,
+        'max_connections' => 30,
         'connect_timeout' => 10.0,
-        'wait_timeout' => 3.0,
+        'wait_timeout' => 30.0,
         'heartbeat' => -1,
         'max_idle_time' => (float) env('GOTASK_MAX_IDLE_TIME', 60),
     ],
