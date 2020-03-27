@@ -101,14 +101,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Reasno\GoTask\RemoteGoTask;
+use Reasno\GoTask\GoTask;
 
 class IndexController extends AbstractController
 {
     /**
      * @return array
      */
-    public function index(RemoteGoTask $task)
+    public function index(GoTask $task)
     {
         return $task->call('App.Hi', ['Swoole is Awesome,', 'So is Go!']);
     }
