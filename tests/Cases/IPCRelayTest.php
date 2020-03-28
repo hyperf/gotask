@@ -13,11 +13,10 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use Hyperf\Utils\WaitGroup;
+use Reasno\GoTask\IPC\PipeIPC;
 use Reasno\GoTask\PipeGoTask;
-use Reasno\GoTask\Relay\IPCRelay;
 use Reasno\GoTask\Relay\RelayInterface;
 use Spiral\Goridge\Exceptions\ServiceException;
-use Spiral\Goridge\RPC;
 use Swoole\Lock;
 use Swoole\Process;
 
@@ -50,9 +49,7 @@ class IPCRelayTest extends AbstractTestCase
     public function testOnCoroutine()
     {
         \Swoole\Coroutine\run(function () {
-            $task = new RPC(
-                new IPCRelay($this->p)
-            );
+            $task = new PipeIPC($this->p);
             $this->baseExample($task);
         });
     }

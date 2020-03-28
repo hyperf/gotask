@@ -16,9 +16,13 @@ interface GoTask
 {
     /** Payload flags.*/
     const PAYLOAD_NONE = 2;
+
     const PAYLOAD_RAW = 4;
+
     const PAYLOAD_ERROR = 8;
+
     const PAYLOAD_CONTROL = 16;
+
     /**
      * @param mixed $payload an binary data or array of arguments for complex types
      * @param int $flags payload control flags

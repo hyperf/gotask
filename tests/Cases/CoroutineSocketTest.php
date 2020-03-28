@@ -21,7 +21,7 @@ use Hyperf\Di\Definition\ScanConfig;
 use Hyperf\Framework\Logger\StdoutLogger;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\WaitGroup;
-use Reasno\GoTask\Relay\CoroutineSocketRelay;
+use Reasno\GoTask\IPC\SocketIPC;
 use Reasno\GoTask\Relay\RelayInterface;
 use Reasno\GoTask\SocketGoTask;
 use Reasno\GoTask\SocketIPCFactory;
@@ -61,9 +61,7 @@ class CoroutineSocketTest extends AbstractTestCase
     public function testOnCoroutine()
     {
         \Swoole\Coroutine\run(function () {
-            $task = new RPC(
-                new CoroutineSocketRelay(self::UNIX_SOCKET, null, CoroutineSocketRelay::SOCK_UNIX)
-            );
+            $task = new SocketIPC(self::UNIX_SOCKET);
             $this->baseExample($task);
         });
     }
