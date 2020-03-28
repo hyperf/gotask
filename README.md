@@ -77,7 +77,7 @@ run(function(){
 ```
 
 ## 文档
-
+* [安装与配置](https://github.com/Reasno/gotask/wiki/Installation-&-Configuration)
 * [文档](https://github.com/Reasno/gotask/wiki)
 * [FAQ](https://github.com/Reasno/gotask/wiki/FAQ)
 * [示例](https://github.com/Reasno/gotask/tree/master/example)
