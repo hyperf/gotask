@@ -16,6 +16,12 @@ use Reasno\GoTask\GoTask;
 use Reasno\GoTask\Relay\IPCRelay;
 use Spiral\Goridge\RPC;
 
+/**
+ * Class PipeIPC uses pipes to communicate.
+ * It can only be used in one coroutine.
+ * @package Reasno\GoTask\IPC
+ */
+
 class PipeIPC implements IPCInterface, GoTask
 {
     /**

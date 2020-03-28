@@ -16,6 +16,11 @@ use Reasno\GoTask\GoTask;
 use Reasno\GoTask\Relay\CoroutineSocketRelay;
 use Spiral\Goridge\RPC;
 
+/**
+ * Class SocketIPC uses sockets to communicate.
+ * It can only be used in one coroutine.
+ * @package Reasno\GoTask\IPC
+ */
 class SocketIPC implements IPCInterface, GoTask
 {
     /**

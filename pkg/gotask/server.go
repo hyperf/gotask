@@ -22,7 +22,7 @@ var (
 )
 
 func init() {
-	standalone = flag.Bool("standalone", false, "ignore parent process status")
+	standalone = flag.Bool("standalone", false, "if set, ignore parent process status")
 	address = flag.String("address", "", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
 	flag.Parse()
 }
@@ -42,18 +42,22 @@ func checkProcess(pid int, quit chan bool) {
 	}
 }
 
+// Register a net/rpc compatible service
 func Register(receiver interface{}) error {
 	return rpc.Register(receiver)
 }
 
+// Set the address of socket
 func SetAddress(addr string) {
 	*address = addr
 }
 
+// Get the address of the socket
 func GetAddress() string {
 	return *address
 }
 
+// Run the sidecar, receive any fatal errors.
 func Run() error {
 	var g run.Group
 	if *address == "" {

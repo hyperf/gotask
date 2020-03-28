@@ -18,6 +18,12 @@ use Swoole\Coroutine\Channel;
 use Swoole\Lock;
 use Swoole\Process;
 
+/**
+ * Class PipeGoTask uses stdin/stdout pipes to communicate.
+ * This class can be used as a singleton.
+ * It is safe in multiple coroutines and multiple processes.
+ * @package Reasno\GoTask
+ */
 class PipeGoTask implements GoTask
 {
     /**

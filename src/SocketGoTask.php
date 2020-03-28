@@ -15,6 +15,12 @@ namespace Reasno\GoTask;
 use Hyperf\Utils\Context;
 use Reasno\GoTask\Exception\InvalidGoTaskConnectionException;
 
+/**
+ * Class SocketGoTask uses sockets to communicate.
+ * This class can be used as a singleton.
+ * It is safe in multiple coroutines and multiple processes.
+ * @package Reasno\GoTask
+ */
 class SocketGoTask implements GoTask
 {
     /**
