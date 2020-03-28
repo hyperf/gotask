@@ -46,8 +46,8 @@ import (
 type App struct{}
 
 // Hi returns greeting message.
-func (a *App) Hi(name interface{}, r *interface{}) error {
-	*r = map[string]interface{}{
+func (a *App) Hi(name string, r *interface{}) error {
+	*r = map[string]string{
 		"hello": name,
 	}
 	return nil
