@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Reasno/gotask.svg?branch=master)](https://travis-ci.org/Reasno/gotask)
 
-GoTask通过[Swoole进程管理功能](https://wiki.swoole.com/#/process)启动Go进程作为Swoole主进程边车(Sidecar)，利用[高速进程通讯](https://wiki.swoole.com/#/learn?id=%e4%bb%80%e4%b9%88%e6%98%afipc)将任务投递给边车处理后接收返回值。
+GoTask通过[Swoole进程管理功能](https://wiki.swoole.com/#/process)启动Go进程作为Swoole主进程边车(Sidecar)，利用[进程通讯](https://wiki.swoole.com/#/learn?id=%e4%bb%80%e4%b9%88%e6%98%afipc)将任务投递给边车处理后接收返回值。
 
 ```bash
 composer require reasno/gotask
