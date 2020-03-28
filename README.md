@@ -40,10 +40,9 @@ package main
 import (
 	"github.com/reasno/gotask/pkg/gotask"
 )
-// App sample
+
 type App struct{}
 
-// Hi returns greeting message.
 func (a *App) Hi(name string, r *interface{}) error {
 	*r = map[string]string{
 		"hello": name,
