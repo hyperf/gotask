@@ -13,13 +13,12 @@ declare(strict_types=1);
 namespace Reasno\GoTask;
 
 use Hyperf\Process\ProcessCollector;
-use Reasno\GoTask\Relay\IPCRelay;
-use Spiral\Goridge\RPC;
+use Reasno\GoTask\IPC\PipeIPC;
 use Swoole\Coroutine\Channel;
 use Swoole\Lock;
 use Swoole\Process;
 
-class LocalGoTask implements GoTask
+class PipeGoTask implements GoTask
 {
     /**
      * @var Lock
@@ -63,9 +62,7 @@ class LocalGoTask implements GoTask
         if ($this->process == null) {
             $this->process = ProcessCollector::get('gotask')[0];
         }
-        $task = new RPC(
-            new IPCRelay($this->process)
-        );
+        $task = make(PipeIPC::class, ['process' => $this->process]);
         while (true) {
             [$method, $payload, $flag, $returnChannel] = $this->taskChannel->pop();
             self::$lock->lock();

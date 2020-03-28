@@ -15,7 +15,7 @@ namespace Reasno\GoTask;
 use Hyperf\Utils\Context;
 use Reasno\GoTask\Exception\InvalidGoTaskConnectionException;
 
-class RemoteGoTask implements GoTask
+class SocketGoTask implements GoTask
 {
     /**
      * @var GoTaskConnectionPool

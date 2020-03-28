@@ -23,8 +23,8 @@ use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\WaitGroup;
 use Reasno\GoTask\Relay\CoroutineSocketRelay;
 use Reasno\GoTask\Relay\RelayInterface;
-use Reasno\GoTask\RemoteGoTask;
-use Reasno\GoTask\RPCFactory;
+use Reasno\GoTask\SocketGoTask;
+use Reasno\GoTask\SocketIPCFactory;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Spiral\Goridge\RPC;
 use Swoole\Process;
@@ -85,7 +85,7 @@ class CoroutineSocketTest extends AbstractTestCase
                 ],
             ],
         ]));
-        $container->define(RPC::class, RPCFactory::class);
+        $container->define(RPC::class, SocketIPCFactory::class);
         $container->define(
             StdoutLoggerInterface::class,
             StdoutLogger::class
@@ -94,7 +94,7 @@ class CoroutineSocketTest extends AbstractTestCase
 
         \Swoole\Coroutine\run(function () {
             sleep(1);
-            $task = make(RemoteGoTask::class);
+            $task = make(SocketGoTask::class);
             $wg = new WaitGroup();
             $wg->add();
             $this->baseExample($task);

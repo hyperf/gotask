@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use Hyperf\Utils\WaitGroup;
-use Reasno\GoTask\LocalGoTask;
+use Reasno\GoTask\PipeGoTask;
 use Reasno\GoTask\Relay\IPCRelay;
 use Reasno\GoTask\Relay\RelayInterface;
 use Spiral\Goridge\Exceptions\ServiceException;
@@ -34,7 +34,7 @@ class IPCRelayTest extends AbstractTestCase
 
     public function setUp()
     {
-        LocalGoTask::$lock = new Lock(SWOOLE_SEM);
+        PipeGoTask::$lock = new Lock(SWOOLE_SEM);
         $this->p = new Process(function (Process $process) {
             $process->exec(__DIR__ . '/../../app', []);
         }, true);
@@ -61,7 +61,7 @@ class IPCRelayTest extends AbstractTestCase
     {
         \Swoole\Coroutine\run(function () {
             sleep(1);
-            $task = make(LocalGoTask::class, [
+            $task = make(PipeGoTask::class, [
                 'process' => $this->p,
             ]);
             $wg = new WaitGroup();

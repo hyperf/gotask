@@ -32,11 +32,11 @@ class GoTaskConnection extends Connection implements ConnectionInterface
     private $connection;
 
     /**
-     * @var RPCFactory
+     * @var SocketIPCFactory
      */
     private $factory;
 
-    public function __construct(ContainerInterface $container, Pool $pool, RPCFactory $factory)
+    public function __construct(ContainerInterface $container, Pool $pool, SocketIPCFactory $factory)
     {
         parent::__construct($container, $pool);
         $this->factory = $factory;

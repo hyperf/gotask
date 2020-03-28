@@ -10,38 +10,45 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace Reasno\GoTask;
+namespace Reasno\GoTask\IPC;
 
-use Hyperf\Contract\ConfigInterface;
-use Psr\Container\ContainerInterface;
+use Reasno\GoTask\GoTask;
 use Reasno\GoTask\Relay\CoroutineSocketRelay;
 use Spiral\Goridge\RPC;
 
-class RPCFactory
+class SocketIPC implements IPCInterface, GoTask
 {
     /**
-     * @var ContainerInterface
+     * @var RPC
      */
-    private $container;
+    private $handler;
 
-    public function __construct(ContainerInterface $container)
+    /**
+     * PipeIPC constructor.
+     * @mixin RPC
+     */
+    public function __construct(string $address = '127.0.0.1:6001')
     {
-        $this->container = $container;
-    }
-
-    public function make()
-    {
-        $config = $this->container->get(ConfigInterface::class);
-        $address = $config->get('gotask.socket_address', '/tmp/gotask.sock');
         $split = explode(':', $address, 2);
         if (count($split) === 1) {
-            return new RPC(
+            $this->handler = new RPC(
                 new CoroutineSocketRelay($split[0], 0, CoroutineSocketRelay::SOCK_UNIX)
             );
+            return;
         }
         [$host, $port] = $split;
-        return new RPC(
+        $this->handler = new RPC(
             new CoroutineSocketRelay($host, (int) $port, CoroutineSocketRelay::SOCK_TCP)
         );
+    }
+
+    public function __call($name, $arguments)
+    {
+        $this->handler->{$name}(...$arguments);
+    }
+
+    public function call(string $method, $payload, int $flags = 0)
+    {
+        return $this->handler->call($method, $payload, $flags);
     }
 }

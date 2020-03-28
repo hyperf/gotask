@@ -10,17 +10,24 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-use Reasno\GoTask\Relay\CoroutineSocketRelay;
-use Spiral\Goridge\RelayInterface;
-use Spiral\Goridge\RPC;
+use Reasno\GoTask\GoTask;
+use Reasno\GoTask\IPC\SocketIPC;
+use Swoole\Process;
 use function Swoole\Coroutine\run;
 
 require '../vendor/autoload.php';
 
+const ADDR = '127.0.0.1:6001';
+
+$process = new Process(function (Process $process) {
+    $process->exec(__DIR__ . '/../app', ['-address', ADDR]);
+});
+$process->start();
+
+sleep(1);
+
 run(function () {
-    $task = new RPC(
-        new CoroutineSocketRelay('127.0.0.1', 6001)
-    );
+    $task = new SocketIPC(ADDR);
     var_dump($task->call('App.HelloString', 'Reasno'));
     var_dump($task->call('App.HelloInterface', ['jack', 'jill']));
     var_dump($task->call('App.HelloStruct', [
@@ -28,7 +35,7 @@ run(function () {
         'lastName' => 'James',
         'id' => 23,
     ]));
-    var_dump($task->call('App.HelloBytes', base64_encode('My Bytes'), RelayInterface::PAYLOAD_RAW));
+    var_dump($task->call('App.HelloBytes', base64_encode('My Bytes'), GoTask::PAYLOAD_RAW));
     try {
         $task->call('App.HelloError', 'Reasno');
     } catch (\Throwable $e) {

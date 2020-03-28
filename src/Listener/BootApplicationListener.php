@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Reasno\GoTask\Listener;
 
 use Hyperf\Framework\Event\BootApplication;
-use Reasno\GoTask\LocalGoTask;
+use Reasno\GoTask\PipeGoTask;
 use Swoole\Lock;
 
 class BootApplicationListener
@@ -34,6 +34,6 @@ class BootApplicationListener
      */
     public function process(object $event)
     {
-        LocalGoTask::$lock = new Lock(SWOOLE_SEM);
+        PipeGoTask::$lock = new Lock(SWOOLE_SEM);
     }
 }

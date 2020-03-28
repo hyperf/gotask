@@ -21,8 +21,8 @@ class GoTaskFactory
     {
         $config = $container->get(ConfigInterface::class);
         if ($config->get('gotask.socket_address', false)) {
-            return $container->get(RemoteGoTask::class);
+            return $container->get(SocketGoTask::class);
         }
-        return $container->get(LocalGoTask::class);
+        return $container->get(PipeGoTask::class);
     }
 }
