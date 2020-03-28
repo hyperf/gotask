@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Reasno\GoTask;
 
-use PhpCsFixer\ConfigInterface;
+use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 
 class GoTaskFactory
