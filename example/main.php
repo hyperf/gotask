@@ -15,7 +15,7 @@ use Reasno\GoTask\IPC\SocketIPC;
 use Swoole\Process;
 use function Swoole\Coroutine\run;
 
-require '../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 const ADDR = '127.0.0.1:6001';
 

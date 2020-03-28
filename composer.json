@@ -36,7 +36,7 @@
         "sort-packages": true
     },
     "scripts": {
-        "test": "go build -o app example/Server.go && phpunit -c phpunit.xml --colors=always",
+        "test": "go build -o app example/*.go && phpunit -c phpunit.xml --colors=always",
         "analyse": "phpstan analyse --memory-limit 300M -l 0 ./src",
         "cs-fix": "php-cs-fixer fix $1"
     },
