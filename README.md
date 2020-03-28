@@ -78,7 +78,7 @@ run(function(){
 
 ## 文档
 * [安装与配置](https://github.com/Reasno/gotask/wiki/Installation-&-Configuration)
-* [文档](https://github.com/Reasno/gotask/wiki)
+* [文档](https://github.com/Reasno/gotask/wiki/Documentation)
 * [FAQ](https://github.com/Reasno/gotask/wiki/FAQ)
 * [示例](https://github.com/Reasno/gotask/tree/master/example)
 * [Hyperf示例](https://github.com/Reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php) (实现了连接池，直接按单例注入即可）
