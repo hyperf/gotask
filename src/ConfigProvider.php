@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/RemoteGoTask.
+ * This file is part of Reasno/GoTask.
  *
  * @link     https://www.github.com/reasno/gotask
  * @document  https://www.github.com/reasno/gotask
@@ -12,8 +12,8 @@ declare(strict_types=1);
 
 namespace Reasno\GoTask;
 
+use Reasno\GoTask\Listener\BootApplicationListener;
 use Reasno\GoTask\Process\GoTaskProcess;
-use Spiral\Goridge\RPC;
 
 class ConfigProvider
 {
@@ -21,12 +21,15 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                GoTask::class => RemoteGoTask::class,
+                GoTask::class => GoTaskFactory::class,
             ],
             'commands' => [
             ],
             'processes' => [
                 GoTaskProcess::class,
+            ],
+            'listener' => [
+                BootApplicationListener::class,
             ],
             'annotations' => [
                 'scan' => [

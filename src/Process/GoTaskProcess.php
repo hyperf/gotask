@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/RemoteGoTask.
+ * This file is part of Reasno/GoTask.
  *
  * @link     https://www.github.com/reasno/gotask
  * @document  https://www.github.com/reasno/gotask
@@ -15,7 +15,6 @@ namespace Reasno\GoTask\Process;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Process\AbstractProcess;
 use Psr\Container\ContainerInterface;
-use Swoole\Atomic;
 
 class GoTaskProcess extends AbstractProcess
 {
@@ -23,10 +22,6 @@ class GoTaskProcess extends AbstractProcess
      * @var string
      */
     public $name = 'gotask';
-    /**
-     * @var Atomic
-     */
-    public static $taskPid;
 
     /**
      * @var ConfigInterface
@@ -37,7 +32,7 @@ class GoTaskProcess extends AbstractProcess
     {
         parent::__construct($container);
         $this->config = $container->get(ConfigInterface::class);
-        self::$taskPid = new Atomic();
+        $this->redirectStdinStdout = empty($this->config->get('gotask.socket_address')) ?? false;
     }
 
     public function isEnable(): bool
@@ -53,7 +48,6 @@ class GoTaskProcess extends AbstractProcess
         $executable = $this->config->get('gotask.executable', BASE_PATH . '/app');
         $address = $this->config->get('gotask.socket_address', '/tmp/gotask.sock');
         $args = $this->config->get('gotask.args', []);
-        self::$taskPid->set($this->process->pid);
         $argArr = ['-address',  $address];
         array_push($argArr, ...$args);
         $this->process->exec($executable, $argArr);

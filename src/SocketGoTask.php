@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/RemoteGoTask.
+ * This file is part of Reasno/GoTask.
  *
  * @link     https://www.github.com/reasno/gotask
  * @document  https://www.github.com/reasno/gotask
@@ -15,7 +15,7 @@ namespace Reasno\GoTask;
 use Hyperf\Utils\Context;
 use Reasno\GoTask\Exception\InvalidGoTaskConnectionException;
 
-class RemoteGoTask implements GoTask
+class SocketGoTask implements GoTask
 {
     /**
      * @var GoTaskConnectionPool

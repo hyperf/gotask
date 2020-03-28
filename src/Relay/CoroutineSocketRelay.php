@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/RemoteGoTask.
+ * This file is part of Reasno/GoTask.
  *
  * @link     https://www.github.com/reasno/gotask
  * @document  https://www.github.com/reasno/gotask
@@ -97,30 +97,23 @@ class CoroutineSocketRelay implements RelayInterface
         return "unix://{$this->address}";
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
     }
 
     /**
-     * @return int|null
+     * @return null|int
      */
     public function getPort()
     {
         return $this->port;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;
     }
-
 
     /**
      * Ensure socket connection. Returns true if socket successfully connected

@@ -53,16 +53,13 @@ func main() {
 ```php
 <?php
 
-use Reasno\GoTask\Relay\CoroutineSocketRelay;
-use Spiral\Goridge\RPC;
+use Reasno\GoTask\IPC\SocketIPC;
 use function Swoole\Coroutine\run;
 
 require_once "../vendor/autoload.php";
 
 run(function(){
-    $task = new RPC(
-        new CoroutineSocketRelay("127.0.0.1", 6001)
-    );
+    $task = new SocketIPC('127.0.0.1:6379');
     var_dump($task->call("App.Hi", "Reasno"));
     // 打印 [ "hello" => "Reasno" ]
 });
@@ -101,14 +98,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Reasno\GoTask\RemoteGoTask;
+use Reasno\GoTask\GoTask;
 
 class IndexController extends AbstractController
 {
     /**
      * @return array
      */
-    public function index(RemoteGoTask $task)
+    public function index(GoTask $task)
     {
         return $task->call('App.Hi', ['Swoole is Awesome,', 'So is Go!']);
     }

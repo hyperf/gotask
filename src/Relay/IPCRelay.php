@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Reasno/GoTask.
+ *
+ * @link     https://www.github.com/reasno/gotask
+ * @document  https://www.github.com/reasno/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace Reasno\GoTask\Relay;
 
@@ -23,15 +32,14 @@ class IPCRelay implements RelayInterface
 
     /** @var Socket */
     private $socket;
+
     /**
      * @var Process
      */
     private $process;
 
     /**
-     * export a socket from swoole process
-     *
-     * @param Process $process
+     * export a socket from swoole process.
      */
     public function __construct(Process $process)
     {
@@ -70,4 +78,3 @@ class IPCRelay implements RelayInterface
         return $this->process->exportSocket();
     }
 }
-
