@@ -54,6 +54,7 @@ func (a *App) Hi(name interface{}, r *interface{}) error {
 }
 
 func main() {
+	gotask.SetAddress("127.0.0.1:6001")
 	gotask.Register(new(App))
 	gotask.Run()
 }
@@ -68,7 +69,7 @@ use function Swoole\Coroutine\run;
 require_once "../vendor/autoload.php";
 
 run(function(){
-    $task = new SocketIPC('127.0.0.1:6379');
+    $task = new SocketIPC('127.0.0.1:6001');
     var_dump($task->call("App.Hi", "Reasno"));
     // 打印 [ "hello" => "Reasno" ]
 });
