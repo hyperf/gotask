@@ -30,20 +30,6 @@ GoTask通过[Swoole进程管理功能](https://wiki.swoole.com/#/process)启动G
 * Swoole 4.4LTS+
 * Hyperf 1.1+ (optional)
 
-## 为什么GoTask
-
-> 在php-fpm的应用中，经常会将一个任务异步投递到Redis等队列中，并在后台启动一些php进程异步地处理这些任务。Swoole提供的TaskWorker是一套更完整的方案，将任务的投递、队列、php任务处理进程管理合为一体。通过底层提供的API可以非常简单地实现异步任务的处理。另外TaskWorker还可以在任务执行完成后，再返回一个结果反馈到Worker。
-
-在Swoole协程普及后，Swoole的TaskWorker一般来说承担三个责任：
-
-1. 遇到CPU密集型的操作，扔进来。
-2. 遇到暂时无法协程化的IO操作（如MongoDB），扔进来。
-3. 遇到某些组件不支持协程，扔进来。
-
-前两条TaskWorker能做的，Go都可以做的更好。第三条嘛，虽然放弃了PHP生态比较遗憾，但是可以接入Go生态也不错。
-
-GoTask提供了与Swoole TaskWorker非常接近的使用体验，目标是在一些场景下取代TaskWorker，直接用Go做Swoole的有力补充。
-
 ## 消息投递Demo
 
 ```go
@@ -88,8 +74,9 @@ run(function(){
 ## 文档
 
 * [文档](https://github.com/Reasno/gotask/wiki)
-* https://github.com/Reasno/gotask/tree/master/example 可以找到全部用法。
-* https://github.com/Reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php 在Hyperf中的应用(实现了连接池，直接按单例注入即可）
+* [FAQ](https://github.com/Reasno/gotask/wiki/FAQ)
+* [示例](https://github.com/Reasno/gotask/tree/master/example)
+* [Hyperf示例](https://github.com/Reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php) (实现了连接池，直接按单例注入即可）
 
 ## Benchmark
 
