@@ -4,6 +4,25 @@ A lightning speed replacement for Swoole TaskWorker in Go ⚡️
 
 [![Build Status](https://travis-ci.org/Reasno/gotask.svg?branch=master)](https://travis-ci.org/Reasno/gotask)
 
+GoTask通过[Swoole进程管理功能](https://wiki.swoole.com/#/process)启动Go进程作为Swoole主进程边车(Sidecar)，利用[高速进程通讯](https://wiki.swoole.com/#/learn?id=%e4%bb%80%e4%b9%88%e6%98%afipc)将任务投递给边车处理后接收返回值。
+
+## 特性 Feature
+
+* 超高速低消耗
+* Co/Socket实现，100%协程化
+* 支持Unix Socket、TCP、stdin/stdout管道
+* 边车自动启停
+* 支持远程异常捕获
+* 支持结构化数据、二进制数据投递
+* go边车兼容[net/rpc](https://cloud.tencent.com/developer/section/1143675)
+* 自带连接池支持
+* 可独立使用，也可深度融合Hyperf
+
+## 使用场景 Perfect For
+* 执行阻塞函数，如MongoDB查询
+* 执行CPU密集操作，如机器学习
+* 接入Go语言生态，如Kubernetes
+
 ## requirement
 
 * PHP 7.2+
@@ -66,78 +85,11 @@ run(function(){
 
 ```
 
-## 快速体验
+## 文档
 
-```bash
-composer require reasno/gotask
-```
-
-如果是Hyperf用户，可以直接
-
-```bash
-php bin/hyperf.php vendor:publish
-```
-
-导出Go初始模版和Hyperf配置文件。
-
-在项目根目录执行构建：
-
-```bash
-go build -o bin/app gotask/cmd/app.go
-```
-
-然后按照正常流程启动Hyperf即可，`ps -ef | grep hyperf`会发现Go进程随Hyperf一起启动了。
-当我们的Hyperf主进程退出时，Go进程也会随之退出，使用体验完全模仿TaskWorker。
-
-在Hyperf中向GoTask投递任务：
-
-```php
-<?php
-
-declare(strict_types=1);
-
-namespace App\Controller;
-
-use Reasno\GoTask\GoTask;
-
-class IndexController extends AbstractController
-{
-    /**
-     * @return array
-     */
-    public function index(GoTask $task)
-    {
-        return $task->call('App.Hi', ['Swoole is Awesome,', 'So is Go!']);
-    }
-}
-```
-
-
+* [文档](https://github.com/Reasno/gotask/wiki)
 * https://github.com/Reasno/gotask/tree/master/example 可以找到全部用法。
 * https://github.com/Reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php 在Hyperf中的应用(实现了连接池，直接按单例注入即可）
-
-### FAQ
-
-Q: 投递性能如何？
-
-A：采用与TaskWorker本身完全一致的跨进程通讯投递，默认Unix Socket，也支持TCP。
-根据Swoole的计算，100 万次通信仅需 1.02 秒。而投递以后，显然Go的速度只会比PHP更快，也没有阻塞函数的担忧。
-
-Q：和RPC调用Go服务有什么区别？
-
-A：RPC一般是两个团队干两件事，GoTask是一个团队干一件事，Go完全是PHP的边车，生命周期全由PHP控制，没有分布式烦恼。其次IPC性能更强劲。
-
-Q：为什么不直接用Go写整个服务？
-
-A：为什么不让同桌帮我做作业？
-
-Q：Go一定要写到PHP项目当中吗？
-
-A：不是的，Go项目可以分离出去独立部署，改一下配置文件就行了。
-
-Q: 如何在Go和PHP之间共享配置？
-
-A: Go进程是Swoole Server的子进程，继承了Swoole的环境变量。Hyperf的.env在Go里可以直接用。
 
 ## Benchmark
 
