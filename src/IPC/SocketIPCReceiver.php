@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Reasno\GoTask\IPC;
 
+use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Utils\ApplicationContext;
 use Reasno\GoTask\GoTask;
 use Reasno\GoTask\Relay\ConnectionRelay;
@@ -93,7 +94,8 @@ class SocketIPCReceiver
                 );
 
                 if ($error !== null) {
-                    $relay->send($error->getMessage() . ':' . $error->getTraceAsString(), Relay::PAYLOAD_ERROR | Relay::PAYLOAD_RAW);
+                    $error = $this->formatError($error);
+                    $relay->send($error, Relay::PAYLOAD_ERROR | Relay::PAYLOAD_RAW);
                     continue;
                 }
                 if (is_string($response)) {
@@ -156,5 +158,18 @@ class SocketIPCReceiver
         }
 
         return json_decode($body, true);
+    }
+
+    private function formatError(\Throwable $error)
+    {
+        $simpleFormat = $error->getMessage() . ':' . $error->getTraceAsString();
+        if (!ApplicationContext::hasContainer()){
+            return $simpleFormat;
+        }
+        $container = ApplicationContext::getContainer();
+        if (! $container->has(FormatterInterface::class)){
+            return $simpleFormat;
+        }
+        return $container->get(FormatterInterface::class)->format($error);
     }
 }

@@ -60,4 +60,10 @@ class ConfigProvider
             ],
         ];
     }
+
+    public static function address(){
+        $appName = env('APP_NAME');
+        $socketName = $appName . '_' . uniqid();
+        return "/tmp/{$socketName}.sock";
+    }
 }

@@ -50,7 +50,6 @@ abstract class AbstractTestCase extends TestCase
                 ],
             ],
         ]));
-        $container->define(RPC::class, SocketIPCFactory::class);
         $container->define(
             StdoutLoggerInterface::class,
             StdoutLogger::class

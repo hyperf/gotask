@@ -13,17 +13,11 @@ declare(strict_types=1);
 return [
     'enable' => true,
     'executable' => BASE_PATH . '/bin/app',
-    'socket_address' => value(function () {
-        $appName = env('APP_NAME');
-        $socketName = $appName . '_' . uniqid();
-        return "/tmp/{$socketName}.sock";
-    }),
-    'enable_go2php' => false,
-    'go2php_address' => value(function () {
-        $appName = env('APP_NAME');
-        $socketName = $appName . '_' . uniqid();
-        return "/tmp/{$socketName}.sock";
-    }),
+    'socket_address' => \Reasno\GoTask\ConfigProvider::address(),
+    'go2php' => [
+        'enable' => false,
+        'address' => \Reasno\GoTask\ConfigProvider::address(),
+    ],
     'pool' => [
         'min_connections' => 1,
         'max_connections' => 30,
