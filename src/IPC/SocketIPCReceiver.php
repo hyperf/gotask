@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace Reasno\GoTask\IPC;
 
 use Hyperf\Utils\ApplicationContext;
+use Reasno\GoTask\GoTask;
 use Reasno\GoTask\Relay\ConnectionRelay;
 use Spiral\Goridge\Exceptions\PrefixException;
 use Spiral\Goridge\Exceptions\ServiceException;
@@ -38,10 +39,6 @@ class SocketIPCReceiver
     private $port;
 
     /**
-     * @var int
-     */
-    private $seq;
-    /**
      * @var bool
      */
     private $quit;
@@ -54,13 +51,12 @@ class SocketIPCReceiver
             $this->port = 0;
         } else {
             $this->address = $split[0];
-            $this->port = (int)($split[1]);
+            $this->port = (int) ($split[1]);
         }
     }
 
     public function start(): bool
     {
-
         if ($this->isStarted()) {
             return true;
         }
@@ -69,13 +65,13 @@ class SocketIPCReceiver
         $this->server->handle(function (Connection $conn) {
             $relay = new ConnectionRelay($conn);
             while ($this->quit !== true) {
-                try{
+                try {
                     $body = $relay->receiveSync($headerFlags);
-                } catch (PrefixException $e){
+                } catch (PrefixException $e) {
                     $relay->close();
                     break;
                 }
-                if (!($headerFlags & Relay::PAYLOAD_CONTROL)) {
+                if (! ($headerFlags & Relay::PAYLOAD_CONTROL)) {
                     throw new TransportException('rpc response header is missing');
                 }
 
@@ -97,7 +93,7 @@ class SocketIPCReceiver
                 );
 
                 if ($error !== null) {
-                    $relay->send($error->getMessage() . ':' .$error->getTraceAsString(), Relay::PAYLOAD_ERROR | Relay::PAYLOAD_RAW);
+                    $relay->send($error->getMessage() . ':' . $error->getTraceAsString(), Relay::PAYLOAD_ERROR | Relay::PAYLOAD_RAW);
                     continue;
                 }
                 if (is_string($response)) {
@@ -110,7 +106,6 @@ class SocketIPCReceiver
                 }
                 $relay->send(json_encode($response), 0);
             }
-
         });
         $this->server->start();
         return true;
@@ -128,7 +123,7 @@ class SocketIPCReceiver
     protected function dispatch($method, $payload)
     {
         [$class, $handler] = explode('::', $method);
-        if (ApplicationContext::hasContainer()){
+        if (ApplicationContext::hasContainer()) {
             $container = ApplicationContext::getContainer();
             $instance = $container->get($class);
         } else {
@@ -147,16 +142,16 @@ class SocketIPCReceiver
      *
      * @param string $body
      *
-     * @return mixed
      * @throws ServiceException
+     * @return mixed
      */
     protected function handleBody($body, int $flags)
     {
-        if ($flags & Relay::PAYLOAD_ERROR && $flags & Relay::PAYLOAD_RAW) {
-            throw new ServiceException("error '{$body}' on '{$this->relay}'");
+        if ($flags & GoTask::PAYLOAD_ERROR && $flags & GoTask::PAYLOAD_RAW) {
+            throw new ServiceException("error '{$body}' on '{$this->server}'");
         }
 
-        if ($flags & Relay::PAYLOAD_RAW) {
+        if ($flags & GoTask::PAYLOAD_RAW) {
             return $body;
         }
 

@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 /**
  * This file is part of Reasno/GoTask.
  *
@@ -19,7 +18,7 @@ require __DIR__ . '/../../vendor/autoload.php';
 
 const ADDR = '127.0.0.1:6002';
 
-exec('go build -o '. __DIR__.'/app '. __DIR__.'/sidecar.go');
+exec('go build -o ' . __DIR__ . '/app ' . __DIR__ . '/sidecar.go');
 $process = new Process(function (Process $process) {
     sleep(1);
     $process->exec(__DIR__ . '/app', ['-go2php_address', ADDR]);
@@ -40,17 +39,17 @@ class Example
 
     public function HelloString(string $payload)
     {
-        return "Hello, $payload!";
+        return "Hello, {$payload}!";
     }
 
     public function HelloInterface(array $payload)
     {
-        return ["hello" => $payload];
+        return ['hello' => $payload];
     }
 
     public function HelloStruct(array $payload)
     {
-        return ["hello" => $payload];
+        return ['hello' => $payload];
     }
 
     public function HelloBytes(string $payload)

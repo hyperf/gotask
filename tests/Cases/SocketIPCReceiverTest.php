@@ -1,8 +1,16 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Reasno/GoTask.
+ *
+ * @link     https://www.github.com/reasno/gotask
+ * @document  https://www.github.com/reasno/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace HyperfTest\Cases;
-
 
 use Hyperf\Utils\WaitGroup;
 use Reasno\GoTask\IPC\SocketIPCReceiver;
@@ -10,6 +18,10 @@ use Reasno\GoTask\IPC\SocketIPCSender;
 use Reasno\GoTask\Relay\RelayInterface;
 use Spiral\Goridge\Exceptions\ServiceException;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class SocketIPCReceiverTest extends AbstractTestCase
 {
     public function testOnCoroutine()
@@ -17,11 +29,11 @@ class SocketIPCReceiverTest extends AbstractTestCase
         \Swoole\Coroutine\run(function () {
             /** @var SocketIPCReceiver $receiver */
             $receiver = null;
-            go(function() use (&$receiver){
-                try{
+            go(function () use (&$receiver) {
+                try {
                     $receiver = new SocketIPCReceiver(self::UNIX_SOCKET);
                     $receiver->start();
-                } catch (\Throwable $e){
+                } catch (\Throwable $e) {
                     // Not Reachable
                     $this->assertTrue(false);
                 }
@@ -37,11 +49,11 @@ class SocketIPCReceiverTest extends AbstractTestCase
         \Swoole\Coroutine\run(function () {
             /** @var SocketIPCReceiver $receiver */
             $receiver = null;
-            go(function() use (&$receiver){
-                try{
+            go(function () use (&$receiver) {
+                try {
                     $receiver = new SocketIPCReceiver(self::UNIX_SOCKET);
                     $receiver->start();
-                } catch (\Throwable $e){
+                } catch (\Throwable $e) {
                     // Not Reachable
                     var_dump($e);
                     $this->assertTrue(false);

@@ -30,6 +30,7 @@ use Spiral\Goridge\RPC;
 abstract class AbstractTestCase extends TestCase
 {
     const UNIX_SOCKET = '/tmp/test.sock';
+
     public function setUp()
     {
         ! defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));

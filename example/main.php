@@ -19,7 +19,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 const ADDR = '127.0.0.1:6001';
 
-exec('go build -o '. __DIR__.'/app '. __DIR__.'/sidecar.go');
+exec('go build -o ' . __DIR__ . '/app ' . __DIR__ . '/sidecar.go');
 $process = new Process(function (Process $process) {
     $process->exec(__DIR__ . '/app', ['-address', ADDR]);
 });

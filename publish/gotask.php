@@ -32,5 +32,4 @@ return [
         'heartbeat' => -1,
         'max_idle_time' => (float) env('GOTASK_MAX_IDLE_TIME', 60),
     ],
-
 ];

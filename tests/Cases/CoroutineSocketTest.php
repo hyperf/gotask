@@ -12,21 +12,11 @@ declare(strict_types=1);
 
 namespace HyperfTest\Cases;
 
-use Hyperf\Config\Config;
-use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Di\Container;
-use Hyperf\Di\Definition\DefinitionSource;
-use Hyperf\Di\Definition\ScanConfig;
-use Hyperf\Framework\Logger\StdoutLogger;
-use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\WaitGroup;
 use Reasno\GoTask\IPC\SocketIPCSender;
 use Reasno\GoTask\Relay\RelayInterface;
 use Reasno\GoTask\SocketGoTask;
-use Reasno\GoTask\SocketIPCFactory;
 use Spiral\Goridge\Exceptions\ServiceException;
-use Spiral\Goridge\RPC;
 use Swoole\Process;
 
 /**
