@@ -18,6 +18,12 @@ return [
         $socketName = $appName . '_' . uniqid();
         return "/tmp/{$socketName}.sock";
     }),
+    'enable_go2php' => false,
+    'go2php_address' => value(function () {
+        $appName = env('APP_NAME');
+        $socketName = $appName . '_' . uniqid();
+        return "/tmp/{$socketName}.sock";
+    }),
     'pool' => [
         'min_connections' => 1,
         'max_connections' => 30,
@@ -26,4 +32,5 @@ return [
         'heartbeat' => -1,
         'max_idle_time' => (float) env('GOTASK_MAX_IDLE_TIME', 60),
     ],
+
 ];

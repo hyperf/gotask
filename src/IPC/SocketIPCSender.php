@@ -13,16 +13,14 @@ declare(strict_types=1);
 namespace Reasno\GoTask\IPC;
 
 use Reasno\GoTask\GoTask;
-use Reasno\GoTask\Relay\IPCRelay;
+use Reasno\GoTask\Relay\CoroutineSocketRelay;
 use Spiral\Goridge\RPC;
 
 /**
- * Class PipeIPC uses pipes to communicate.
+ * Class SocketIPC uses sockets to communicate.
  * It can only be used in one coroutine.
- * @package Reasno\GoTask\IPC
  */
-
-class PipeIPC implements IPCInterface, GoTask
+class SocketIPCSender implements IPCSenderInterface, GoTask
 {
     /**
      * @var RPC
@@ -31,13 +29,20 @@ class PipeIPC implements IPCInterface, GoTask
 
     /**
      * PipeIPC constructor.
-     * @param $process
      * @mixin RPC
      */
-    public function __construct($process)
+    public function __construct(string $address = '127.0.0.1:6001')
     {
+        $split = explode(':', $address, 2);
+        if (count($split) === 1) {
+            $this->handler = new RPC(
+                new CoroutineSocketRelay($split[0], 0, CoroutineSocketRelay::SOCK_UNIX)
+            );
+            return;
+        }
+        [$host, $port] = $split;
         $this->handler = new RPC(
-            new IPCRelay($process)
+            new CoroutineSocketRelay($host, (int) $port, CoroutineSocketRelay::SOCK_TCP)
         );
     }
 

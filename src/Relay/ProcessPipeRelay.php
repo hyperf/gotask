@@ -26,7 +26,7 @@ use Swoole\Process;
  * prefix:
  * [ flag       ][ message length, unsigned int 64bits, LittleEndian ]
  */
-class IPCRelay implements RelayInterface
+class ProcessPipeRelay implements RelayInterface
 {
     use SocketTransporter;
 

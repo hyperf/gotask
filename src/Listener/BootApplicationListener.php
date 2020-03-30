@@ -12,11 +12,12 @@ declare(strict_types=1);
 
 namespace Reasno\GoTask\Listener;
 
+use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Reasno\GoTask\PipeGoTask;
 use Swoole\Lock;
 
-class BootApplicationListener
+class BootApplicationListener implements ListenerInterface
 {
     /**
      * @return string[] returns the events that you want to listen

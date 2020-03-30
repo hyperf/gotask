@@ -12,22 +12,8 @@ declare(strict_types=1);
 
 namespace Reasno\GoTask;
 
-interface GoTask
+use Reasno\GoTask\IPC\IPCSenderInterface;
+
+interface GoTask extends IPCSenderInterface
 {
-    /** Payload flags.*/
-    const PAYLOAD_NONE = 2;
-
-    const PAYLOAD_RAW = 4;
-
-    const PAYLOAD_ERROR = 8;
-
-    const PAYLOAD_CONTROL = 16;
-
-    /**
-     * @param mixed $payload an binary data or array of arguments for complex types
-     * @param int $flags payload control flags
-     *
-     * @return mixed
-     */
-    public function call(string $method, $payload, int $flags = 0);
 }

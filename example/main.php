@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 
 use Reasno\GoTask\GoTask;
-use Reasno\GoTask\IPC\SocketIPC;
+use Reasno\GoTask\IPC\SocketIPCSender;
 use Swoole\Process;
 use function Swoole\Coroutine\run;
 
@@ -19,15 +19,16 @@ require __DIR__ . '/../vendor/autoload.php';
 
 const ADDR = '127.0.0.1:6001';
 
+exec('go build -o '. __DIR__.'/app '. __DIR__.'/sidecar.go');
 $process = new Process(function (Process $process) {
-    $process->exec(__DIR__ . '/../app', ['-address', ADDR]);
+    $process->exec(__DIR__ . '/app', ['-address', ADDR]);
 });
 $process->start();
 
 sleep(1);
 
 run(function () {
-    $task = new SocketIPC(ADDR);
+    $task = new SocketIPCSender(ADDR);
     var_dump($task->call('App.HelloString', 'Reasno'));
     var_dump($task->call('App.HelloInterface', ['jack', 'jill']));
     var_dump($task->call('App.HelloStruct', [

@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Reasno\GoTask\IPC;
 
-interface IPCInterface
+interface IPCReceiverInterface
 {
+    public function start(): bool;
 }
