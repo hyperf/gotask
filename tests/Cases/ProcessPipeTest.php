@@ -17,7 +17,6 @@ use Reasno\GoTask\IPC\PipeIPCSender;
 use Reasno\GoTask\PipeGoTask;
 use Reasno\GoTask\Relay\RelayInterface;
 use Spiral\Goridge\Exceptions\ServiceException;
-use Swoole\Lock;
 use Swoole\Process;
 
 /**

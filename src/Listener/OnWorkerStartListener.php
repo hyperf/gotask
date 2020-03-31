@@ -13,16 +13,10 @@ declare(strict_types=1);
 namespace Reasno\GoTask\Listener;
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
-use Hyperf\Framework\Event\MainWorkerStart;
-use Hyperf\Process\Exception\SocketAcceptException;
-use Hyperf\Process\ProcessCollector;
 use Psr\Container\ContainerInterface;
 use Reasno\GoTask\IPC\SocketIPCReceiver;
-use Swoole\Coroutine;
 
 class OnWorkerStartListener implements ListenerInterface
 {
@@ -30,6 +24,7 @@ class OnWorkerStartListener implements ListenerInterface
      * @var ConfigInterface
      */
     private $config;
+
     /**
      * @var ContainerInterface
      */
@@ -54,10 +49,23 @@ class OnWorkerStartListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        if ($this->config->get('gotask.go2php.enable', false)) {
-            $addr = $this->config->get('gotask.go2php.address', '/tmp/gotask_go2php.sock');
-            $server = make(SocketIPCReceiver::class, $addr);
-            $server->start();
+        if (!$this->config->get('gotask.go2php.enable', false)) {
+            return;
         }
+        $addr = $this->config->get('gotask.go2php.address', '/tmp/gotask_go2php.sock');
+        if ($this->isUnix($addr)) {
+            $addrArr = explode(',', $addr);
+            if (count($addrArr) <= $event->workerId) {
+                return;
+            }
+            $addr = $addrArr[$event->workerId];
+        }
+        $server = make(SocketIPCReceiver::class, [$addr]);
+        $server->start();
+    }
+
+    private function isUnix(string $addr): bool
+    {
+        return strpos($addr, ':') === false;
     }
 }

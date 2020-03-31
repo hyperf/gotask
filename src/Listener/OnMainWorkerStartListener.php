@@ -1,15 +1,21 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Reasno/GoTask.
+ *
+ * @link     https://www.github.com/reasno/gotask
+ * @document  https://www.github.com/reasno/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace Reasno\GoTask\Listener;
-
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
-use Hyperf\Framework\Event\OnManagerStart;
-use Hyperf\Framework\Event\OnStart;
 use Hyperf\Process\Exception\SocketAcceptException;
 use Hyperf\Process\ProcessCollector;
 use Psr\Container\ContainerInterface;
@@ -26,8 +32,9 @@ class OnMainWorkerStartListener implements ListenerInterface
     {
         $this->container = $container;
     }
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function listen(): array
     {
@@ -35,16 +42,16 @@ class OnMainWorkerStartListener implements ListenerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function process(object $event)
     {
         Coroutine::create(function () {
-            $process = ProcessCollector::get($this->name)[0];
+            $process = ProcessCollector::get('gotask')[0];
             $sock = $process->exportSocket();
             while (true) {
                 try {
-                    /** @var \Swoole\Coroutine\Socket $sock */
+                    /* @var \Swoole\Coroutine\Socket $sock */
                     $recv = $sock->recv();
                     if ($recv === '') {
                         throw new SocketAcceptException('Socket is closed', $sock->errCode);
@@ -62,7 +69,6 @@ class OnMainWorkerStartListener implements ListenerInterface
             }
         });
     }
-
 
     protected function logThrowable(\Throwable $throwable): void
     {
@@ -84,6 +90,4 @@ class OnMainWorkerStartListener implements ListenerInterface
             $logger->info($output);
         }
     }
-
-
 }

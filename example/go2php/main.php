@@ -21,7 +21,7 @@ const ADDR = '127.0.0.1:6002';
 exec('go build -o ' . __DIR__ . '/app ' . __DIR__ . '/sidecar.go');
 $process = new Process(function (Process $process) {
     sleep(1);
-    $process->exec(__DIR__ . '/app', ['-go2php_address', ADDR]);
+    $process->exec(__DIR__ . '/app', ['-go2php-address', ADDR]);
 }, false, 0, true);
 $process->start();
 

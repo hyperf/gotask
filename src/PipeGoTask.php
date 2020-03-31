@@ -40,7 +40,7 @@ class PipeGoTask implements GoTask
      */
     private $process;
 
-    public function __construct(?Process $process)
+    public function __construct(?Process $process = null)
     {
         $this->process = $process;
         $this->lock = new Lock(SWOOLE_SEM);

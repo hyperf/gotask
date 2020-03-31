@@ -13,15 +13,9 @@ declare(strict_types=1);
 namespace Reasno\GoTask\Process;
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Process\AbstractProcess;
-use Hyperf\Process\Exception\SocketAcceptException;
-use Hyperf\Process\ProcessCollector;
 use Psr\Container\ContainerInterface;
 use Reasno\GoTask\Exception\GoBuildException;
-use Swoole\Coroutine;
-use Swoole\Process;
 use Swoole\Server;
 
 class GoTaskProcess extends AbstractProcess
@@ -73,8 +67,13 @@ class GoTaskProcess extends AbstractProcess
     {
         $executable = $this->config->get('gotask.executable', BASE_PATH . '/app');
         $address = $this->config->get('gotask.socket_address', '/tmp/gotask.sock');
+
         $args = $this->config->get('gotask.args', []);
         $argArr = ['-address', $address];
+        if ($this->config->get('gotask.go2php.enable', false)){
+            $argArr[] = '-go2php-address';
+            $argArr[] = $this->config->get('gotask.go2php.address', '127.0.0.1:6002');
+        }
         array_push($argArr, ...$args);
         $this->process->exec($executable, $argArr);
     }

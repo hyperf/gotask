@@ -30,7 +30,7 @@ class ConfigProvider
             'processes' => [
                 GoTaskProcess::class,
             ],
-            'listener' => [
+            'listeners' => [
                 BootApplicationListener::class,
                 OnMainWorkerStartListener::class,
                 OnWorkerStartListener::class,
