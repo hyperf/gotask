@@ -23,7 +23,7 @@ composer require reasno/gotask
 
 ## 使用场景 Perfect For
 * 执行阻塞函数，如MongoDB查询
-* 执行CPU密集操作，如机器学习
+* 执行CPU密集操作，如编码解码
 * 接入Go语言生态，如Kubernetes
 
 ## requirement
