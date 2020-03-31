@@ -8,15 +8,10 @@ import (
 )
 
 func main() {
-	pool, err := gotask.NewPool()
+	client, err := gotask.NewAutoClient()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	conn, err := pool.Get()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	client := gotask.NewClient(conn)
 	defer client.Close()
 
 	{
