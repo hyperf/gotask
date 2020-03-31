@@ -42,7 +42,7 @@
     },
     "extra": {
         "hyperf": {
-            "config": ["Reasno\\GoTask\\ConfigProvider"]
+            "config": "Reasno\\GoTask\\ConfigProvider"
         }
     }
 }
