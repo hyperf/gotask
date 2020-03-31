@@ -14,10 +14,12 @@ namespace Reasno\GoTask;
 
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
-use Reasno\GoTask\IPC\SocketIPC;
+use Reasno\GoTask\IPC\SocketIPCSender;
 
 class SocketIPCFactory
 {
+    const DEFAULT_ADDR = '/tmp/gotask.sock';
+
     /**
      * @var ContainerInterface
      */
@@ -30,8 +32,11 @@ class SocketIPCFactory
 
     public function make()
     {
+        if (! $this->container->has(ConfigInterface::class)) {
+            return make(SocketIPCSender::class, ['address' => self::DEFAULT_ADDR]);
+        }
         $config = $this->container->get(ConfigInterface::class);
         $address = $config->get('gotask.socket_address', '/tmp/gotask.sock');
-        return make(SocketIPC::class, ['address' => $address]);
+        return make(SocketIPCSender::class, ['address' => $address]);
     }
 }

@@ -2,7 +2,6 @@ package gotask
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
@@ -11,21 +10,9 @@ import (
 	"net/rpc"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 )
-
-var (
-	address    *string
-	standalone *bool
-)
-
-func init() {
-	standalone = flag.Bool("standalone", false, "if set, ignore parent process status")
-	address = flag.String("address", "", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
-	flag.Parse()
-}
 
 func checkProcess(pid int, quit chan bool) {
 	if *standalone {
@@ -60,7 +47,7 @@ func GetAddress() string {
 // Run the sidecar, receive any fatal errors.
 func Run() error {
 	var g run.Group
-	if *address == "" {
+	if *listenOnPipe {
 		relay := goridge.NewPipeRelay(os.Stdin, os.Stdout)
 		codec := goridge.NewCodecWithRelay(relay)
 		g.Add(func() error {
@@ -74,13 +61,8 @@ func Run() error {
 	}
 
 	if *address != "" {
-		var network string
-		if strings.Contains(*address, ":") {
-			network = "tcp"
-		} else {
-			network = "unix"
-		}
-		ln, err := net.Listen(network, *address)
+		network, addr := parseAddr(*address)
+		ln, err := net.Listen(network, addr)
 		if err != nil {
 			return errors.Wrap(err, "Unable to listen")
 		}

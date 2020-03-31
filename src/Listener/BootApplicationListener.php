@@ -12,12 +12,23 @@ declare(strict_types=1);
 
 namespace Reasno\GoTask\Listener;
 
+use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
+use Psr\Container\ContainerInterface;
 use Reasno\GoTask\PipeGoTask;
-use Swoole\Lock;
 
-class BootApplicationListener
+class BootApplicationListener implements ListenerInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @return string[] returns the events that you want to listen
      */
@@ -34,6 +45,6 @@ class BootApplicationListener
      */
     public function process(object $event)
     {
-        PipeGoTask::$lock = new Lock(SWOOLE_SEM);
+        $this->container->get(PipeGoTask::class);
     }
 }

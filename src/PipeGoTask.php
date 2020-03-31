@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace Reasno\GoTask;
 
 use Hyperf\Process\ProcessCollector;
-use Reasno\GoTask\IPC\PipeIPC;
+use Reasno\GoTask\IPC\PipeIPCSender;
 use Swoole\Coroutine\Channel;
 use Swoole\Lock;
 use Swoole\Process;
@@ -22,14 +22,13 @@ use Swoole\Process;
  * Class PipeGoTask uses stdin/stdout pipes to communicate.
  * This class can be used as a singleton.
  * It is safe in multiple coroutines and multiple processes.
- * @package Reasno\GoTask
  */
 class PipeGoTask implements GoTask
 {
     /**
      * @var Lock
      */
-    public static $lock;
+    public $lock;
 
     /**
      * @var
@@ -44,6 +43,7 @@ class PipeGoTask implements GoTask
     public function __construct(?Process $process)
     {
         $this->process = $process;
+        $this->lock = new Lock(SWOOLE_SEM);
     }
 
     public function call(string $method, $payload, int $flags = 0)
@@ -68,17 +68,17 @@ class PipeGoTask implements GoTask
         if ($this->process == null) {
             $this->process = ProcessCollector::get('gotask')[0];
         }
-        $task = make(PipeIPC::class, ['process' => $this->process]);
+        $task = make(PipeIPCSender::class, ['process' => $this->process]);
         while (true) {
             [$method, $payload, $flag, $returnChannel] = $this->taskChannel->pop();
-            self::$lock->lock();
+            $this->lock->lock();
             try {
                 $result = $task->call($method, $payload, $flag);
                 $returnChannel->push($result);
             } catch (\Throwable $e) {
                 $returnChannel->push($e);
             } finally {
-                self::$lock->unlock();
+                $this->lock->unlock();
             }
         }
     }

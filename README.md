@@ -2,7 +2,8 @@
 
 [![Build Status](https://travis-ci.org/Reasno/gotask.svg?branch=master)](https://travis-ci.org/Reasno/gotask)
 
-GoTask通过[Swoole进程管理功能](https://wiki.swoole.com/#/process)启动Go进程作为Swoole主进程边车(Sidecar)，利用[进程通讯](https://wiki.swoole.com/#/learn?id=%e4%bb%80%e4%b9%88%e6%98%afipc)将任务投递给边车处理并接收返回值。
+GoTask通过[Swoole进程管理功能](https://wiki.swoole.com/#/process)启动Go进程作为Swoole主进程边车(Sidecar)，利用[进程通讯](https://wiki.swoole.com/#/learn?id=%e4%bb%80%e4%b9%88%e6%98%afipc)
+将任务投递给边车处理并接收返回值。可以理解为Go版的Swoole TaskWorker。
 
 ```bash
 composer require reasno/gotask
@@ -60,13 +61,13 @@ func main() {
 ```php
 <?php
 
-use Reasno\GoTask\IPC\SocketIPC;
+use Reasno\GoTask\IPC\SocketIPCSender;
 use function Swoole\Coroutine\run;
 
 require_once "../vendor/autoload.php";
 
 run(function(){
-    $task = new SocketIPC('127.0.0.1:6001');
+    $task = new SocketIPCSender('127.0.0.1:6001');
     var_dump($task->call("App.Hi", "Reasno"));
     // 打印 [ "hello" => "Reasno" ]
 });
@@ -78,7 +79,7 @@ run(function(){
 * [文档](https://github.com/Reasno/gotask/wiki/Documentation)
 * [FAQ](https://github.com/Reasno/gotask/wiki/FAQ)
 * [示例](https://github.com/Reasno/gotask/tree/master/example)
-* [Hyperf示例](https://github.com/Reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php) (实现了连接池，直接按单例注入即可）
+* [Hyperf示例](https://github.com/Reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php)
 
 ## Benchmark
 

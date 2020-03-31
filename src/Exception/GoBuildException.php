@@ -10,10 +10,8 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace Reasno\GoTask;
+namespace Reasno\GoTask\Exception;
 
-use Reasno\GoTask\IPC\IPCSenderInterface;
-
-interface GoTask extends IPCSenderInterface
+class GoBuildException extends \RuntimeException
 {
 }
