@@ -71,14 +71,14 @@ class PipeGoTask implements GoTask
         $task = make(PipeIPCSender::class, ['process' => $this->process]);
         while (true) {
             [$method, $payload, $flag, $returnChannel] = $this->taskChannel->pop();
-            self::$lock->lock();
+            $this->lock->lock();
             try {
                 $result = $task->call($method, $payload, $flag);
                 $returnChannel->push($result);
             } catch (\Throwable $e) {
                 $returnChannel->push($e);
             } finally {
-                self::$lock->unlock();
+                $this->lock->unlock();
             }
         }
     }
