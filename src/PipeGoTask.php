@@ -28,7 +28,7 @@ class PipeGoTask implements GoTask
     /**
      * @var Lock
      */
-    public static $lock;
+    public $lock;
 
     /**
      * @var
@@ -43,6 +43,7 @@ class PipeGoTask implements GoTask
     public function __construct(?Process $process)
     {
         $this->process = $process;
+        $this->lock = new Lock(SWOOLE_SEM);
     }
 
     public function call(string $method, $payload, int $flags = 0)

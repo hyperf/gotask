@@ -32,11 +32,6 @@ run(function () {
 
 class Example
 {
-    public function echo($payload)
-    {
-        return $payload;
-    }
-
     public function HelloString(string $payload)
     {
         return "Hello, {$payload}!";

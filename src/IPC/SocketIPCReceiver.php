@@ -163,11 +163,11 @@ class SocketIPCReceiver
     private function formatError(\Throwable $error)
     {
         $simpleFormat = $error->getMessage() . ':' . $error->getTraceAsString();
-        if (!ApplicationContext::hasContainer()){
+        if (! ApplicationContext::hasContainer()) {
             return $simpleFormat;
         }
         $container = ApplicationContext::getContainer();
-        if (! $container->has(FormatterInterface::class)){
+        if (! $container->has(FormatterInterface::class)) {
             return $simpleFormat;
         }
         return $container->get(FormatterInterface::class)->format($error);

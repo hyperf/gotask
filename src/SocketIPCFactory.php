@@ -19,6 +19,7 @@ use Reasno\GoTask\IPC\SocketIPCSender;
 class SocketIPCFactory
 {
     const DEFAULT_ADDR = '/tmp/gotask.sock';
+
     /**
      * @var ContainerInterface
      */
@@ -31,7 +32,7 @@ class SocketIPCFactory
 
     public function make()
     {
-        if (!$this->container->has(ConfigInterface::class)){
+        if (! $this->container->has(ConfigInterface::class)) {
             return make(SocketIPCSender::class, ['address' => self::DEFAULT_ADDR]);
         }
         $config = $this->container->get(ConfigInterface::class);

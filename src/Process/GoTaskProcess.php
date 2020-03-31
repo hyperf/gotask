@@ -17,9 +17,12 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Process\AbstractProcess;
 use Hyperf\Process\Exception\SocketAcceptException;
+use Hyperf\Process\ProcessCollector;
 use Psr\Container\ContainerInterface;
+use Reasno\GoTask\Exception\GoBuildException;
 use Swoole\Coroutine;
-use Swoole\Coroutine\Channel;
+use Swoole\Process;
+use Swoole\Server;
 
 class GoTaskProcess extends AbstractProcess
 {
@@ -29,6 +32,8 @@ class GoTaskProcess extends AbstractProcess
     public $name = 'gotask';
 
     public $redirectStdinStdout = true;
+
+    public $enableCoroutine = true;
 
     /**
      * @var ConfigInterface
@@ -47,35 +52,30 @@ class GoTaskProcess extends AbstractProcess
         return $this->config->get('gotask.enable', false);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function handle(): void
+    public function bind(Server $server): void
     {
-        $executable = $this->config->get('gotask.executable', BASE_PATH . '/app');
-        $address = $this->config->get('gotask.socket_address', '/tmp/gotask.sock');
-        $args = $this->config->get('gotask.args', []);
-        $argArr = ['-address',  $address];
-        array_push($argArr, ...$args);
-        $this->process->exec($executable, $argArr);
-    }
-
-    /**
-     * Added event for listening data from worker/task.
-     * @param Channel $quit
-     */
-    protected function listen(Channel $quit)
-    {
-        Coroutine::create(function () use ($quit) {
-            while ($quit->pop(0.001) !== true) {
+        if ($this->config->get('gotask.go_build.enable', false)) {
+            $result = exec($this->config->get('gotask.go_build.command'));
+            if ($result->code !== 0) {
+                throw new GoBuildException(sprintf(
+                    'Cannot build go files with command %s: %s',
+                    $this->config->get('gotask.go_build.command'),
+                    $result->output
+                ));
+            }
+        }
+        parent::bind($server);
+        /** @var Process $process */
+        $process = ProcessCollector::get($this->name)[0];
+        Coroutine::create(function () {
+            $sock = $this->process->exportSocket();
+            while (true) {
                 try {
                     /** @var \Swoole\Coroutine\Socket $sock */
-                    $sock = $this->process->exportSocket();
                     $recv = $sock->recv($this->recvLength, $this->recvTimeout);
                     if ($recv === '') {
                         throw new SocketAcceptException('Socket is closed', $sock->errCode);
                     }
-
                     if ($recv === false && $sock->errCode !== SOCKET_ETIMEDOUT) {
                         throw new SocketAcceptException('Socket is closed', $sock->errCode);
                     }
@@ -87,9 +87,22 @@ class GoTaskProcess extends AbstractProcess
                     }
                 }
             }
-            $quit->close();
         });
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(): void
+    {
+        $executable = $this->config->get('gotask.executable', BASE_PATH . '/app');
+        $address = $this->config->get('gotask.socket_address', '/tmp/gotask.sock');
+        $args = $this->config->get('gotask.args', []);
+        $argArr = ['-address', $address];
+        array_push($argArr, ...$args);
+        $this->process->exec($executable, $argArr);
+    }
+
     protected function logThrowable(\Throwable $throwable): void
     {
         if ($this->container->has(StdoutLoggerInterface::class) && $this->container->has(FormatterInterface::class)) {

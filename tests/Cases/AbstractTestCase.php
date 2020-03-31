@@ -21,8 +21,6 @@ use Hyperf\Di\Definition\ScanConfig;
 use Hyperf\Framework\Logger\StdoutLogger;
 use Hyperf\Utils\ApplicationContext;
 use PHPUnit\Framework\TestCase;
-use Reasno\GoTask\SocketIPCFactory;
-use Spiral\Goridge\RPC;
 
 /**
  * Class AbstractTestCase.
