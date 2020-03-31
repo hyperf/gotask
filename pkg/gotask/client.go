@@ -6,6 +6,7 @@ import (
 	"github.com/spiral/goridge/v2"
 	"net"
 	"net/rpc"
+	"strings"
 )
 
 type Pool struct {
@@ -13,7 +14,11 @@ type Pool struct {
 }
 
 func NewPool() (*Pool, error) {
-	factory := func() (net.Conn, error) { return net.Dial(parseAddr(*go2phpAddress)) }
+	index := 0
+	factory := func() (net.Conn, error) {
+		addresses := strings.Split(*go2phpAddress, ",")
+		return net.Dial(parseAddr(addresses[index%len(addresses)]))
+	}
 	p, err := pool.NewChannelPool(5, 30, factory)
 	if err != nil {
 		return nil, errors.Wrap(err, "Failed to create connection pool")
