@@ -7,13 +7,15 @@ namespace Reasno\GoTask\Listener;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
+use Hyperf\Framework\Event\MainWorkerStart;
+use Hyperf\Framework\Event\OnManagerStart;
 use Hyperf\Framework\Event\OnStart;
 use Hyperf\Process\Exception\SocketAcceptException;
 use Hyperf\Process\ProcessCollector;
 use Psr\Container\ContainerInterface;
 use Swoole\Coroutine;
 
-class OnStartListener implements ListenerInterface
+class OnMainWorkerStartListener implements ListenerInterface
 {
     /**
      * @var ContainerInterface
@@ -29,7 +31,7 @@ class OnStartListener implements ListenerInterface
      */
     public function listen(): array
     {
-        return [OnStart::class];
+        return [MainWorkerStart::class];
     }
 
     /**

@@ -59,50 +59,5 @@ class OnWorkerStartListener implements ListenerInterface
             $server = make(SocketIPCReceiver::class, $addr);
             $server->start();
         }
-        if ($event->workerId === 0){
-            Coroutine::create(function () {
-                $process = ProcessCollector::get('gotask')[0];
-                $sock = $process->exportSocket();
-                while (true) {
-                    try {
-                        /** @var \Swoole\Coroutine\Socket $sock */
-                        $recv = $sock->recv();
-                        if ($recv === '') {
-                            throw new SocketAcceptException('Socket is closed', $sock->errCode);
-                        }
-                        if ($recv === false && $sock->errCode !== SOCKET_ETIMEDOUT) {
-                            throw new SocketAcceptException('Socket is closed', $sock->errCode);
-                        }
-                        $this->logOutput((string) $recv);
-                    } catch (\Throwable $exception) {
-                        $this->logThrowable($exception);
-                        if ($exception instanceof SocketAcceptException) {
-                            break;
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    protected function logThrowable(\Throwable $throwable): void
-    {
-        if ($this->container->has(StdoutLoggerInterface::class) && $this->container->has(FormatterInterface::class)) {
-            $logger = $this->container->get(StdoutLoggerInterface::class);
-            $formatter = $this->container->get(FormatterInterface::class);
-            $logger->error($formatter->format($throwable));
-
-            if ($throwable instanceof SocketAcceptException) {
-                $logger->critical('Socket of process is unavailable, please restart the server');
-            }
-        }
-    }
-
-    protected function logOutput(string $output): void
-    {
-        if ($this->container->has(StdoutLoggerInterface::class)) {
-            $logger = $this->container->get(StdoutLoggerInterface::class);
-            $logger->info($output);
-        }
     }
 }
