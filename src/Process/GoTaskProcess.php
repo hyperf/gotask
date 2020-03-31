@@ -44,7 +44,6 @@ class GoTaskProcess extends AbstractProcess
     {
         parent::__construct($container);
         $this->config = $container->get(ConfigInterface::class);
-        $this->redirectStdinStdout = empty($this->config->get('gotask.socket_address')) ?? false;
     }
 
     public function isEnable(): bool
@@ -55,39 +54,16 @@ class GoTaskProcess extends AbstractProcess
     public function bind(Server $server): void
     {
         if ($this->config->get('gotask.go_build.enable', false)) {
-            $result = exec($this->config->get('gotask.go_build.command'));
-            if ($result->code !== 0) {
+            exec($this->config->get('gotask.go_build.command'), $output, $rev);
+            if ($rev !== 0) {
                 throw new GoBuildException(sprintf(
                     'Cannot build go files with command %s: %s',
                     $this->config->get('gotask.go_build.command'),
-                    $result->output
+                    $output
                 ));
             }
         }
         parent::bind($server);
-        /** @var Process $process */
-        $process = ProcessCollector::get($this->name)[0];
-        Coroutine::create(function () {
-            $sock = $this->process->exportSocket();
-            while (true) {
-                try {
-                    /** @var \Swoole\Coroutine\Socket $sock */
-                    $recv = $sock->recv($this->recvLength, $this->recvTimeout);
-                    if ($recv === '') {
-                        throw new SocketAcceptException('Socket is closed', $sock->errCode);
-                    }
-                    if ($recv === false && $sock->errCode !== SOCKET_ETIMEDOUT) {
-                        throw new SocketAcceptException('Socket is closed', $sock->errCode);
-                    }
-                    $this->logOutput((string) $recv);
-                } catch (\Throwable $exception) {
-                    $this->logThrowable($exception);
-                    if ($exception instanceof SocketAcceptException) {
-                        break;
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -101,26 +77,5 @@ class GoTaskProcess extends AbstractProcess
         $argArr = ['-address', $address];
         array_push($argArr, ...$args);
         $this->process->exec($executable, $argArr);
-    }
-
-    protected function logThrowable(\Throwable $throwable): void
-    {
-        if ($this->container->has(StdoutLoggerInterface::class) && $this->container->has(FormatterInterface::class)) {
-            $logger = $this->container->get(StdoutLoggerInterface::class);
-            $formatter = $this->container->get(FormatterInterface::class);
-            $logger->error($formatter->format($throwable));
-
-            if ($throwable instanceof SocketAcceptException) {
-                $logger->critical('Socket of process is unavailable, please restart the server');
-            }
-        }
-    }
-
-    protected function logOutput(string $output): void
-    {
-        if ($this->container->has(StdoutLoggerInterface::class)) {
-            $logger = $this->container->get(StdoutLoggerInterface::class);
-            $logger->info($output);
-        }
     }
 }

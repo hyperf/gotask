@@ -13,25 +13,32 @@ declare(strict_types=1);
 namespace Reasno\GoTask\Listener;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
+use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
+use Hyperf\Framework\Event\MainWorkerStart;
+use Hyperf\Process\Exception\SocketAcceptException;
+use Hyperf\Process\ProcessCollector;
+use Psr\Container\ContainerInterface;
 use Reasno\GoTask\IPC\SocketIPCReceiver;
+use Swoole\Coroutine;
 
 class OnWorkerStartListener implements ListenerInterface
 {
     /**
-     * @var SocketIPCReceiver
-     */
-    private $receiver;
-
-    /**
      * @var ConfigInterface
      */
     private $config;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
-    public function __construct(ConfigInterface $config)
+    public function __construct(ContainerInterface $container)
     {
-        $this->config = $config;
+        $this->container = $container;
+        $this->config = $container->get(ConfigInterface::class);
     }
 
     /**

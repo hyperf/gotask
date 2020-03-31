@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace Reasno\GoTask;
 
 use Reasno\GoTask\Listener\BootApplicationListener;
+use Reasno\GoTask\Listener\OnMainWorkerStartListener;
+use Reasno\GoTask\Listener\OnWorkerStartListener;
 use Reasno\GoTask\Process\GoTaskProcess;
 
 class ConfigProvider
@@ -30,6 +32,8 @@ class ConfigProvider
             ],
             'listener' => [
                 BootApplicationListener::class,
+                OnMainWorkerStartListener::class,
+                OnWorkerStartListener::class,
             ],
             'annotations' => [
                 'scan' => [
