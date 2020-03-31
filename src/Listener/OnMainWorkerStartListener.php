@@ -47,8 +47,11 @@ class OnMainWorkerStartListener implements ListenerInterface
     public function process(object $event)
     {
         Coroutine::create(function () {
-            $process = ProcessCollector::get('gotask')[0];
-            $sock = $process->exportSocket();
+            $processes = ProcessCollector::get('gotask');
+            if (empty($processes)){
+                return;
+            }
+            $sock = $processes[0]->exportSocket();
             while (true) {
                 try {
                     /* @var \Swoole\Coroutine\Socket $sock */

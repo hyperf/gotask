@@ -48,12 +48,13 @@ class GoTaskProcess extends AbstractProcess
     public function bind(Server $server): void
     {
         if ($this->config->get('gotask.go_build.enable', false)) {
+            chdir($this->config->get('gotask.go_build.workdir',BASE_PATH.'/gotask'));
             exec($this->config->get('gotask.go_build.command'), $output, $rev);
             if ($rev !== 0) {
                 throw new GoBuildException(sprintf(
                     'Cannot build go files with command %s: %s',
                     $this->config->get('gotask.go_build.command'),
-                    $output
+                    implode(PHP_EOL, $output)
                 ));
             }
         }
