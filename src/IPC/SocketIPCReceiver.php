@@ -16,6 +16,7 @@ use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Utils\ApplicationContext;
 use Reasno\GoTask\GoTask;
 use Reasno\GoTask\Relay\ConnectionRelay;
+use Reasno\GoTask\Wrapper\ByteWrapper;
 use Spiral\Goridge\Exceptions\PrefixException;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Spiral\Goridge\Exceptions\TransportException;
@@ -98,8 +99,8 @@ class SocketIPCReceiver
                     $relay->send($error, Relay::PAYLOAD_ERROR | Relay::PAYLOAD_RAW);
                     continue;
                 }
-                if (is_string($response)) {
-                    $relay->send($response, Relay::PAYLOAD_RAW);
+                if ($response instanceof ByteWrapper) {
+                    $relay->send($response->byte, Relay::PAYLOAD_RAW);
                     continue;
                 }
                 if (is_null($response)) {

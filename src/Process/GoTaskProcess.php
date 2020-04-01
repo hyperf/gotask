@@ -25,8 +25,6 @@ class GoTaskProcess extends AbstractProcess
      */
     public $name = 'gotask';
 
-    public $redirectStdinStdout = true;
-
     public $enableCoroutine = true;
 
     /**
@@ -38,6 +36,9 @@ class GoTaskProcess extends AbstractProcess
     {
         parent::__construct($container);
         $this->config = $container->get(ConfigInterface::class);
+        if ($this->config->get('gotask.go_log.redirect', true)){
+            $this->redirectStdinStdout = true;
+        }
     }
 
     public function isEnable(): bool

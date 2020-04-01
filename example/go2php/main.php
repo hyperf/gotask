@@ -49,7 +49,7 @@ class Example
 
     public function HelloBytes(string $payload)
     {
-        return base64_decode($payload);
+        return new \Reasno\GoTask\Wrapper\ByteWrapper(base64_encode($payload));
     }
 
     public function HelloError(array $payload)

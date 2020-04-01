@@ -1,6 +1,9 @@
 package gotask
 
-import "flag"
+import (
+	"flag"
+	"testing"
+)
 
 var (
 	address       *string
@@ -10,6 +13,7 @@ var (
 )
 
 func init() {
+	testing.Init()
 	standalone = flag.Bool("standalone", false, "if set, ignore parent process status")
 	address = flag.String("address", "127.0.0.1:6001", "must be a unix socket or tcp address:port like 127.0.0.1:6001")
 	listenOnPipe = flag.Bool("listen-on-pipe", false, "listen on stdin/stdout pipe")

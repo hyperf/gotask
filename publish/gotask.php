@@ -25,6 +25,10 @@ return [
             BASE_PATH
         ),
     ],
+    'go_log' => [
+        'redirect' => true,
+        'level' => 'info',
+    ],
     'pool' => [
         'min_connections' => 1,
         'max_connections' => 30,

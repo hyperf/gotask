@@ -36,3 +36,4 @@ before_script:
 script:
   - composer analyse
   - composer test
+  - composer test-server & composer test-go

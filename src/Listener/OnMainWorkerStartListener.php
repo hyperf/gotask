@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Reasno\GoTask\Listener;
 
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
@@ -27,10 +28,15 @@ class OnMainWorkerStartListener implements ListenerInterface
      * @var ContainerInterface
      */
     private $container;
+    /**
+     * @var ConfigInterface
+     */
+    private $config;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->config = $container->get(ConfigInterface::class);
     }
 
     /**
@@ -46,6 +52,9 @@ class OnMainWorkerStartListener implements ListenerInterface
      */
     public function process(object $event)
     {
+        if (! $this->config->get('gotask.go_log.redirect', true)){
+            return;
+        }
         Coroutine::create(function () {
             $process = ProcessCollector::get('gotask')[0];
             $sock = $process->exportSocket();
@@ -87,7 +96,8 @@ class OnMainWorkerStartListener implements ListenerInterface
     {
         if ($this->container->has(StdoutLoggerInterface::class)) {
             $logger = $this->container->get(StdoutLoggerInterface::class);
-            $logger->info($output);
+            $level = $this->config->get('gotask.go_log.level', 'info');
+            $logger->{$level}($output);
         }
     }
 }

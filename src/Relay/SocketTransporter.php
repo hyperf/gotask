@@ -35,7 +35,7 @@ trait SocketTransporter
     {
         $this->connect();
 
-        $size = strlen($payload);
+        $size = $payload === null ? 0 : strlen($payload);
         if ($flags & self::PAYLOAD_NONE && $size != 0) {
             throw new TransportException('unable to send payload with PAYLOAD_NONE flag');
         }
