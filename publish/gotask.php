@@ -20,10 +20,8 @@ return [
     ],
     'go_build' => [
         'enable' => false,
-        'command' => sprintf(
-            'go build -o %1$s/bin/app %1$s/gotask/cmd/app.go',
-            BASE_PATH
-        ),
+        'workdir' => BASE_PATH . '/gotask',
+        'command' => 'go build -o ../bin/app cmd/app.go',
     ],
     'go_log' => [
         'redirect' => true,

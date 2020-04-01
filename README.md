@@ -11,9 +11,10 @@ composer require reasno/gotask
 
 ## 特性 Feature
 
-* 超高速低消耗
+* [超高速低消耗](https://github.com/reasno/gotask-benchmark)
 * Co/Socket实现，100%协程化
 * 支持Unix Socket、TCP、stdin/stdout管道
+* PHP与Go双向通讯
 * 边车自动启停
 * 支持远程异常捕获
 * 支持结构化数据、二进制数据投递
@@ -23,7 +24,7 @@ composer require reasno/gotask
 
 ## 使用场景 Perfect For
 * 执行阻塞函数，如MongoDB查询
-* 执行CPU密集操作，如机器学习
+* 执行CPU密集操作，如编码解码
 * 接入Go语言生态，如Kubernetes
 
 ## requirement
