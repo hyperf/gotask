@@ -49,7 +49,7 @@ ApplicationContext::setContainer($container);
 
 run(function () {
     $server = new SocketIPCReceiver(ADDR);
-    Timer::after(5000, function() use ($server){
+    Timer::after(15000, function() use ($server){
        $server->close();
     });
     $server->start();
