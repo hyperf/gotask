@@ -37,7 +37,7 @@
     },
     "scripts": {
         "test": "go build -o app example/*.go && phpunit -c phpunit.xml --colors=always",
-        "test-server": "php tests/TestServer.php",
+        "start-test-server": "php tests/TestServer.php",
         "test-go": "go test ./...",
         "analyse": "phpstan analyse --memory-limit 300M -l 0 ./src",
         "cs-fix": "php-cs-fixer fix $1"
