@@ -11,6 +11,7 @@ use Hyperf\Di\Definition\DefinitionSource;
 use Hyperf\Di\Definition\ScanConfig;
 use Hyperf\Framework\Logger\StdoutLogger;
 use Hyperf\Utils\ApplicationContext;
+use Psr\Log\LoggerInterface;
 use Reasno\GoTask\IPC\SocketIPCReceiver;
 use Swoole\Process;
 use Swoole\Timer;
@@ -38,6 +39,10 @@ $container->set(ConfigInterface::class, new Config([
 ]));
 $container->define(
     StdoutLoggerInterface::class,
+    StdoutLogger::class
+);
+$container->define(
+    LoggerInterface::class,
     StdoutLogger::class
 );
 ApplicationContext::setContainer($container);

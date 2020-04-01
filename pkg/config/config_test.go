@@ -5,10 +5,6 @@ import (
 	"testing"
 )
 
-func init() {
-	testing.Init()
-}
-
 func testGet(t *testing.T) {
 	testing.Init()
 	enable, err := Get("gotask.php2go.enable", true)
