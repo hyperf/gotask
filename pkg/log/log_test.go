@@ -7,7 +7,7 @@ import (
 
 func testInfo(t *testing.T) {
 	err := Info("hello", map[string]interface{}{
-		"Some": "value",
+		"Some": "Value",
 	})
 	if err != nil {
 		t.Errorf("level Info log should be successful, got %+v", err)
