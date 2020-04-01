@@ -10,7 +10,7 @@ func testInfo(t *testing.T) {
 		"Some": "value",
 	})
 	if err != nil {
-		t.Errorf("level Info log should be successful, got %e", err)
+		t.Errorf("level Info log should be successful, got %+v", err)
 	}
 }
 
