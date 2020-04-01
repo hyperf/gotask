@@ -15,6 +15,14 @@ type Pool struct {
 
 var globalPool *Pool
 
+func SetGo2PHPAddress(address string) {
+	*go2phpAddress = address
+}
+
+func GetGo2PHPAddress() string {
+	return *go2phpAddress
+}
+
 func NewAutoPool() (*Pool, error) {
 	addresses := strings.Split(*go2phpAddress, ",")
 	return NewPool(addresses)

@@ -19,7 +19,8 @@ use function Swoole\Coroutine\run;
 require __DIR__ . '/../vendor/autoload.php';
 define('BASE_PATH', __DIR__);
 
-const ADDR = '127.0.0.1:6002';
+const ADDR = '/tmp/test.sock';
+@unlink(ADDR);
 $container = new Container(new DefinitionSource([], new ScanConfig()));
 $container->set(ConfigInterface::class, new Config([
     'gotask' => [
