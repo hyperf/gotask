@@ -8,6 +8,8 @@ const phpGet = "Reasno\\GoTask\\Wrapper\\ConfigWrapper::get"
 const phpSet = "Reasno\\GoTask\\Wrapper\\ConfigWrapper::set"
 const phpHas = "Reasno\\GoTask\\Wrapper\\ConfigWrapper::has"
 
+// Get retrieves a configuration from PHP, and fallback to the second parameter
+// if a config is missing at PHP's end.
 func Get(key string, fallback interface{}) (value interface{}, err error) {
 	client, err := gotask.NewAutoClient()
 	if err != nil {
@@ -23,6 +25,7 @@ func Get(key string, fallback interface{}) (value interface{}, err error) {
 	return value, nil
 }
 
+// Has checks if a configuration exists in PHP
 func Has(key string) (value bool, err error) {
 	client, err := gotask.NewAutoClient()
 	if err != nil {
@@ -35,6 +38,7 @@ func Has(key string) (value bool, err error) {
 	return value, nil
 }
 
+// Set sets a configuration in PHP
 func Set(key string, val interface{}) (err error) {
 	client, err := gotask.NewAutoClient()
 	if err != nil {

@@ -15,19 +15,23 @@ type Pool struct {
 
 var globalPool *Pool
 
+//SetGo2PHPAddress sets the go2php server socket address
 func SetGo2PHPAddress(address string) {
 	*go2phpAddress = address
 }
 
+//GetGo2PHPAddress retrieves the go2php server socket address
 func GetGo2PHPAddress() string {
 	return *go2phpAddress
 }
 
+//NewAutoPool creates a connection pool using pre-defined addresses
 func NewAutoPool() (*Pool, error) {
 	addresses := strings.Split(*go2phpAddress, ",")
 	return NewPool(addresses)
 }
 
+//NewPool creates a connection pool
 func NewPool(addresses []string) (*Pool, error) {
 	index := 0
 	factory := func() (net.Conn, error) {
@@ -42,10 +46,12 @@ func NewPool(addresses []string) (*Pool, error) {
 	}, nil
 }
 
+// Client represents a client for go2php IPC.
 type Client struct {
 	*rpc.Client
 }
 
+// NewAutoClient creates a client connected to predefined connection pool.
 func NewAutoClient() (c *Client, err error) {
 	if globalPool == nil {
 		globalPool, err = NewAutoPool()
@@ -61,6 +67,7 @@ func NewAutoClient() (c *Client, err error) {
 	return c, nil
 }
 
+// NewClient returns a new Client using the connection provided.
 func NewClient(conn net.Conn) *Client {
 	return &Client{
 		Client: rpc.NewClientWithCodec(goridge.NewClientCodec(conn)),

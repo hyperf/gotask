@@ -14,6 +14,8 @@ import (
 	"time"
 )
 
+var g run.Group
+
 func checkProcess(pid int, quit chan bool) {
 	if *standalone {
 		return
@@ -46,7 +48,7 @@ func GetAddress() string {
 
 // Run the sidecar, receive any fatal errors.
 func Run() error {
-	var g run.Group
+
 	if *listenOnPipe {
 		relay := goridge.NewPipeRelay(os.Stdin, os.Stdout)
 		codec := goridge.NewCodecWithRelay(relay)
@@ -111,4 +113,14 @@ func Run() error {
 	}
 
 	return g.Run()
+}
+
+// Add an actor (function) to the group. Each actor must be pre-emptable by an
+// interrupt function. That is, if interrupt is invoked, execute should return.
+// Also, it must be safe to call interrupt even after execute has returned.
+//
+// The first actor (function) to return interrupts all running actors.
+// The error is passed to the interrupt functions, and is returned by Run.
+func Add(execute func() error, interrupt func(error)) {
+	g.Add(execute, interrupt)
 }

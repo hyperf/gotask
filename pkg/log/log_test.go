@@ -6,7 +6,7 @@ import (
 )
 
 func testInfo(t *testing.T) {
-	err := Info("hello", map[string]interface{}{
+	err := Info("hello", C{
 		"Some": "Value",
 	})
 	if err != nil {
