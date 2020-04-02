@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/reasno/gotask/pkg/gotask"
 )
 
@@ -13,7 +14,7 @@ const phpHas = "Reasno\\GoTask\\Wrapper\\ConfigWrapper::has"
 func Get(key string, fallback interface{}) (value interface{}, err error) {
 	client, err := gotask.NewAutoClient()
 	if err != nil {
-		return nil, err
+		return fallback, err
 	}
 	err = client.Call(phpGet, key, &value)
 	if err != nil {
@@ -23,6 +24,54 @@ func Get(key string, fallback interface{}) (value interface{}, err error) {
 		return fallback, nil
 	}
 	return value, nil
+}
+
+// GetString returns a string config
+func GetString(key string, fallback string) (value string, err error) {
+	untyped, err := Get(key, fallback)
+	if err != nil {
+		return fallback, err
+	}
+	if typed, ok := untyped.(string); ok {
+		return typed, nil
+	}
+	return fallback, fmt.Errorf("config %s expected to be string, got %+v instead", key, untyped)
+}
+
+// GetInt returns a int config
+func GetInt(key string, fallback int) (value int, err error) {
+	untyped, err := Get(key, fallback)
+	if err != nil {
+		return fallback, err
+	}
+	if typed, ok := untyped.(int); ok {
+		return typed, nil
+	}
+	return fallback, fmt.Errorf("config %s expected to be int, got %+v instead", key, untyped)
+}
+
+// GetFloat returns a float64 config
+func GetFloat(key string, fallback float64) (value float64, err error) {
+	untyped, err := Get(key, fallback)
+	if err != nil {
+		return fallback, err
+	}
+	if typed, ok := untyped.(float64); ok {
+		return typed, nil
+	}
+	return fallback, fmt.Errorf("config %s expected to be float64, got %+v instead", key, untyped)
+}
+
+// GetBool returns a boolean config
+func GetBool(key string, fallback bool) (value bool, err error) {
+	untyped, err := Get(key, fallback)
+	if err != nil {
+		return fallback, err
+	}
+	if typed, ok := untyped.(bool); ok {
+		return typed, nil
+	}
+	return fallback, fmt.Errorf("config %s expected to be bool, got %+v instead", key, untyped)
 }
 
 // Has checks if a configuration exists in PHP
