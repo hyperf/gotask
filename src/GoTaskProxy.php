@@ -20,7 +20,7 @@ class GoTaskProxy implements GoTask
     public function __call($name, $arguments)
     {
         $method = ucfirst($name);
-        return $this->call(__CLASS__.'.'.$method, ...$arguments);
+        return $this->call(get_class().'.'.$method, ...$arguments);
     }
 
     /**
