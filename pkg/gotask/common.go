@@ -63,7 +63,27 @@ func getModifier(t reflect.Type) string {
 		return "float"
 	}
 	if t.Kind() == reflect.Bool {
-		return "boolean"
+		return "bool"
 	}
 	return ""
+}
+
+// Reflect if an interface is either a struct or a pointer to a struct
+// and has the defined member field, if error is nil, the given
+// FieldName exists and is accessible with reflect.
+func property(i interface{}, fieldName string, fallback string) string {
+	ValueIface := reflect.ValueOf(i)
+
+	// Check if the passed interface is a pointer
+	if ValueIface.Type().Kind() != reflect.Ptr {
+		// Create a new type of Iface's Type, so we have a pointer to work with
+		ValueIface = reflect.New(reflect.TypeOf(i))
+	}
+
+	// 'dereference' with Elem() and get the field by name
+	Field := ValueIface.Elem().FieldByName(fieldName)
+	if !Field.IsValid() || !(Field.Kind() == reflect.String) {
+		return fallback
+	}
+	return Field.String()
 }

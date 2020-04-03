@@ -3,11 +3,9 @@ package gotask
 import (
 	"context"
 	"fmt"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
 	"github.com/spiral/goridge/v2"
-	"log"
 	"net"
 	"net/rpc"
 	"os"
@@ -38,13 +36,7 @@ func Register(receiver interface{}) error {
 	if !*reflection {
 		return rpc.Register(receiver)
 	}
-	out := reflectStruct(receiver)
-	s, err := jsoniter.Marshal(out)
-	if err != nil {
-		return errors.Wrap(err, "unable to create reflection")
-	}
-	log.Println(string(s))
-	return nil
+	return generatePHP(receiver)
 }
 
 // Set the address of socket

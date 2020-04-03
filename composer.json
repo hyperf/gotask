@@ -20,6 +20,8 @@
     "require": {
         "php": ">=7.2",
         "ext-swoole": ">=4.4",
+        "hyperf/command": "^1.1",
+        "hyperf/devtool": "^1.1",
         "hyperf/pool": "^1.1",
         "hyperf/process": "^1.1",
         "spiral/goridge": "^2.3"
