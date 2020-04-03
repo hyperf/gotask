@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace App\GoTask;
 
+use Reasno\GoTask\GoTask;
 use Reasno\GoTask\GoTaskProxy;
 
 class Worker extends GoTaskProxy
@@ -19,7 +20,7 @@ class Worker extends GoTaskProxy
      * @param string $payload
      * @return bool
      */
-    public function test(string $payload): bool
+    public function test(string $payload) : bool
     {
         return parent::call("Worker.Test", $payload, 0);
     }
@@ -28,7 +29,7 @@ class Worker extends GoTaskProxy
      * @param  $payload
      * @return mixed
      */
-    public function debug($payload): 
+    public function debug($payload)
     {
         return parent::call("Worker.Debug", $payload, GoTask::PAYLOAD_RAW);
     }

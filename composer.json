@@ -40,7 +40,7 @@
     "scripts": {
         "test": "go build -o app example/*.go && phpunit -c phpunit.xml --colors=always",
         "start-test-server": "php tests/TestServer.php",
-        "test-go": "go test ./...",
+        "test-go": "/bin/bash -c 'php tests/TestServer.php & sleep 5 && go test ./...'",
         "analyse": "phpstan analyse --memory-limit 300M -l 0 ./src",
         "cs-fix": "php-cs-fixer fix $1"
     },

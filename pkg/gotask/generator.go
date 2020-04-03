@@ -17,6 +17,7 @@ declare(strict_types=1);
 {{if $ns}}
 namespace {{ $ns }};
 {{end}}
+use Reasno\GoTask\GoTask;
 use Reasno\GoTask\GoTaskProxy;
 {{ $class := .Class.Name }}
 class {{ $class }} extends GoTaskProxy
