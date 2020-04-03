@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Reasno\GoTask\Command;
+namespace Reasno\GoTask;
 
 use Reasno\GoTask\GoTask;
 
