@@ -96,9 +96,9 @@ func body(namespace *string, class *Class) string {
 }
 
 func generatePHP(receiver interface{}) error {
-	namespace := property(receiver, "Namespace", "App\\GoTask")
+	namespace := property(receiver, "PHPNamespace", "App\\GoTask")
 	class := reflectStruct(receiver)
-	dirPath := property(receiver, "Path", "./../app/GoTask")
+	dirPath := property(receiver, "PHPPath", "./../app/GoTask")
 	err := os.MkdirAll(dirPath, os.FileMode(0755))
 	if err != nil {
 		return errors.Wrap(err, "cannot create dir for php files")
