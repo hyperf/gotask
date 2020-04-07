@@ -77,6 +77,8 @@ run(function(){
 ```
 
 ## Resources
+> English documentation is not yet complete! Please see examples first.
+
 * [Installation](https://github.com/Reasno/gotask/wiki/Installation-&-Configuration)
 * [Document](https://github.com/Reasno/gotask/wiki/Documentation)
 * [FAQ](https://github.com/Reasno/gotask/wiki/FAQ)
