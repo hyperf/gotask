@@ -6,6 +6,7 @@ GoTask通过[Swoole进程管理功能](https://wiki.swoole.com/#/process)启动G
 
 ```bash
 composer require reasno/gotask
+go get github.com/reasno/gotask/pkg/gotask
 ```
 
 ## 特性 Feature
