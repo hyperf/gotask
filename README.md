@@ -23,7 +23,7 @@ composer require reasno/gotask
 
 ## Perfect For
 * Blocking operations in Swoole, such as MongoDB queries.
-* Cpu Intensive operations, such as encoding and decoding.
+* CPU Intensive operations, such as encoding and decoding.
 * Leveraging Go eco-system, such as Kubernetes clients.
 
 ## Requirement
