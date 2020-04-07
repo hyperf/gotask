@@ -26,14 +26,14 @@ composer require reasno/gotask
 * Cpu Intensive operations, such as encoding and decoding.
 * Leveraging Go eco-system, such as Kubernetes clients.
 
-## requirement
+## Requirement
 
 * PHP 7.2+
 * Go 1.13+
 * Swoole 4.4LTS+
 * Hyperf 1.1+ (optional)
 
-## Task delivery Demo
+## Task Delivery Demo
 
 ```go
 package main
