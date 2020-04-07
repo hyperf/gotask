@@ -1,6 +1,8 @@
 # GoTask
 
-[![Build Status](https://travis-ci.org/hyperf/gotask.svg?branch=master)](https://travis-ci.org/hyperf/gotask) [English](./README.md) | 中文
+[English](./README.md) | 中文
+
+[![Build Status](https://travis-ci.org/hyperf/gotask.svg?branch=master)](https://travis-ci.org/hyperf/gotask)
 
 GoTask通过[Swoole进程管理功能](https://wiki.swoole.com/#/process)启动Go进程作为Swoole主进程边车(Sidecar)，利用[进程通讯](https://wiki.swoole.com/#/learn?id=%e4%bb%80%e4%b9%88%e6%98%afipc)将任务投递给边车处理并接收返回值。可以理解为Go版的Swoole TaskWorker。
 

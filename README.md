@@ -1,6 +1,8 @@
 # GoTask
 
-[![Build Status](https://travis-ci.org/hyperf/gotask.svg?branch=master)](https://travis-ci.org/hyperf/gotask) English | [中文](./README-CN.md)
+English | [中文](./README-CN.md)
+ 
+[![Build Status](https://travis-ci.org/hyperf/gotask.svg?branch=master)](https://travis-ci.org/hyperf/gotask)
 
 GoTask spawns a go process as a Swoole sidecar and establishes a bi-directional IPC to offload heavy-duties to Go. Think of it as a Swoole Taskworker in Go.
 
