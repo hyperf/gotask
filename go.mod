@@ -1,4 +1,4 @@
-module git
+module github.com/reasno/gotask
 
 go 1.13
 
