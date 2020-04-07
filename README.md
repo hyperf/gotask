@@ -18,7 +18,7 @@ composer require reasno/gotask
 * Support both PHP-to-Go and Go-to-PHP calls.
 * Automatic sidecar lifecycle management.
 * Correctly handle remote error.
-* Support both structured data and binary data payload.
+* Support both structural payload and binary payload.
 * Sidecar API compatible with net/rpc.
 * Baked-in connection pool.
 * Optionally integrated with Hyperf framework.
