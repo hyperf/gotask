@@ -49,7 +49,9 @@ func (a *App) HelloError(name interface{}, r *interface{}) error {
 }
 
 func main() {
-	gotask.Register(new(App))
+	if err := gotask.Register(new(App)); err != nil {
+		log.Fatalln(err)
+	}
 	if err := gotask.Run(); err != nil {
 		log.Fatalln(err)
 	}

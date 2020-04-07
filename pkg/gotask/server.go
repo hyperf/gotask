@@ -33,7 +33,10 @@ func checkProcess(pid int, quit chan bool) {
 
 // Register a net/rpc compatible service
 func Register(receiver interface{}) error {
-	return rpc.Register(receiver)
+	if !*reflection {
+		return rpc.Register(receiver)
+	}
+	return generatePHP(receiver)
 }
 
 // Set the address of socket
@@ -48,6 +51,9 @@ func GetAddress() string {
 
 // Run the sidecar, receive any fatal errors.
 func Run() error {
+	if *reflection {
+		return nil
+	}
 
 	if *listenOnPipe {
 		relay := goridge.NewPipeRelay(os.Stdin, os.Stdout)
