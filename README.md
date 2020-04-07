@@ -18,7 +18,7 @@ composer require reasno/gotask
 * Correctly handle remote error.
 * Support both structured data and binary data payload.
 * Sidecar API compatible with net/rpc.
-* Backed in connection pool.
+* Baked-in connection pool.
 * Optionally integrated with Hyperf framework.
 
 ## Perfect For
