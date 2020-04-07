@@ -12,7 +12,7 @@ composer require reasno/gotask
 
 * [High performance with low footprint.](https://github.com/reasno/gotask-benchmark)
 * Based on Swoole 4 coroutine socket API.
-* Support Unix Socket、TCP、stdin/stdout pipes.
+* Support Unix Socket, TCP and stdin/stdout pipes.
 * Support both PHP-to-Go and Go-to-PHP calls.
 * Automatic sidecar lifecycle management.
 * Correctly handle remote error.
