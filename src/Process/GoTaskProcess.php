@@ -36,7 +36,7 @@ class GoTaskProcess extends AbstractProcess
     {
         parent::__construct($container);
         $this->config = $container->get(ConfigInterface::class);
-        if ($this->config->get('gotask.go_log.redirect', true)){
+        if ($this->config->get('gotask.go_log.redirect', true)) {
             $this->redirectStdinStdout = true;
         }
     }
@@ -49,7 +49,7 @@ class GoTaskProcess extends AbstractProcess
     public function bind(Server $server): void
     {
         if ($this->config->get('gotask.go_build.enable', false)) {
-            chdir($this->config->get('gotask.go_build.workdir',BASE_PATH.'/gotask'));
+            chdir($this->config->get('gotask.go_build.workdir', BASE_PATH . '/gotask'));
             exec($this->config->get('gotask.go_build.command'), $output, $rev);
             if ($rev !== 0) {
                 throw new GoBuildException(sprintf(
@@ -72,7 +72,7 @@ class GoTaskProcess extends AbstractProcess
 
         $args = $this->config->get('gotask.args', []);
         $argArr = ['-address', $address];
-        if ($this->config->get('gotask.go2php.enable', false)){
+        if ($this->config->get('gotask.go2php.enable', false)) {
             $argArr[] = '-go2php-address';
             $argArr[] = $this->config->get('gotask.go2php.address', '127.0.0.1:6002');
         }

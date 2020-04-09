@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of Reasno/GoTask.
+ *
+ * @link     https://www.github.com/reasno/gotask
+ * @document  https://www.github.com/reasno/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 
 namespace HyperfTest;
 
@@ -13,7 +22,6 @@ use Hyperf\Framework\Logger\StdoutLogger;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Log\LoggerInterface;
 use Reasno\GoTask\IPC\SocketIPCReceiver;
-use Swoole\Process;
 use Swoole\Timer;
 use function Swoole\Coroutine\run;
 
@@ -49,8 +57,8 @@ ApplicationContext::setContainer($container);
 
 run(function () {
     $server = new SocketIPCReceiver(ADDR);
-    Timer::after(15000, function() use ($server){
-       $server->close();
+    Timer::after(15000, function () use ($server) {
+        $server->close();
     });
     $server->start();
 });

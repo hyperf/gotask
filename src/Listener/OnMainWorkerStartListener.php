@@ -28,6 +28,7 @@ class OnMainWorkerStartListener implements ListenerInterface
      * @var ContainerInterface
      */
     private $container;
+
     /**
      * @var ConfigInterface
      */
@@ -52,12 +53,12 @@ class OnMainWorkerStartListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        if (! $this->config->get('gotask.go_log.redirect', true)){
+        if (! $this->config->get('gotask.go_log.redirect', true)) {
             return;
         }
         Coroutine::create(function () {
             $processes = ProcessCollector::get('gotask');
-            if (empty($processes)){
+            if (empty($processes)) {
                 return;
             }
             $sock = $processes[0]->exportSocket();

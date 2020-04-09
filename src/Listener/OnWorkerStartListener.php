@@ -49,7 +49,7 @@ class OnWorkerStartListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        if (!$this->config->get('gotask.go2php.enable', false)) {
+        if (! $this->config->get('gotask.go2php.enable', false)) {
             return;
         }
         $addr = $this->config->get('gotask.go2php.address', '/tmp/gotask_go2php.sock');
