@@ -27,11 +27,10 @@ class GoTaskProxyTest extends TestCase
     public function testCall()
     {
         $goTask = Mockery::mock(GoTask::class);
-        $goTask->shouldReceive('call')->once()->withArgs(['a', 'b', 0]);
-        $goTask->shouldReceive('call')->once()->withArgs(['GoProxyStub.Test', 'mmm', 1]);
+        $goTask->shouldReceive('call')->once()->withArgs(['a', 'b', 0])->andReturn('ok');
+        $goTask->shouldReceive('call')->once()->withArgs(['GoProxyStub.Test', 'mmm', 1])->andReturn('ok');
         $proxy = new GoProxyStub($goTask);
-        $proxy->call('a', 'b', 0);
-        $proxy->test('mmm', 1);
-        $this->assertFalse(false);
+        $this->assertEquals('ok', $proxy->call('a', 'b', 0));
+        $this->assertEquals('ok', $proxy->test('mmm', 1));
     }
 }
