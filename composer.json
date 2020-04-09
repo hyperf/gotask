@@ -47,11 +47,5 @@
         "hyperf": {
             "config": "Reasno\\GoTask\\ConfigProvider"
         }
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer/"
-        }
     }
 }
