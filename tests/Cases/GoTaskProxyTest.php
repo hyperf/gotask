@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace HyperfTest\Cases;
 
+use HyperfTest\GoProxyStub;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Reasno\GoTask\GoTask;
@@ -25,10 +26,10 @@ class GoTaskProxyTest extends TestCase
 {
     public function testCall()
     {
-        $goTask = Mockery::namedMock('MyClassName', GoTask::class);
+        $goTask = Mockery::mock(GoTask::class);
         $goTask->shouldReceive('call')->once()->withArgs(['a', 'b', 0]);
-        $goTask->shouldReceive('call')->once()->withArgs(['GoTaskProxy.Test', 'mmm', 1]);
-        $proxy = new GoTaskProxy($goTask);
+        $goTask->shouldReceive('call')->once()->withArgs(['GoProxyStub.Test', 'mmm', 1]);
+        $proxy = new GoProxyStub($goTask);
         $proxy->call('a', 'b', 0);
         $proxy->test('mmm', 1);
         $this->assertFalse(false);
