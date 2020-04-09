@@ -27,7 +27,9 @@ class GoTaskProxy implements GoTask
     public function __call($name, $arguments)
     {
         $method = ucfirst($name);
-        return $this->call(get_class() . '.' . $method, ...$arguments);
+        $path = explode('\\', get_class());
+        $class = array_pop($path);
+        return $this->call($class . '.' . $method, ...$arguments);
     }
 
     /**
