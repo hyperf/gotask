@@ -28,6 +28,6 @@ class GoTaskProxy implements GoTask
      */
     public function call(string $method, $payload, int $flags = 0)
     {
-        $this->goTask->call($method, $payload, $flags);
+        return $this->goTask->call($method, $payload, $flags);
     }
 }
