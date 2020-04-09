@@ -42,7 +42,7 @@ class CoroutineSocketTest extends AbstractTestCase
         sleep(1);
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         Process::kill($this->p->pid);
     }
