@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/GoTask.
+ * This file is part of Hyperf/GoTask.
  *
- * @link     https://www.github.com/reasno/gotask
- * @document  https://www.github.com/reasno/gotask
+ * @link     https://www.github.com/hyperf/gotask
+ * @document  https://www.github.com/hyperf/gotask
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace Reasno\GoTask\Process;
+namespace Hyperf\GoTask\Process;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Process\AbstractProcess;
 use Psr\Container\ContainerInterface;
-use Reasno\GoTask\Exception\GoBuildException;
+use Hyperf\GoTask\Exception\GoBuildException;
 use Swoole\Server;
 
 class GoTaskProcess extends AbstractProcess

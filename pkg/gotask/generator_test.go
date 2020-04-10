@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace App\GoTask;
 
-use Reasno\GoTask\GoTask;
-use Reasno\GoTask\GoTaskProxy;
+use Hyperf\GoTask\GoTask;
+use Hyperf\GoTask\GoTaskProxy;
 
 class Worker extends GoTaskProxy
 {

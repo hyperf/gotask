@@ -2,12 +2,13 @@ package config
 
 import (
 	"fmt"
-	"github.com/reasno/gotask/pkg/gotask"
+
+	"github.com/hyperf/gotask/pkg/gotask"
 )
 
-const phpGet = "Reasno\\GoTask\\Wrapper\\ConfigWrapper::get"
-const phpSet = "Reasno\\GoTask\\Wrapper\\ConfigWrapper::set"
-const phpHas = "Reasno\\GoTask\\Wrapper\\ConfigWrapper::has"
+const phpGet = "Hyperf\\GoTask\\Wrapper\\ConfigWrapper::get"
+const phpSet = "Hyperf\\GoTask\\Wrapper\\ConfigWrapper::set"
+const phpHas = "Hyperf\\GoTask\\Wrapper\\ConfigWrapper::has"
 
 // Get retrieves a configuration from PHP, and fallback to the second parameter
 // if a config is missing at PHP's end.

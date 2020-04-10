@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/base64"
 	"fmt"
-	"github.com/reasno/gotask/pkg/gotask"
 	"log"
+
+	"github.com/hyperf/gotask/pkg/gotask"
 )
 
 func main() {
@@ -16,7 +17,7 @@ func main() {
 
 	{
 		var res []byte
-		err = client.Call("Example::HelloString", "Reasno", &res)
+		err = client.Call("Example::HelloString", "Hyperf", &res)
 		if err != nil {
 			log.Fatalln(err)
 		}
@@ -64,7 +65,7 @@ func main() {
 
 	{
 		var res interface{}
-		err = client.Call("Example::HelloError", "Reasno", &res)
+		err = client.Call("Example::HelloError", "Hyperf", &res)
 		if err != nil {
 			log.Fatalln(err)
 		}

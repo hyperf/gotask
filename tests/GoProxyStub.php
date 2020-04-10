@@ -3,8 +3,7 @@
 
 namespace HyperfTest;
 
-
-use Reasno\GoTask\GoTaskProxy;
+use Hyperf\GoTask\GoTaskProxy;
 
 class GoProxyStub extends GoTaskProxy
 {

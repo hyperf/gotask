@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/GoTask.
+ * This file is part of Hyperf/GoTask.
  *
- * @link     https://www.github.com/reasno/gotask
- * @document  https://www.github.com/reasno/gotask
+ * @link     https://www.github.com/hyperf/gotask
+ * @document  https://www.github.com/hyperf/gotask
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace Reasno\GoTask;
+namespace Hyperf\GoTask;
 
-use Reasno\GoTask\Listener\BootApplicationListener;
-use Reasno\GoTask\Listener\OnMainWorkerStartListener;
-use Reasno\GoTask\Listener\OnWorkerStartListener;
-use Reasno\GoTask\Process\GoTaskProcess;
+use Hyperf\GoTask\Listener\BootApplicationListener;
+use Hyperf\GoTask\Listener\OnMainWorkerStartListener;
+use Hyperf\GoTask\Listener\OnWorkerStartListener;
+use Hyperf\GoTask\Process\GoTaskProcess;
 
 class ConfigProvider
 {
