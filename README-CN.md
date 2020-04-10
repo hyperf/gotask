@@ -35,7 +35,7 @@ composer require hyperf/gotask
 * Swoole 4.4LTS+
 * Hyperf 1.1+ (optional)
 
-## 消息投递Demo
+## 示例 Demo
 
 ```go
 package main
