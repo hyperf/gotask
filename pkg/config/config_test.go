@@ -1,8 +1,9 @@
 package config
 
 import (
-	"github.com/reasno/gotask/pkg/gotask"
 	"testing"
+
+	"github.com/hyperf/gotask/pkg/gotask"
 )
 
 func testGet(t *testing.T) {

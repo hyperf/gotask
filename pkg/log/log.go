@@ -1,10 +1,10 @@
 package log
 
 import (
-	"github.com/reasno/gotask/pkg/gotask"
+	"github.com/hyperf/gotask/pkg/gotask"
 )
 
-const phpLog = "Reasno\\GoTask\\Wrapper\\LoggerWrapper::log"
+const phpLog = "Hyperf\\GoTask\\Wrapper\\LoggerWrapper::log"
 
 // C is a type for passing PSR context.
 type C map[string]interface{}
