@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/hyperf/gotask/pkg/gotask/v2"
+	"github.com/hyperf/gotask/v2/pkg/gotask"
 )
 
 const phpLog = "Hyperf\\GoTask\\Wrapper\\LoggerWrapper::log"

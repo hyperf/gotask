@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/hyperf/gotask/pkg/gotask/v2"
+	"github.com/hyperf/gotask/v2/pkg/gotask"
 )
 
 // App sample

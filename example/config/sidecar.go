@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/hyperf/gotask/pkg/config/v2"
+	"github.com/hyperf/gotask/v2/pkg/config"
 )
 
 func main() {
