@@ -80,7 +80,7 @@ run(function(){
 > English documentation is not yet complete! Please see examples first.
 
 * [Installation](https://github.com/Hyperf/gotask/wiki/Installation-&-Configuration)
-* [Document](https://github.com/Hyperf/gotask/wiki/Documentation)
+* [Document](https://github.com/Hyperf/gotask/wiki/Document)
 * [FAQ](https://github.com/Hyperf/gotask/wiki/FAQ)
 * [Example](https://github.com/Hyperf/gotask/tree/master/example)
 * [Hyperf Example](https://github.com/Hyperf/gotask-benchmark/blob/master/app/Controller/IndexController.php)
