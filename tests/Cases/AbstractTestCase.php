@@ -29,7 +29,7 @@ abstract class AbstractTestCase extends TestCase
 {
     const UNIX_SOCKET = '/tmp/test.sock';
 
-    public function setUp()
+    public function setUp(): void
     {
         ! defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
         @unlink(self::UNIX_SOCKET);

@@ -22,7 +22,7 @@ class Worker extends GoTaskProxy
      */
     public function test(string $payload) : bool
     {
-        return parent::call("Worker.Test", $payload, 0);
+        return (bool)parent::call("Worker.Test", $payload, 0);
     }
 
     /**

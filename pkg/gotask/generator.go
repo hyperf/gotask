@@ -29,7 +29,7 @@ class {{ $class }} extends GoTaskProxy
      */
     public function {{ $m.Name | lcfirst }}({{ $m.ParamModifier | postSpace }}$payload){{ $m.ResultModifier | returnTypeHint }}
     {
-        return parent::call({{ methodName $class $m.Name }}, $payload, {{ $m.Raw | flag}});
+        return {{ $m.ResultModifier | cast }}parent::call({{ methodName $class $m.Name }}, $payload, {{ $m.Raw | flag}});
     }
 {{end -}}
 }`
@@ -71,6 +71,12 @@ func init() {
 		},
 		"methodName": func(class string, method string) string {
 			return "\"" + class + "." + method + "\""
+		},
+		"cast": func(modifier *string) string {
+			if *modifier != "" {
+				return "(" + *modifier + ")"
+			}
+			return ""
 		},
 	}).Parse(phpBody))
 }
