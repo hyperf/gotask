@@ -28,7 +28,7 @@ composer require hyperf/gotask
 * 执行CPU密集操作，如编码解码
 * 接入Go语言生态，如Kubernetes
 
-## requirement
+## 使用要求 Requirement
 
 * PHP 7.2+
 * Go 1.13+
