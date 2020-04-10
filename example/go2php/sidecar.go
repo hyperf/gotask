@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/hyperf/gotask/pkg/gotask"
+	"github.com/hyperf/gotask/pkg/gotask/v2"
 )
 
 func main() {

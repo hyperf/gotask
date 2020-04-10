@@ -1,4 +1,4 @@
-module github.com/hyperf/gotask
+module github.com/hyperf/gotask/v2
 
 go 1.13
 

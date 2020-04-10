@@ -3,7 +3,7 @@ package config
 import (
 	"fmt"
 
-	"github.com/hyperf/gotask/pkg/gotask"
+	"github.com/hyperf/gotask/pkg/gotask/v2"
 )
 
 const phpGet = "Hyperf\\GoTask\\Wrapper\\ConfigWrapper::get"

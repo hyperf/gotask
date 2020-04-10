@@ -3,7 +3,7 @@ package config
 import (
 	"testing"
 
-	"github.com/hyperf/gotask/pkg/gotask"
+	"github.com/hyperf/gotask/pkg/gotask/v2"
 )
 
 func testGet(t *testing.T) {
