@@ -41,7 +41,7 @@ composer require hyperf/gotask
 package main
 
 import (
-    "github.com/hyperf/gotask/pkg/gotask"
+    "github.com/hyperf/gotask/v2/pkg/gotask"
 )
 
 type App struct{}
