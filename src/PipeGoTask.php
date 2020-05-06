@@ -76,7 +76,7 @@ class PipeGoTask implements GoTask
                 $result = $task->call($method, $payload, $flag);
                 $returnChannel->push($result);
             } catch (\Throwable $e) {
-                $returnChannel->push($e);
+                $returnChannel && $returnChannel->push($e);
             } finally {
                 $this->lock->unlock();
             }
