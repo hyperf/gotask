@@ -9,11 +9,10 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace Hyperf\GoTask;
 
-use Hyperf\Utils\Context;
 use Hyperf\GoTask\Exception\InvalidGoTaskConnectionException;
+use Hyperf\Utils\Context;
 
 /**
  * Class SocketGoTask uses sockets to communicate.

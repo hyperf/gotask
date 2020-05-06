@@ -9,13 +9,12 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace HyperfTest\Cases;
 
-use Hyperf\Utils\WaitGroup;
 use Hyperf\GoTask\IPC\SocketIPCSender;
 use Hyperf\GoTask\Relay\RelayInterface;
 use Hyperf\GoTask\SocketGoTask;
+use Hyperf\Utils\WaitGroup;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Swoole\Process;
 

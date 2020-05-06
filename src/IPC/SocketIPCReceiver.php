@@ -9,14 +9,13 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace Hyperf\GoTask\IPC;
 
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
-use Hyperf\Utils\ApplicationContext;
 use Hyperf\GoTask\GoTask;
 use Hyperf\GoTask\Relay\ConnectionRelay;
 use Hyperf\GoTask\Wrapper\ByteWrapper;
+use Hyperf\Utils\ApplicationContext;
 use Spiral\Goridge\Exceptions\PrefixException;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Spiral\Goridge\Exceptions\TransportException;

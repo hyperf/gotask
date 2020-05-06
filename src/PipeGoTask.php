@@ -9,11 +9,10 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace Hyperf\GoTask;
 
-use Hyperf\Process\ProcessCollector;
 use Hyperf\GoTask\IPC\PipeIPCSender;
+use Hyperf\Process\ProcessCollector;
 use Swoole\Coroutine\Channel;
 use Swoole\Lock;
 use Swoole\Process;
@@ -76,7 +75,10 @@ class PipeGoTask implements GoTask
                 $result = $task->call($method, $payload, $flag);
                 $returnChannel->push($result);
             } catch (\Throwable $e) {
-                $returnChannel && $returnChannel->push($e);
+                if (! $returnChannel) {
+                    throw $e;
+                }
+                $returnChannel->push($e);
             } finally {
                 $this->lock->unlock();
             }

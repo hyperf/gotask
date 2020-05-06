@@ -9,13 +9,12 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace Hyperf\GoTask\Process;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\GoTask\Exception\GoBuildException;
 use Hyperf\Process\AbstractProcess;
 use Psr\Container\ContainerInterface;
-use Hyperf\GoTask\Exception\GoBuildException;
 use Swoole\Server;
 
 class GoTaskProcess extends AbstractProcess

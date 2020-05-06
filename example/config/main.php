@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 use Hyperf\Config\Config;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -17,8 +16,8 @@ use Hyperf\Di\Container;
 use Hyperf\Di\Definition\DefinitionSource;
 use Hyperf\Di\Definition\ScanConfig;
 use Hyperf\Framework\Logger\StdoutLogger;
-use Hyperf\Utils\ApplicationContext;
 use Hyperf\GoTask\IPC\SocketIPCReceiver;
+use Hyperf\Utils\ApplicationContext;
 use Swoole\Process;
 use function Swoole\Coroutine\run;
 

@@ -9,14 +9,13 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace Hyperf\GoTask\Listener;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
-use Psr\Container\ContainerInterface;
 use Hyperf\GoTask\IPC\SocketIPCReceiver;
+use Psr\Container\ContainerInterface;
 
 class OnWorkerStartListener implements ListenerInterface
 {

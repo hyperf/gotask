@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace HyperfTest;
 
 use Hyperf\Config\Config;
@@ -19,9 +18,9 @@ use Hyperf\Di\Container;
 use Hyperf\Di\Definition\DefinitionSource;
 use Hyperf\Di\Definition\ScanConfig;
 use Hyperf\Framework\Logger\StdoutLogger;
+use Hyperf\GoTask\IPC\SocketIPCReceiver;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Log\LoggerInterface;
-use Hyperf\GoTask\IPC\SocketIPCReceiver;
 use Swoole\Timer;
 use function Swoole\Coroutine\run;
 
