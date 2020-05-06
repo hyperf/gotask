@@ -10,7 +10,7 @@ GoTask通过[Swoole进程管理功能](https://wiki.swoole.com/#/process)启动G
 composer require hyperf/gotask
 ```
 
-## 特性 Feature
+## 特性
 
 * [超高速低消耗](https://github.com/reasno/gotask-benchmark)
 * Co/Socket实现，100%协程化
@@ -23,19 +23,19 @@ composer require hyperf/gotask
 * 自带连接池支持
 * 可独立使用，也可深度融合Hyperf
 
-## 使用场景 Perfect For
+## 使用场景
 * 执行阻塞函数，如MongoDB查询
 * 执行CPU密集操作，如编码解码
 * 接入Go语言生态，如Kubernetes
 
-## requirement
+## 使用要求
 
 * PHP 7.2+
 * Go 1.13+
 * Swoole 4.4LTS+
 * Hyperf 1.1+ (optional)
 
-## 消息投递Demo
+## 示例
 
 ```go
 package main

@@ -83,7 +83,7 @@ run(function(){
 * [Document](https://github.com/Hyperf/gotask/wiki/Document)
 * [FAQ](https://github.com/Hyperf/gotask/wiki/FAQ)
 * [Example](https://github.com/Hyperf/gotask/tree/master/example)
-* [Hyperf Example](https://github.com/Hyperf/gotask-benchmark/blob/master/app/Controller/IndexController.php)
+* [Hyperf Example](https://github.com/reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php)
 
 ## Benchmark
 
