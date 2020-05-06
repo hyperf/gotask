@@ -70,6 +70,10 @@ class PipeGoTask implements GoTask
         $task = make(PipeIPCSender::class, ['process' => $this->process]);
         while (true) {
             [$method, $payload, $flag, $returnChannel] = $this->taskChannel->pop();
+            // check if channel is closed
+            if ($method === null) {
+                break;
+            }
             $this->lock->lock();
             try {
                 $result = $task->call($method, $payload, $flag);
