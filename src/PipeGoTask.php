@@ -75,7 +75,7 @@ class PipeGoTask implements GoTask
                 $result = $task->call($method, $payload, $flag);
                 $returnChannel->push($result);
             } catch (\Throwable $e) {
-                if (! $returnChannel) {
+                if (! ($returnChannel instanceof Channel)) {
                     throw $e;
                 }
                 $returnChannel->push($e);
