@@ -75,7 +75,7 @@ class GoTaskProcess extends AbstractProcess
             $argArr[] = '-go2php-address';
             $argArr[] = $this->config->get('gotask.go2php.address', '127.0.0.1:6002');
         }
-        array_push($argArr, ...$args);
+        array_merge($argArr, $args);
         $this->process->exec($executable, $argArr);
     }
 }
