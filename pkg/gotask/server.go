@@ -70,10 +70,14 @@ func Run() error {
 
 	if *address != "" {
 		network, addr := parseAddr(*address)
+		if err := clearAddr(network, addr); err != nil {
+			return errors.Wrap(err, "Cannot remove existing unix socket")
+		}
 		ln, err := net.Listen(network, addr)
 		if err != nil {
 			return errors.Wrap(err, "Unable to listen")
 		}
+
 		g.Add(func() error {
 			for {
 				conn, err := ln.Accept()
@@ -119,6 +123,16 @@ func Run() error {
 	}
 
 	return g.Run()
+}
+
+func clearAddr(network string, addr string) error {
+	if network != "unix" {
+		return nil
+	}
+	if _, err := os.Stat(addr); os.IsNotExist(err) {
+		return nil
+	}
+	return os.Remove(addr)
 }
 
 // Add an actor (function) to the group. Each actor must be pre-emptable by an
