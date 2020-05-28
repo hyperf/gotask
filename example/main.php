@@ -41,4 +41,9 @@ run(function () {
     } catch (\Throwable $e) {
         var_dump($e);
     }
+    try {
+        $task->call('App.HelloPanic', '');
+    } catch (\Throwable $e) {
+        var_dump($e);
+    }
 });
