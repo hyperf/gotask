@@ -75,6 +75,18 @@ class CoroutineSocketTest extends AbstractTestCase
         });
     }
 
+    public function testPanic()
+    {
+        \Swoole\Coroutine\run(function () {
+            $task = make(SocketGoTask::class);
+            try {
+                $task->call('App.HelloPanic', '');
+            } catch (\Throwable $e) {
+                $this->assertInstanceOf(ServiceException::class, $e);
+            }
+        });
+    }
+
     public function baseExample($task)
     {
         $this->assertEquals(

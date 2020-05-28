@@ -49,6 +49,16 @@ func (a *App) HelloError(name interface{}, r *interface{}) error {
 	return fmt.Errorf("%s, it is possible to return error", name)
 }
 
+func (a *App) HelloPanic(name interface{}, r *interface{}) (e error) {
+	defer func() {
+		if p := recover(); p != nil {
+			// Recovering from panic
+			e = fmt.Errorf("panic in go: %v", p)
+		}
+	}()
+	panic("Test if we can handle panic")
+}
+
 func main() {
 	if err := gotask.Register(new(App)); err != nil {
 		log.Fatalln(err)
