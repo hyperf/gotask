@@ -29,10 +29,9 @@ sleep(1);
 
 run(function () {
     $task = new SocketIPCSender(ADDR);
-    $data = base64_encode(json_encode(['yellow' => 'blue']));
-    var_dump($task->call('Mongo.InsertOne', ['Database' => 'testing', 'Collection' => 'numbers', 'Record' => $data]));
+    var_dump($task->call('Mongo.InsertOne', ['Database' => 'testing', 'Collection' => 'numbers', 'Record' => ['Blue' => 'Red']]));
 
-    var_dump($task->call('Mongo.Find', ['Database' => 'testing', 'Collection' => 'numbers', 'Filter' => $data, 'Opts' => [['Skip' => 1, 'Limit' => 2]]]));
+    var_dump($task->call('Mongo.Find', ['Database' => 'testing', 'Collection' => 'numbers', 'Filter' => ['Blue' => 'Red'], 'Opts' => [['Skip' => 1, 'Limit' => 2]]]));
 //    var_dump($task->call('App.HelloInterface', ['jack', 'jill']));
 //    var_dump($task->call('App.HelloStruct', [
 //        'firstName' => 'LeBron',

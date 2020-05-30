@@ -30,13 +30,12 @@ func NewMongoWithTimeout(client *mongo.Client, timeout time.Duration) *Mongo {
 type InsertOneCmd struct {
 	Database   string
 	Collection string
-	Record     []byte
+	Record     interface{}
 	Opts       []*options.InsertOneOptions
 }
 
 func (m *Mongo) InsertOne(payload InsertOneCmd, result *interface{}) error {
-	var doc bson.D
-	err := bson.UnmarshalExtJSON(payload.Record, false, &doc)
+	doc, err := bson.Marshal(payload.Record)
 	if err != nil {
 		return err
 	}
@@ -53,15 +52,14 @@ func (m *Mongo) InsertOne(payload InsertOneCmd, result *interface{}) error {
 type InsertManyCmd struct {
 	Database   string
 	Collection string
-	Records    [][]byte
+	Records    []interface{}
 	Opts       []*options.InsertManyOptions
 }
 
 func (m *Mongo) InsertMany(payload InsertManyCmd, result *interface{}) error {
 	var docs []interface{}
 	for _, v := range payload.Records {
-		var doc bson.D
-		err := bson.UnmarshalExtJSON(v, false, &doc)
+		doc, err := bson.Marshal(v)
 		if err != nil {
 			return err
 		}
@@ -80,13 +78,12 @@ func (m *Mongo) InsertMany(payload InsertManyCmd, result *interface{}) error {
 type FindOneCmd struct {
 	Database   string
 	Collection string
-	Filter     []byte
+	Filter     interface{}
 	Opts       []*options.FindOneOptions
 }
 
 func (m *Mongo) FindOne(payload FindOneCmd, result *interface{}) error {
-	var filter bson.M
-	err := bson.UnmarshalExtJSON(payload.Filter, false, &filter)
+	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
 		return err
 	}
@@ -99,13 +96,12 @@ func (m *Mongo) FindOne(payload FindOneCmd, result *interface{}) error {
 type FindCmd struct {
 	Database   string
 	Collection string
-	Filter     []byte
+	Filter     interface{}
 	Opts       []*options.FindOptions
 }
 
 func (m *Mongo) Find(payload FindCmd, result *[]interface{}) error {
-	var filter bson.M
-	err := bson.UnmarshalExtJSON(payload.Filter, false, &filter)
+	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
 		return err
 	}
@@ -122,75 +118,69 @@ func (m *Mongo) Find(payload FindCmd, result *[]interface{}) error {
 type UpdateOneCmd struct {
 	Database   string
 	Collection string
-	Filter     []byte
-	Updates    []byte
+	Filter     interface{}
+	Update     interface{}
 	Opts       []*options.UpdateOptions
 }
 
 func (m *Mongo) UpdateOne(payload UpdateOneCmd, result *interface{}) error {
-	var filter bson.M
-	err := bson.UnmarshalExtJSON(payload.Filter, false, &filter)
+	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
 		return err
 	}
-	var updates bson.D
-	err = bson.UnmarshalExtJSON(payload.Updates, false, &updates)
+	update, err := bson.Marshal(payload.Update)
 	if err != nil {
 		return err
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
-	*result, err = collection.UpdateOne(ctx, filter, updates, payload.Opts...)
+	*result, err = collection.UpdateOne(ctx, filter, update, payload.Opts...)
 	return err
 }
 
 type UpdateManyCmd struct {
 	Database   string
 	Collection string
-	Filter     []byte
-	Updates    []byte
+	Filter     interface{}
+	Update     interface{}
 	Opts       []*options.UpdateOptions
 }
 
 func (m *Mongo) UpdateMany(payload UpdateManyCmd, result *interface{}) error {
-	var filter bson.M
-	err := bson.UnmarshalExtJSON(payload.Filter, false, &filter)
+	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
 		return err
 	}
-	var updates bson.D
-	err = bson.UnmarshalExtJSON(payload.Updates, false, &updates)
+	update, err := bson.Marshal(payload.Update)
 	if err != nil {
 		return err
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
-	*result, err = collection.UpdateMany(ctx, filter, updates, payload.Opts...)
+	*result, err = collection.UpdateMany(ctx, filter, update, payload.Opts...)
 	return err
 }
 
 type ReplaceOneCmd struct {
 	Database   string
 	Collection string
-	Filter     []byte
-	Replaces   []byte
+	Filter     interface{}
+	Replace    interface{}
 	Opts       []*options.ReplaceOptions
 }
 
 func (m *Mongo) ReplaceOne(payload ReplaceOneCmd, result *interface{}) error {
-	var filter bson.M
-	err := bson.UnmarshalExtJSON(payload.Filter, false, &filter)
+	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
 		return err
 	}
-	var replaces bson.D
-	err = bson.UnmarshalExtJSON(payload.Replaces, false, &replaces)
+	replace, err := bson.Marshal(payload.Replace)
 	if err != nil {
 		return err
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
-	*result, err = collection.ReplaceOne(ctx, filter, replaces, payload.Opts...)
+	*result, err = collection.ReplaceOne(ctx, filter, replace, payload.Opts...)
 	return err
 }
 
@@ -198,13 +188,11 @@ type CountDocumentsCmd struct {
 	Database   string
 	Collection string
 	Filter     []byte
-	Replaces   []byte
 	Opts       []*options.CountOptions
 }
 
 func (m *Mongo) CountDocuments(payload CountDocumentsCmd, result *interface{}) error {
-	var filter bson.M
-	err := bson.UnmarshalExtJSON(payload.Filter, false, &filter)
+	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
 		return err
 	}
@@ -222,8 +210,7 @@ type DeleteOneCmd struct {
 }
 
 func (m *Mongo) DeleteOne(payload DeleteOneCmd, result *interface{}) error {
-	var filter bson.M
-	err := bson.UnmarshalExtJSON(payload.Filter, false, &filter)
+	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
 		return err
 	}
@@ -241,8 +228,7 @@ type DeleteManyCmd struct {
 }
 
 func (m *Mongo) DeleteMany(payload DeleteManyCmd, result *interface{}) error {
-	var filter bson.M
-	err := bson.UnmarshalExtJSON(payload.Filter, false, &filter)
+	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
 		return err
 	}
@@ -259,8 +245,7 @@ type Cmd struct {
 }
 
 func (m *Mongo) RunCommand(payload Cmd, result *interface{}) error {
-	var cmd bson.D
-	err := bson.UnmarshalExtJSON(payload.Cmd, false, &cmd)
+	cmd, err := bson.Marshal(payload.Cmd)
 	if err != nil {
 		return err
 	}
@@ -270,8 +255,7 @@ func (m *Mongo) RunCommand(payload Cmd, result *interface{}) error {
 }
 
 func (m *Mongo) RunCommandCursor(payload Cmd, result *[]interface{}) error {
-	var cmd bson.D
-	err := bson.UnmarshalExtJSON(payload.Cmd, false, &cmd)
+	cmd, err := bson.Marshal(payload.Cmd)
 	if err != nil {
 		return err
 	}
