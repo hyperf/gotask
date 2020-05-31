@@ -31,7 +31,7 @@
         "hyperf/testing": "1.1.*",
         "mockery/mockery": "^1.3",
         "phpstan/phpstan": "^0.12",
-        "swoft/swoole-ide-helper": "dev-master"
+        "swoole/ide-helper": "^4.5"
     },
     "config": {
         "sort-packages": true
