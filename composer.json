@@ -1,5 +1,5 @@
 {
-    "name": "reasno/gotask",
+    "name": "hyperf/gotask",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -9,7 +9,7 @@
     "description": "A replacement for Swoole TaskWorker in Go",
     "autoload": {
         "psr-4": {
-            "Reasno\\GoTask\\": "src/"
+            "Hyperf\\GoTask\\": "src/"
         }
     },
     "autoload-dev": {
@@ -22,7 +22,7 @@
         "ext-swoole": ">=4.4",
         "hyperf/pool": "^1.1",
         "hyperf/process": "^1.1",
-        "spiral/goridge": "^2.3"
+        "spiral/goridge": "^2.4.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.14",
@@ -45,7 +45,7 @@
     },
     "extra": {
         "hyperf": {
-            "config": "Reasno\\GoTask\\ConfigProvider"
+            "config": "Hyperf\\GoTask\\ConfigProvider"
         }
     }
 }

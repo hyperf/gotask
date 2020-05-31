@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/reasno/gotask/pkg/gotask"
-	"github.com/reasno/gotask/pkg/mongo_client"
+	"github.com/hyperf/gotask/v2/pkg/gotask"
+	"github.com/hyperf/gotask/v2/pkg/mongo_client"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"

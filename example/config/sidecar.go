@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/reasno/gotask/pkg/config"
 	"log"
+
+	"github.com/hyperf/gotask/v2/pkg/config"
 )
 
 func main() {

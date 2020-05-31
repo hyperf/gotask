@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/reasno/gotask/pkg/gotask"
 	"log"
+
+	"github.com/hyperf/gotask/v2/pkg/gotask"
 )
 
 // App sample

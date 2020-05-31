@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/GoTask.
+ * This file is part of Hyperf/GoTask.
  *
- * @link     https://www.github.com/reasno/gotask
- * @document  https://www.github.com/reasno/gotask
+ * @link     https://www.github.com/hyperf/gotask
+ * @document  https://www.github.com/hyperf/gotask
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
@@ -29,7 +29,7 @@ sleep(1);
 
 run(function () {
     $task = new SocketIPCSender(ADDR);
-    for ($i = 0; $i < 5; $i++){
+    for ($i = 0; $i < 5; ++$i) {
         $task->call('MongoProxy.InsertOne', ['Database' => 'testing', 'Collection' => 'colors', 'Record' => ['Blue' => 'Red', 'number' => $i]]);
     }
     var_dump($task->call('MongoProxy.Find', ['Database' => 'testing', 'Collection' => 'colors', 'Filter' => ['Blue' => 'Red'], 'Opts' => [['Skip' => 1, 'Limit' => 2]]]));

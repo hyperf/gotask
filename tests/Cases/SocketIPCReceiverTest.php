@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/GoTask.
+ * This file is part of Hyperf/GoTask.
  *
- * @link     https://www.github.com/reasno/gotask
- * @document  https://www.github.com/reasno/gotask
+ * @link     https://www.github.com/hyperf/gotask
+ * @document  https://www.github.com/hyperf/gotask
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
 namespace HyperfTest\Cases;
 
+use Hyperf\GoTask\IPC\SocketIPCReceiver;
+use Hyperf\GoTask\IPC\SocketIPCSender;
+use Hyperf\GoTask\Relay\RelayInterface;
 use Hyperf\Utils\WaitGroup;
-use Reasno\GoTask\IPC\SocketIPCReceiver;
-use Reasno\GoTask\IPC\SocketIPCSender;
-use Reasno\GoTask\Relay\RelayInterface;
 use Spiral\Goridge\Exceptions\ServiceException;
 
 /**
@@ -86,8 +86,8 @@ class SocketIPCReceiverTest extends AbstractTestCase
     public function baseExample($task)
     {
         $this->assertEquals(
-            'Hello, Reasno!',
-            $task->call('HyperfTest\\Stub::HelloString', 'Reasno')
+            'Hello, Hyperf!',
+            $task->call('HyperfTest\\Stub::HelloString', 'Hyperf')
         );
         $this->assertEquals(
             ['hello' => ['jack', 'jill']],
@@ -111,7 +111,7 @@ class SocketIPCReceiverTest extends AbstractTestCase
             $task->call('HyperfTest\\Stub::HelloBytes', base64_encode('My Bytes'), RelayInterface::PAYLOAD_RAW)
         );
         try {
-            $task->call('HyperfTest\\Stub::HelloError', 'Reasno');
+            $task->call('HyperfTest\\Stub::HelloError', 'Hyperf');
         } catch (\Throwable $e) {
             $this->assertInstanceOf(ServiceException::class, $e);
         }

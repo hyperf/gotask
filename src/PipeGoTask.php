@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Reasno/GoTask.
+ * This file is part of Hyperf/GoTask.
  *
- * @link     https://www.github.com/reasno/gotask
- * @document  https://www.github.com/reasno/gotask
+ * @link     https://www.github.com/hyperf/gotask
+ * @document  https://www.github.com/hyperf/gotask
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace Reasno\GoTask;
+namespace Hyperf\GoTask;
 
+use Hyperf\GoTask\IPC\PipeIPCSender;
 use Hyperf\Process\ProcessCollector;
-use Reasno\GoTask\IPC\PipeIPCSender;
 use Swoole\Coroutine\Channel;
 use Swoole\Lock;
 use Swoole\Process;
@@ -71,11 +71,18 @@ class PipeGoTask implements GoTask
         $task = make(PipeIPCSender::class, ['process' => $this->process]);
         while (true) {
             [$method, $payload, $flag, $returnChannel] = $this->taskChannel->pop();
+            // check if channel is closed
+            if ($method === null) {
+                break;
+            }
             $this->lock->lock();
             try {
                 $result = $task->call($method, $payload, $flag);
                 $returnChannel->push($result);
             } catch (\Throwable $e) {
+                if (! ($returnChannel instanceof Channel)) {
+                    throw $e;
+                }
                 $returnChannel->push($e);
             } finally {
                 $this->lock->unlock();

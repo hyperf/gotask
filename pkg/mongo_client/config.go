@@ -1,7 +1,7 @@
 package mongo_client
 
 import (
-	"github.com/reasno/gotask/pkg/config"
+	"github.com/hyperf/gotask/v2/pkg/config"
 	"os"
 	"strconv"
 	"time"

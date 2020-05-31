@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"github.com/reasno/gotask/pkg/gotask"
 	"io/ioutil"
 	"log"
+
+	"github.com/hyperf/gotask/v2/pkg/gotask"
 )
 
 // App sample
@@ -46,6 +47,16 @@ func (a *App) HelloBytes(name []byte, r *[]byte) error {
 
 func (a *App) HelloError(name interface{}, r *interface{}) error {
 	return fmt.Errorf("%s, it is possible to return error", name)
+}
+
+func (a *App) HelloPanic(name interface{}, r *interface{}) (e error) {
+	defer func() {
+		if p := recover(); p != nil {
+			// Recovering from panic
+			e = fmt.Errorf("panic in go: %v", p)
+		}
+	}()
+	panic("Test if we can handle panic")
 }
 
 func main() {

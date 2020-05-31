@@ -7,7 +7,7 @@ English | [中文](./README-CN.md)
 GoTask spawns a go process as a Swoole sidecar and establishes a bi-directional IPC to offload heavy-duties to Go. Think of it as a Swoole Taskworker in Go.
 
 ```bash
-composer require reasno/gotask
+composer require hyperf/gotask
 ```
 
 ## Feature
@@ -18,7 +18,7 @@ composer require reasno/gotask
 * Support both PHP-to-Go and Go-to-PHP calls.
 * Automatic sidecar lifecycle management.
 * Correctly handle remote error.
-* Support both structured data and binary data payload.
+* Support both structural payload and binary payload.
 * Sidecar API compatible with net/rpc.
 * Baked-in connection pool.
 * Optionally integrated with Hyperf framework.
@@ -41,7 +41,7 @@ composer require reasno/gotask
 package main
 
 import (
-    "github.com/reasno/gotask/pkg/gotask"
+    "github.com/hyperf/gotask/v2/pkg/gotask"
 )
 
 type App struct{}
@@ -63,15 +63,15 @@ func main() {
 ```php
 <?php
 
-use Reasno\GoTask\IPC\SocketIPCSender;
+use Hyperf\GoTask\IPC\SocketIPCSender;
 use function Swoole\Coroutine\run;
 
 require_once "../vendor/autoload.php";
 
 run(function(){
     $task = new SocketIPCSender('127.0.0.1:6001');
-    var_dump($task->call("App.Hi", "Reasno"));
-    // [ "hello" => "Reasno" ]
+    var_dump($task->call("App.Hi", "Hyperf"));
+    // [ "hello" => "Hyperf" ]
 });
 
 ```
@@ -79,11 +79,11 @@ run(function(){
 ## Resources
 > English documentation is not yet complete! Please see examples first.
 
-* [Installation](https://github.com/Reasno/gotask/wiki/Installation-&-Configuration)
-* [Document](https://github.com/Reasno/gotask/wiki/Documentation)
-* [FAQ](https://github.com/Reasno/gotask/wiki/FAQ)
-* [Example](https://github.com/Reasno/gotask/tree/master/example)
-* [Hyperf Example](https://github.com/Reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php)
+* [Installation](https://github.com/Hyperf/gotask/wiki/Installation-&-Configuration)
+* [Document](https://github.com/Hyperf/gotask/wiki/Document)
+* [FAQ](https://github.com/Hyperf/gotask/wiki/FAQ)
+* [Example](https://github.com/Hyperf/gotask/tree/master/example)
+* [Hyperf Example](https://github.com/reasno/gotask-benchmark/blob/master/app/Controller/IndexController.php)
 
 ## Benchmark
 

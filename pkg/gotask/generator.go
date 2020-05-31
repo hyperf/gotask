@@ -2,12 +2,13 @@ package gotask
 
 import (
 	"bytes"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"text/template"
 	"unicode"
+
+	"github.com/pkg/errors"
 )
 
 const phpBody = `<?php
@@ -17,8 +18,8 @@ declare(strict_types=1);
 {{if $ns}}
 namespace {{ $ns }};
 {{end}}
-use Reasno\GoTask\GoTask;
-use Reasno\GoTask\GoTaskProxy;
+use Hyperf\GoTask\GoTask;
+use Hyperf\GoTask\GoTaskProxy;
 {{ $class := .Class.Name }}
 class {{ $class }} extends GoTaskProxy
 {
