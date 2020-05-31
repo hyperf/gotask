@@ -16,7 +16,6 @@ use HyperfTest\GoProxyStub;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Reasno\GoTask\GoTask;
-use Reasno\GoTask\GoTaskProxy;
 
 /**
  * @internal

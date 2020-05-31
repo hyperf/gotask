@@ -37,7 +37,7 @@
         "sort-packages": true
     },
     "scripts": {
-        "test": "go build -o app example/*.go && phpunit -c phpunit.xml --colors=always",
+        "test": "go build -o app example/*.go && go build -o mongo example/mongo_client/*.go && phpunit -c phpunit.xml --colors=always",
         "start-test-server": "php tests/TestServer.php",
         "test-go": "/bin/bash -c 'php tests/TestServer.php & sleep 5 && go test ./...'",
         "analyse": "phpstan analyse --memory-limit 300M -l 0 ./src",

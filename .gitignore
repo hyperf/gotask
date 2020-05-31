@@ -4,3 +4,4 @@ composer.lock
 *.log
 .idea/
 /app
+/mongo

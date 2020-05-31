@@ -29,19 +29,8 @@ sleep(1);
 
 run(function () {
     $task = new SocketIPCSender(ADDR);
-    var_dump($task->call('Mongo.InsertOne', ['Database' => 'testing', 'Collection' => 'numbers', 'Record' => ['Blue' => 'Red']]));
-
-    var_dump($task->call('Mongo.Find', ['Database' => 'testing', 'Collection' => 'numbers', 'Filter' => ['Blue' => 'Red'], 'Opts' => [['Skip' => 1, 'Limit' => 2]]]));
-//    var_dump($task->call('App.HelloInterface', ['jack', 'jill']));
-//    var_dump($task->call('App.HelloStruct', [
-//        'firstName' => 'LeBron',
-//        'lastName' => 'James',
-//        'id' => 23,
-//    ]));
-//    var_dump($task->call('App.HelloBytes', base64_encode('My Bytes'), GoTask::PAYLOAD_RAW));
-//    try {
-//        $task->call('App.HelloError', 'Reasno');
-//    } catch (\Throwable $e) {
-//        var_dump($e);
-//    }
+    for ($i = 0; $i < 5; $i++){
+        $task->call('MongoProxy.InsertOne', ['Database' => 'testing', 'Collection' => 'colors', 'Record' => ['Blue' => 'Red', 'number' => $i]]);
+    }
+    var_dump($task->call('MongoProxy.Find', ['Database' => 'testing', 'Collection' => 'colors', 'Filter' => ['Blue' => 'Red'], 'Opts' => [['Skip' => 1, 'Limit' => 2]]]));
 });

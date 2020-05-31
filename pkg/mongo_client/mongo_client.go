@@ -2,26 +2,27 @@ package mongo_client
 
 import (
 	"context"
+	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
 )
 
-type Mongo struct {
+type MongoProxy struct {
 	timeout time.Duration
 	client  *mongo.Client
 }
 
-func NewMongo(client *mongo.Client) *Mongo {
-	return &Mongo{
+func NewMongoProxy(client *mongo.Client) *MongoProxy {
+	return &MongoProxy{
 		5 * time.Second,
 		client,
 	}
 }
 
-func NewMongoWithTimeout(client *mongo.Client, timeout time.Duration) *Mongo {
-	return &Mongo{
+func NewMongoProxyWithTimeout(client *mongo.Client, timeout time.Duration) *MongoProxy {
+	return &MongoProxy{
 		timeout,
 		client,
 	}
@@ -34,19 +35,15 @@ type InsertOneCmd struct {
 	Opts       []*options.InsertOneOptions
 }
 
-func (m *Mongo) InsertOne(payload InsertOneCmd, result *interface{}) error {
+func (m *MongoProxy) InsertOne(payload InsertOneCmd, result *interface{}) error {
 	doc, err := bson.Marshal(payload.Record)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
-	res, err := collection.InsertOne(ctx, doc, payload.Opts...)
-	if err != nil {
-		return err
-	}
-	*result = res.InsertedID
-	return nil
+	*result, err = collection.InsertOne(ctx, doc, payload.Opts...)
+	return err
 }
 
 type InsertManyCmd struct {
@@ -56,23 +53,20 @@ type InsertManyCmd struct {
 	Opts       []*options.InsertManyOptions
 }
 
-func (m *Mongo) InsertMany(payload InsertManyCmd, result *interface{}) error {
+func (m *MongoProxy) InsertMany(payload InsertManyCmd, result *interface{}) error {
 	var docs []interface{}
 	for _, v := range payload.Records {
 		doc, err := bson.Marshal(v)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "failed to marshal bson")
 		}
 		docs = append(docs, doc)
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
-	res, err := collection.InsertMany(ctx, docs, payload.Opts...)
-	if err != nil {
-		return err
-	}
-	*result = res.InsertedIDs
-	return nil
+	var err error
+	*result, err = collection.InsertMany(ctx, docs, payload.Opts...)
+	return err
 }
 
 type FindOneCmd struct {
@@ -82,10 +76,10 @@ type FindOneCmd struct {
 	Opts       []*options.FindOneOptions
 }
 
-func (m *Mongo) FindOne(payload FindOneCmd, result *interface{}) error {
+func (m *MongoProxy) FindOne(payload FindOneCmd, result *map[string]interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
@@ -100,16 +94,19 @@ type FindCmd struct {
 	Opts       []*options.FindOptions
 }
 
-func (m *Mongo) Find(payload FindCmd, result *[]interface{}) error {
+func (m *MongoProxy) Find(payload FindCmd, result *[]map[string]interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
 	cursor, err := collection.Find(ctx, filter, payload.Opts...)
 	if cursor != nil {
 		return cursor.All(ctx, result)
+	}
+	if err != mongo.ErrNilCursor && err != mongo.ErrNilDocument {
+		return errors.Wrap(err, "error while finding")
 	}
 	return nil
 
@@ -123,14 +120,14 @@ type UpdateOneCmd struct {
 	Opts       []*options.UpdateOptions
 }
 
-func (m *Mongo) UpdateOne(payload UpdateOneCmd, result *interface{}) error {
+func (m *MongoProxy) UpdateOne(payload UpdateOneCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	update, err := bson.Marshal(payload.Update)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
@@ -146,14 +143,14 @@ type UpdateManyCmd struct {
 	Opts       []*options.UpdateOptions
 }
 
-func (m *Mongo) UpdateMany(payload UpdateManyCmd, result *interface{}) error {
+func (m *MongoProxy) UpdateMany(payload UpdateManyCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	update, err := bson.Marshal(payload.Update)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
@@ -169,14 +166,14 @@ type ReplaceOneCmd struct {
 	Opts       []*options.ReplaceOptions
 }
 
-func (m *Mongo) ReplaceOne(payload ReplaceOneCmd, result *interface{}) error {
+func (m *MongoProxy) ReplaceOne(payload ReplaceOneCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	replace, err := bson.Marshal(payload.Replace)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
@@ -187,14 +184,14 @@ func (m *Mongo) ReplaceOne(payload ReplaceOneCmd, result *interface{}) error {
 type CountDocumentsCmd struct {
 	Database   string
 	Collection string
-	Filter     []byte
+	Filter     interface{}
 	Opts       []*options.CountOptions
 }
 
-func (m *Mongo) CountDocuments(payload CountDocumentsCmd, result *interface{}) error {
+func (m *MongoProxy) CountDocuments(payload CountDocumentsCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
@@ -205,14 +202,14 @@ func (m *Mongo) CountDocuments(payload CountDocumentsCmd, result *interface{}) e
 type DeleteOneCmd struct {
 	Database   string
 	Collection string
-	Filter     []byte
+	Filter     interface{}
 	Opts       []*options.DeleteOptions
 }
 
-func (m *Mongo) DeleteOne(payload DeleteOneCmd, result *interface{}) error {
+func (m *MongoProxy) DeleteOne(payload DeleteOneCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
@@ -223,14 +220,14 @@ func (m *Mongo) DeleteOne(payload DeleteOneCmd, result *interface{}) error {
 type DeleteManyCmd struct {
 	Database   string
 	Collection string
-	Filter     []byte
+	Filter     interface{}
 	Opts       []*options.DeleteOptions
 }
 
-func (m *Mongo) DeleteMany(payload DeleteManyCmd, result *interface{}) error {
+func (m *MongoProxy) DeleteMany(payload DeleteManyCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
@@ -238,14 +235,54 @@ func (m *Mongo) DeleteMany(payload DeleteManyCmd, result *interface{}) error {
 	return err
 }
 
+type AggregateCmd struct {
+	Database   string
+	Collection string
+	Pipeline   []interface{}
+	Opts       []*options.AggregateOptions
+}
+
+func (m *MongoProxy) Aggregate(payload AggregateCmd, result *[]map[string]interface{}) error {
+	var pipeline = make([][]byte, len(payload.Pipeline))
+	for _, step := range payload.Pipeline {
+		s, err := bson.Marshal(step)
+		if err != nil {
+			return errors.Wrap(err, "failed to marshal bson")
+		}
+		pipeline = append(pipeline, s)
+	}
+	collection := m.client.Database(payload.Database).Collection(payload.Collection)
+	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	cursor, err := collection.Aggregate(ctx, payload.Pipeline, payload.Opts...)
+	if cursor != nil {
+		return cursor.All(ctx, result)
+	}
+	if err != mongo.ErrNilCursor && err != mongo.ErrNilDocument {
+		return errors.Wrap(err, "error while aggregating")
+	}
+	return nil
+
+}
+
+type DropCmd struct {
+	Database   string
+	Collection string
+}
+
+func (m *MongoProxy) Drop(payload DropCmd, result *interface{}) error {
+	collection := m.client.Database(payload.Database).Collection(payload.Collection)
+	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	return collection.Drop(ctx)
+}
+
 type Cmd struct {
 	Database string
-	Cmd      []byte
+	Command  interface{}
 	Opts     []*options.RunCmdOptions
 }
 
-func (m *Mongo) RunCommand(payload Cmd, result *interface{}) error {
-	cmd, err := bson.Marshal(payload.Cmd)
+func (m *MongoProxy) RunCommand(payload Cmd, result *map[string]interface{}) error {
+	cmd, err := bson.Marshal(payload.Command)
 	if err != nil {
 		return err
 	}
@@ -254,8 +291,8 @@ func (m *Mongo) RunCommand(payload Cmd, result *interface{}) error {
 	return database.RunCommand(ctx, cmd, payload.Opts...).Decode(&result)
 }
 
-func (m *Mongo) RunCommandCursor(payload Cmd, result *[]interface{}) error {
-	cmd, err := bson.Marshal(payload.Cmd)
+func (m *MongoProxy) RunCommandCursor(payload Cmd, result *[]map[string]interface{}) error {
+	cmd, err := bson.Marshal(payload.Command)
 	if err != nil {
 		return err
 	}
@@ -264,6 +301,9 @@ func (m *Mongo) RunCommandCursor(payload Cmd, result *[]interface{}) error {
 	cursor, err := database.RunCommandCursor(ctx, cmd, payload.Opts...)
 	if cursor != nil {
 		return cursor.All(ctx, result)
+	}
+	if err != mongo.ErrNilCursor && err != mongo.ErrNilDocument {
+		return errors.Wrap(err, "error while running command")
 	}
 	return nil
 }
