@@ -41,8 +41,10 @@
         "start-test-server": "php tests/TestServer.php",
         "test-go": "/bin/bash -c 'php tests/TestServer.php & sleep 5 && go test ./...'",
         "analyse": "phpstan analyse --memory-limit 300M -l 0 ./src",
-        "cs-fix": "php-cs-fixer fix $1"
+        "cs-fix": "php-cs-fixer fix $1",
+        "binary": "go build -o mongo example/mongo_client/*.go"
     },
+    "bin": ["bin/mongo_proxy"],
     "extra": {
         "hyperf": {
             "config": "Hyperf\\GoTask\\ConfigProvider"
