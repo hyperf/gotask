@@ -2,11 +2,12 @@ package mongo_client
 
 import (
 	"context"
+	"time"
+
 	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"time"
 )
 
 type MongoProxy struct {
@@ -44,7 +45,8 @@ func (m *MongoProxy) InsertOne(payload InsertOneCmd, result *interface{}) error 
 		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	*result, err = collection.InsertOne(ctx, doc, payload.Opts...)
 	return err
 }
@@ -68,7 +70,8 @@ func (m *MongoProxy) InsertMany(payload InsertManyCmd, result *interface{}) erro
 		docs = append(docs, doc)
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	var err error
 	*result, err = collection.InsertMany(ctx, docs, payload.Opts...)
 	return err
@@ -88,7 +91,8 @@ func (m *MongoProxy) FindOne(payload FindOneCmd, result *map[string]interface{})
 		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	err = collection.FindOne(ctx, filter, payload.Opts...).Decode(result)
 	return err
 }
@@ -107,7 +111,8 @@ func (m *MongoProxy) Find(payload FindCmd, result *[]map[string]interface{}) err
 		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	cursor, err := collection.Find(ctx, filter, payload.Opts...)
 	if cursor != nil {
 		return cursor.All(ctx, result)
@@ -138,7 +143,8 @@ func (m *MongoProxy) UpdateOne(payload UpdateOneCmd, result *interface{}) error 
 		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	*result, err = collection.UpdateOne(ctx, filter, update, payload.Opts...)
 	return err
 }
@@ -162,7 +168,8 @@ func (m *MongoProxy) UpdateMany(payload UpdateManyCmd, result *interface{}) erro
 		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	*result, err = collection.UpdateMany(ctx, filter, update, payload.Opts...)
 	return err
 }
@@ -186,7 +193,8 @@ func (m *MongoProxy) ReplaceOne(payload ReplaceOneCmd, result *interface{}) erro
 		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	*result, err = collection.ReplaceOne(ctx, filter, replace, payload.Opts...)
 	return err
 }
@@ -205,7 +213,8 @@ func (m *MongoProxy) CountDocuments(payload CountDocumentsCmd, result *interface
 		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	*result, err = collection.CountDocuments(ctx, filter, payload.Opts...)
 	return err
 }
@@ -224,7 +233,8 @@ func (m *MongoProxy) DeleteOne(payload DeleteOneCmd, result *interface{}) error 
 		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	*result, err = collection.DeleteOne(ctx, filter, payload.Opts...)
 	return err
 }
@@ -243,7 +253,8 @@ func (m *MongoProxy) DeleteMany(payload DeleteManyCmd, result *interface{}) erro
 		return errors.Wrap(err, "failed to marshal bson")
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	*result, err = collection.DeleteMany(ctx, filter, payload.Opts...)
 	return err
 }
@@ -266,7 +277,8 @@ func (m *MongoProxy) Aggregate(payload AggregateCmd, result *[]map[string]interf
 		pipeline = append(pipeline, s)
 	}
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	cursor, err := collection.Aggregate(ctx, payload.Pipeline, payload.Opts...)
 	if cursor != nil {
 		return cursor.All(ctx, result)
@@ -287,7 +299,8 @@ type DropCmd struct {
 // a collection that does not exist on the server.
 func (m *MongoProxy) Drop(payload DropCmd, result *interface{}) error {
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	return collection.Drop(ctx)
 }
 
@@ -304,7 +317,8 @@ func (m *MongoProxy) RunCommand(payload Cmd, result *map[string]interface{}) err
 		return err
 	}
 	database := m.client.Database(payload.Database)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	return database.RunCommand(ctx, cmd, payload.Opts...).Decode(&result)
 }
 
@@ -317,7 +331,8 @@ func (m *MongoProxy) RunCommandCursor(payload Cmd, result *[]map[string]interfac
 		return err
 	}
 	database := m.client.Database(payload.Database)
-	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+	defer cancel()
 	cursor, err := database.RunCommandCursor(ctx, cmd, payload.Opts...)
 	if cursor != nil {
 		return cursor.All(ctx, result)
