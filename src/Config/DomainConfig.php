@@ -42,16 +42,16 @@ class DomainConfig
 
     public function getAddress(): string
     {
-        return $this->config->get('gotask.socket_address', '/tmp/gotask.sock');
+        return $this->config->get('gotask.socket_address', '127.0.0.1:6001');
     }
 
     public function getArgs(): array
     {
         $args = $this->config->get('gotask.args', []);
         $argArr = ['-address', $this->getAddress()];
-        if ($this->config->get('gotask.go2php.enable', false)) {
+        if ($this->shouldEnableGo2Php()) {
             $argArr[] = '-go2php-address';
-            $argArr[] = $this->config->get('gotask.go2php.address', '127.0.0.1:6002');
+            $argArr[] = $this->getGo2PhpAddress();
         }
         return array_merge($argArr, $args);
     }
@@ -88,7 +88,7 @@ class DomainConfig
 
     public function getGo2PhpAddress(): string
     {
-        return $this->config->get('gotask.go2php.address', '/tmp/gotask_go2php.sock');
+        return $this->config->get('gotask.go2php.address', '127.0.0.1:6002');
     }
 
     public function getPoolOptions(): array
