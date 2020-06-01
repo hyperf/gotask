@@ -1,10 +1,11 @@
 package mongo_client
 
 import (
-	"github.com/hyperf/gotask/v2/pkg/config"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/hyperf/gotask/v2/pkg/config"
 )
 
 type Config struct {
@@ -20,15 +21,15 @@ func LoadConfig() Config {
 	if !ok {
 		uri, _ = config.GetString("mongodb.uri", "mongodb://localhost:27017")
 	}
-	readWriteTimeoutStr, ok := os.LookupEnv("MONGODB_URI_READ_WRITE_TIMEOUT")
+	readWriteTimeoutStr, ok := os.LookupEnv("MONGODB_READ_WRITE_TIMEOUT")
 	readWriteTimeout, err := strconv.Atoi(readWriteTimeoutStr)
 	if !ok || err != nil {
-		readWriteTimeout, _ = config.GetInt("mongodb.ReadWriteTimeout", 60_000)
+		readWriteTimeout, _ = config.GetInt("mongodb.read_write_timeout", 60_000)
 	}
-	connectTimeoutStr, ok := os.LookupEnv("MONGODB_URI_CONNECT_TIMEOUT")
+	connectTimeoutStr, ok := os.LookupEnv("MONGODB_CONNECT_TIMEOUT")
 	connectTimeout, err := strconv.Atoi(connectTimeoutStr)
 	if !ok || err != nil {
-		readWriteTimeout, _ = config.GetInt("mongodb.ReadWriteTimeout", 60_000)
+		readWriteTimeout, _ = config.GetInt("mongodb.connect_timeout", 3_000)
 	}
 	return Config{
 		uri,
