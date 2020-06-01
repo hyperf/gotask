@@ -13,6 +13,8 @@ type Config struct {
 	ReadWriteTimeout time.Duration
 }
 
+// LoadConfig loads Configurations from environmental variables or config file in PHP.
+// Environmental variables takes priority.
 func LoadConfig() Config {
 	uri, ok := os.LookupEnv("MONGODB_URI")
 	if !ok {

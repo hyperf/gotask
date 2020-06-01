@@ -14,6 +14,7 @@ type MongoProxy struct {
 	client  *mongo.Client
 }
 
+// NewMongoProxy creates a new Mongo Proxy
 func NewMongoProxy(client *mongo.Client) *MongoProxy {
 	return &MongoProxy{
 		5 * time.Second,
@@ -21,6 +22,7 @@ func NewMongoProxy(client *mongo.Client) *MongoProxy {
 	}
 }
 
+// NewMongoProxyWithTimeout creates a new Mongo Proxy, with a read write timeout.
 func NewMongoProxyWithTimeout(client *mongo.Client, timeout time.Duration) *MongoProxy {
 	return &MongoProxy{
 		timeout,
@@ -35,6 +37,7 @@ type InsertOneCmd struct {
 	Opts       []*options.InsertOneOptions
 }
 
+// InsertOne executes an insert command to insert a single document into the collection.
 func (m *MongoProxy) InsertOne(payload InsertOneCmd, result *interface{}) error {
 	doc, err := bson.Marshal(payload.Record)
 	if err != nil {
@@ -53,6 +56,8 @@ type InsertManyCmd struct {
 	Opts       []*options.InsertManyOptions
 }
 
+// InsertMany executes an insert command to insert multiple documents into the collection. If write errors occur
+// during the operation (e.g. duplicate key error), this method returns a BulkWriteException error.
 func (m *MongoProxy) InsertMany(payload InsertManyCmd, result *interface{}) error {
 	var docs []interface{}
 	for _, v := range payload.Records {
@@ -76,6 +81,7 @@ type FindOneCmd struct {
 	Opts       []*options.FindOneOptions
 }
 
+// FindOne executes a find command and returns one document in the collection.
 func (m *MongoProxy) FindOne(payload FindOneCmd, result *map[string]interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
@@ -94,6 +100,7 @@ type FindCmd struct {
 	Opts       []*options.FindOptions
 }
 
+// Find executes a find command and returns all the matching documents in the collection.
 func (m *MongoProxy) Find(payload FindCmd, result *[]map[string]interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
@@ -120,6 +127,7 @@ type UpdateOneCmd struct {
 	Opts       []*options.UpdateOptions
 }
 
+// UpdateOne executes an update command to update at most one document in the collection.
 func (m *MongoProxy) UpdateOne(payload UpdateOneCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
@@ -143,6 +151,7 @@ type UpdateManyCmd struct {
 	Opts       []*options.UpdateOptions
 }
 
+// UpdateMany executes an update command to update documents in the collection.
 func (m *MongoProxy) UpdateMany(payload UpdateManyCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
@@ -166,6 +175,7 @@ type ReplaceOneCmd struct {
 	Opts       []*options.ReplaceOptions
 }
 
+// ReplaceOne executes an update command to replace at most one document in the collection.
 func (m *MongoProxy) ReplaceOne(payload ReplaceOneCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
@@ -188,6 +198,7 @@ type CountDocumentsCmd struct {
 	Opts       []*options.CountOptions
 }
 
+// CountDocuments returns the number of documents in the collection.
 func (m *MongoProxy) CountDocuments(payload CountDocumentsCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
@@ -206,6 +217,7 @@ type DeleteOneCmd struct {
 	Opts       []*options.DeleteOptions
 }
 
+// DeleteOne executes a delete command to delete at most one document from the collection.
 func (m *MongoProxy) DeleteOne(payload DeleteOneCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
@@ -224,6 +236,7 @@ type DeleteManyCmd struct {
 	Opts       []*options.DeleteOptions
 }
 
+// DeleteMany executes a delete command to delete documents from the collection.
 func (m *MongoProxy) DeleteMany(payload DeleteManyCmd, result *interface{}) error {
 	filter, err := bson.Marshal(payload.Filter)
 	if err != nil {
@@ -242,6 +255,7 @@ type AggregateCmd struct {
 	Opts       []*options.AggregateOptions
 }
 
+// Aggregate executes an aggregate command against the collection and returns all the resulting documents.
 func (m *MongoProxy) Aggregate(payload AggregateCmd, result *[]map[string]interface{}) error {
 	var pipeline = make([][]byte, len(payload.Pipeline))
 	for _, step := range payload.Pipeline {
@@ -269,6 +283,8 @@ type DropCmd struct {
 	Collection string
 }
 
+// Drop drops the collection on the server. This method ignores "namespace not found" errors so it is safe to drop
+// a collection that does not exist on the server.
 func (m *MongoProxy) Drop(payload DropCmd, result *interface{}) error {
 	collection := m.client.Database(payload.Database).Collection(payload.Collection)
 	ctx, _ := context.WithTimeout(context.Background(), m.timeout)
@@ -281,6 +297,7 @@ type Cmd struct {
 	Opts     []*options.RunCmdOptions
 }
 
+// RunCommand executes the given command against the database.
 func (m *MongoProxy) RunCommand(payload Cmd, result *map[string]interface{}) error {
 	cmd, err := bson.Marshal(payload.Command)
 	if err != nil {
@@ -291,6 +308,9 @@ func (m *MongoProxy) RunCommand(payload Cmd, result *map[string]interface{}) err
 	return database.RunCommand(ctx, cmd, payload.Opts...).Decode(&result)
 }
 
+// RunCommandCursor executes the given command against the database and parses the response as a slice. If the command
+// being executed does not return a slice, the command will be executed on the server and an error
+// will be returned because the server response cannot be parsed as a slice.
 func (m *MongoProxy) RunCommandCursor(payload Cmd, result *[]map[string]interface{}) error {
 	cmd, err := bson.Marshal(payload.Command)
 	if err != nil {
