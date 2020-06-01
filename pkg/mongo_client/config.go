@@ -1,11 +1,9 @@
 package mongo_client
 
 import (
+	"flag"
 	"os"
-	"strconv"
 	"time"
-
-	"github.com/hyperf/gotask/v2/pkg/config"
 )
 
 type Config struct {
@@ -14,27 +12,44 @@ type Config struct {
 	ReadWriteTimeout time.Duration
 }
 
+var (
+	globalMongoUri              *string
+	globalMongoConnectTimeout   *time.Duration
+	globalMongoReadWriteTimeout *time.Duration
+)
+
+func init() {
+	uri, ok := os.LookupEnv("MONGODB_URI")
+	if !ok {
+		uri = "mongodb://127.0.0.1:27017"
+	}
+	ct := getTimeout("MONGODB_CONNECT_TIMEOUT", 3*time.Second)
+	rwt := getTimeout("MONGODB_READ_WRITE_TIMEOUT", time.Minute)
+
+	globalMongoUri = flag.String("mongodb-uri", uri, "the default mongodb uri")
+	globalMongoConnectTimeout = flag.Duration("mongodb-connect-timeout", ct, "mongodb connect timeout")
+	globalMongoReadWriteTimeout = flag.Duration("mongodb-read-write-timeout", rwt, "mongodb read write timeout")
+	flag.Parse()
+}
+
+func getTimeout(env string, fallback time.Duration) (result time.Duration) {
+	env, ok := os.LookupEnv(env)
+	if !ok {
+		return fallback
+	}
+	result, err := time.ParseDuration(env)
+	if err != nil {
+		return fallback
+	}
+	return result
+}
+
 // LoadConfig loads Configurations from environmental variables or config file in PHP.
 // Environmental variables takes priority.
 func LoadConfig() Config {
-	uri, ok := os.LookupEnv("MONGODB_URI")
-	if !ok {
-		uri, _ = config.GetString("mongodb.uri", "mongodb://localhost:27017")
-	}
-	readWriteTimeoutStr, ok := os.LookupEnv("MONGODB_READ_WRITE_TIMEOUT")
-	readWriteTimeout, err := strconv.Atoi(readWriteTimeoutStr)
-	if !ok || err != nil {
-		readWriteTimeout, _ = config.GetInt("mongodb.read_write_timeout", 60_000)
-	}
-	connectTimeoutStr, ok := os.LookupEnv("MONGODB_CONNECT_TIMEOUT")
-	connectTimeout, err := strconv.Atoi(connectTimeoutStr)
-	if !ok || err != nil {
-		readWriteTimeout, _ = config.GetInt("mongodb.connect_timeout", 3_000)
-	}
 	return Config{
-		uri,
-		time.Duration(connectTimeout) * time.Millisecond,
-		time.Duration(readWriteTimeout) * time.Millisecond,
+		*globalMongoUri,
+		*globalMongoConnectTimeout,
+		*globalMongoReadWriteTimeout,
 	}
-
 }
