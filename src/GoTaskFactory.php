@@ -11,15 +11,15 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask;
 
-use Hyperf\Contract\ConfigInterface;
+use Hyperf\GoTask\Config\DomainConfig;
 use Psr\Container\ContainerInterface;
 
 class GoTaskFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->get(ConfigInterface::class);
-        if ($config->get('gotask.socket_address', false)) {
+        $config = $container->get(DomainConfig::class);
+        if ($config->getAddress()) {
             return $container->get(SocketGoTask::class);
         }
         return $container->get(PipeGoTask::class);

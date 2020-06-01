@@ -16,7 +16,7 @@ use Hyperf\Framework\Event\BootApplication;
 use Hyperf\GoTask\PipeGoTask;
 use Psr\Container\ContainerInterface;
 
-class BootApplicationListener implements ListenerInterface
+class PipeLockListener implements ListenerInterface
 {
     /**
      * @var ContainerInterface

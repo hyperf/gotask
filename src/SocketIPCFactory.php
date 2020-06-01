@@ -11,31 +11,24 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask;
 
-use Hyperf\Contract\ConfigInterface;
+use Hyperf\GoTask\Config\DomainConfig;
 use Hyperf\GoTask\IPC\SocketIPCSender;
-use Psr\Container\ContainerInterface;
 
 class SocketIPCFactory
 {
-    const DEFAULT_ADDR = '/tmp/gotask.sock';
-
     /**
-     * @var ContainerInterface
+     * @var DomainConfig
      */
-    private $container;
+    private $config;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(DomainConfig $config)
     {
-        $this->container = $container;
+        $this->config = $config;
     }
 
     public function make()
     {
-        if (! $this->container->has(ConfigInterface::class)) {
-            return make(SocketIPCSender::class, ['address' => self::DEFAULT_ADDR]);
-        }
-        $config = $this->container->get(ConfigInterface::class);
-        $address = $config->get('gotask.socket_address', '/tmp/gotask.sock');
+        $address = $this->config->getAddress();
         return make(SocketIPCSender::class, ['address' => $address]);
     }
 }

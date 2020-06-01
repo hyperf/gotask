@@ -18,6 +18,8 @@ use Hyperf\Di\Container;
 use Hyperf\Di\Definition\DefinitionSource;
 use Hyperf\Di\Definition\ScanConfig;
 use Hyperf\Framework\Logger\StdoutLogger;
+use Hyperf\GoTask\GoTask;
+use Hyperf\GoTask\SocketGoTask;
 use Hyperf\Utils\ApplicationContext;
 use PHPUnit\Framework\TestCase;
 
@@ -50,6 +52,10 @@ abstract class AbstractTestCase extends TestCase
         $container->define(
             StdoutLoggerInterface::class,
             StdoutLogger::class
+        );
+        $container->define(
+            GoTask::class,
+            SocketGoTask::class
         );
         ApplicationContext::setContainer($container);
     }

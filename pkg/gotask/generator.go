@@ -2,6 +2,7 @@ package gotask
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -105,19 +106,24 @@ func body(namespace *string, class *Class) string {
 func generatePHP(receiver interface{}) error {
 	namespace := property(receiver, "PHPNamespace", "App\\GoTask")
 	class := reflectStruct(receiver)
-	dirPath := property(receiver, "PHPPath", "./../app/GoTask")
-	err := os.MkdirAll(dirPath, os.FileMode(0755))
-	if err != nil {
-		return errors.Wrap(err, "cannot create dir for php files")
-	}
-	fullPath, err := filepath.Abs(filepath.Clean(dirPath) + "/" + class.Name + ".php")
-	if err != nil {
-		return errors.Wrap(err, "invalid file path")
-	}
 	out := body(&namespace, class)
-	err = ioutil.WriteFile(fullPath, []byte(out), os.FileMode(0755))
-	if err != nil {
-		return errors.Wrap(err, "failed to generate PHP file")
+	dirPath := property(receiver, "PHPPath", "")
+	if dirPath != "" {
+		err := os.MkdirAll(dirPath, os.FileMode(0755))
+		if err != nil {
+			return errors.Wrap(err, "cannot create dir for php files")
+		}
+		fullPath, err := filepath.Abs(filepath.Clean(dirPath) + "/" + class.Name + ".php")
+		if err != nil {
+			return errors.Wrap(err, "invalid file path")
+		}
+
+		err = ioutil.WriteFile(fullPath, []byte(out), os.FileMode(0755))
+		if err != nil {
+			return errors.Wrap(err, "failed to generate PHP file")
+		}
+	} else {
+		fmt.Print(out)
 	}
 	return nil
 }
