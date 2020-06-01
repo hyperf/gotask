@@ -2,16 +2,18 @@ package gotask
 
 import (
 	"context"
+	"flag"
 	"fmt"
-	"github.com/oklog/run"
-	"github.com/pkg/errors"
-	"github.com/spiral/goridge/v2"
 	"net"
 	"net/rpc"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/oklog/run"
+	"github.com/pkg/errors"
+	"github.com/spiral/goridge/v2"
 )
 
 var g run.Group
@@ -33,6 +35,9 @@ func checkProcess(pid int, quit chan bool) {
 
 // Register a net/rpc compatible service
 func Register(receiver interface{}) error {
+	if !flag.Parsed() {
+		flag.Parse()
+	}
 	if !*reflection {
 		return rpc.Register(receiver)
 	}
@@ -51,6 +56,10 @@ func GetAddress() string {
 
 // Run the sidecar, receive any fatal errors.
 func Run() error {
+	if !flag.Parsed() {
+		flag.Parse()
+	}
+
 	if *reflection {
 		return nil
 	}
