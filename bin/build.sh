@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-package=../example/sidecar.go
+package=../example/mongo_client/sidecar.go
 package_name=mongo-proxy
 
 #the full list of the platforms: https://golang.org/doc/install/source#environment
