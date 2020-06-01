@@ -32,18 +32,20 @@
         "hyperf/testing": "1.1.*",
         "mockery/mockery": "^1.3",
         "phpstan/phpstan": "^0.12",
-        "swoft/swoole-ide-helper": "dev-master"
+        "swoole/ide-helper": "^4.5"
     },
     "config": {
         "sort-packages": true
     },
     "scripts": {
-        "test": "go build -o app example/*.go && phpunit -c phpunit.xml --colors=always",
+        "test": "go build -o app example/*.go && go build -o mongo example/mongo_client/*.go && phpunit -c phpunit.xml --colors=always",
         "start-test-server": "php tests/TestServer.php",
         "test-go": "/bin/bash -c 'php tests/TestServer.php & sleep 5 && go test ./...'",
         "analyse": "phpstan analyse --memory-limit 300M -l 0 ./src",
-        "cs-fix": "php-cs-fixer fix $1"
+        "cs-fix": "php-cs-fixer fix $1",
+        "binary": "go build -o mongo example/mongo_client/*.go"
     },
+    "bin": ["bin/mongo_proxy"],
     "extra": {
         "hyperf": {
             "config": "Hyperf\\GoTask\\ConfigProvider"
