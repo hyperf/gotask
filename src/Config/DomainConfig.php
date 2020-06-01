@@ -71,7 +71,7 @@ class DomainConfig
         return $this->config->get('gotask.go_build.command');
     }
 
-    public function shouldLogRedirect(): string
+    public function shouldLogRedirect(): bool
     {
         return $this->config->get('gotask.go_log.redirect', true);
     }
