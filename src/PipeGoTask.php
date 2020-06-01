@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask;
 
+use Hyperf\GoTask\Config\DomainConfig;
 use Hyperf\GoTask\IPC\PipeIPCSender;
 use Hyperf\Process\ProcessCollector;
 use Swoole\Coroutine\Channel;
@@ -38,10 +39,15 @@ class PipeGoTask implements GoTask
      * @var null|Process
      */
     private $process;
+    /**
+     * @var DomainConfig
+     */
+    private $config;
 
-    public function __construct(?Process $process = null)
+    public function __construct(DomainConfig $config, ?Process $process = null)
     {
         $this->process = $process;
+        $this->config = $config;
         $this->lock = new Lock(SWOOLE_SEM);
     }
 
@@ -65,7 +71,8 @@ class PipeGoTask implements GoTask
     private function start()
     {
         if ($this->process == null) {
-            $this->process = ProcessCollector::get('gotask')[0];
+            $processName = $this->config->getProcessName();
+            $this->process = ProcessCollector::get($processName)[0];
         }
         $task = make(PipeIPCSender::class, ['process' => $this->process]);
         while (true) {

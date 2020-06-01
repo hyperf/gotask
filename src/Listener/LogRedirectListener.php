@@ -21,7 +21,7 @@ use Hyperf\Process\ProcessCollector;
 use Psr\Container\ContainerInterface;
 use Swoole\Coroutine;
 
-class OnMainWorkerStartListener implements ListenerInterface
+class LogRedirectListener implements ListenerInterface
 {
     /**
      * @var ContainerInterface

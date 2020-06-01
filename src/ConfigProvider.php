@@ -11,9 +11,9 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask;
 
-use Hyperf\GoTask\Listener\BootApplicationListener;
-use Hyperf\GoTask\Listener\OnMainWorkerStartListener;
-use Hyperf\GoTask\Listener\OnWorkerStartListener;
+use Hyperf\GoTask\Listener\PipeLockListener;
+use Hyperf\GoTask\Listener\LogRedirectListener;
+use Hyperf\GoTask\Listener\Go2PhpListener;
 use Hyperf\GoTask\Process\GoTaskProcess;
 
 class ConfigProvider
@@ -30,9 +30,9 @@ class ConfigProvider
                 GoTaskProcess::class,
             ],
             'listeners' => [
-                BootApplicationListener::class,
-                OnMainWorkerStartListener::class,
-                OnWorkerStartListener::class,
+                PipeLockListener::class,
+                LogRedirectListener::class,
+                Go2PhpListener::class,
             ],
             'annotations' => [
                 'scan' => [

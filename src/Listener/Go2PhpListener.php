@@ -19,7 +19,7 @@ use Hyperf\GoTask\IPC\SocketIPCReceiver;
 use Hyperf\GoTask\WithGoTask;
 use Psr\Container\ContainerInterface;
 
-class OnWorkerStartListener implements ListenerInterface
+class Go2PhpListener implements ListenerInterface
 {
     /**
      * @var DomainConfig
