@@ -11,17 +11,17 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask;
 
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ConnectionInterface;
+use Hyperf\GoTask\Config\DomainConfig;
 use Hyperf\Pool\Frequency;
 use Hyperf\Pool\Pool;
 use Psr\Container\ContainerInterface;
 
 class GoTaskConnectionPool extends Pool
 {
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, DomainConfig $config)
     {
-        $options = $this->getConfig($container);
+        $options = $config->getPoolOptions();
         $this->frequency = make(Frequency::class);
         parent::__construct($container, $options);
     }
@@ -29,14 +29,5 @@ class GoTaskConnectionPool extends Pool
     public function createConnection(): ConnectionInterface
     {
         return make(GoTaskConnection::class, ['pool' => $this]);
-    }
-
-    protected function getConfig(ContainerInterface $container)
-    {
-        if (! $container->has(ConfigInterface::class)) {
-            return [];
-        }
-        $config = $container->get(ConfigInterface::class);
-        return $config->get('gotask.pool', []);
     }
 }

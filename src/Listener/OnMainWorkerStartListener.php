@@ -11,11 +11,11 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\Listener;
 
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
+use Hyperf\GoTask\Config\DomainConfig;
 use Hyperf\Process\Exception\SocketAcceptException;
 use Hyperf\Process\ProcessCollector;
 use Psr\Container\ContainerInterface;
@@ -29,14 +29,14 @@ class OnMainWorkerStartListener implements ListenerInterface
     private $container;
 
     /**
-     * @var ConfigInterface
+     * @var DomainConfig
      */
     private $config;
 
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->config = $container->get(ConfigInterface::class);
+        $this->config = $container->get(DomainConfig::class);
     }
 
     /**
@@ -52,7 +52,7 @@ class OnMainWorkerStartListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        if (! $this->config->get('gotask.go_log.redirect', true)) {
+        if (! $this->config->shouldLogRedirect()) {
             return;
         }
         Coroutine::create(function () {
@@ -99,7 +99,7 @@ class OnMainWorkerStartListener implements ListenerInterface
     {
         if ($this->container->has(StdoutLoggerInterface::class)) {
             $logger = $this->container->get(StdoutLoggerInterface::class);
-            $level = $this->config->get('gotask.go_log.level', 'info');
+            $level = $this->config->getLogLevel();
             $logger->{$level}($output);
         }
     }

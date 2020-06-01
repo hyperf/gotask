@@ -11,16 +11,18 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\Listener;
 
-use Hyperf\Contract\ConfigInterface;
+use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
+use Hyperf\GoTask\Config\DomainConfig;
 use Hyperf\GoTask\IPC\SocketIPCReceiver;
+use Hyperf\GoTask\WithGoTask;
 use Psr\Container\ContainerInterface;
 
 class OnWorkerStartListener implements ListenerInterface
 {
     /**
-     * @var ConfigInterface
+     * @var DomainConfig
      */
     private $config;
 
@@ -32,7 +34,7 @@ class OnWorkerStartListener implements ListenerInterface
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->config = $container->get(ConfigInterface::class);
+        $this->config = $container->get(DomainConfig::class);
     }
 
     /**
@@ -40,7 +42,7 @@ class OnWorkerStartListener implements ListenerInterface
      */
     public function listen(): array
     {
-        return [AfterWorkerStart::class];
+        return [AfterWorkerStart::class, BeforeHandle::class];
     }
 
     /**
@@ -48,10 +50,15 @@ class OnWorkerStartListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        if (! $this->config->get('gotask.go2php.enable', false)) {
+        if (! $this->config->shouldEnableGo2Php()) {
             return;
         }
-        $addr = $this->config->get('gotask.go2php.address', '/tmp/gotask_go2php.sock');
+
+        if ($event instanceof BeforeHandle && ! ($event->getCommand() instanceof WithGoTask)) {
+            return;
+        }
+
+        $addr = $this->config->getGo2PhpAddress();
         if ($this->isUnix($addr)) {
             $addrArr = explode(',', $addr);
             if (count($addrArr) <= $event->workerId) {
