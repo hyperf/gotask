@@ -16,6 +16,7 @@ func TestGetTimeout(t *testing.T) {
 	}
 
 	for _, tt := range cases {
+		tt := tt
 		t.Run(tt[0].(string), func(t *testing.T) {
 			t.Parallel()
 			s := getTimeout(tt[0].(string), time.Second)
