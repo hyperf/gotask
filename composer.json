@@ -22,7 +22,8 @@
         "ext-swoole": ">=4.4",
         "hyperf/pool": "^1.1",
         "hyperf/process": "^1.1",
-        "spiral/goridge": "^2.4.1"
+        "spiral/goridge": "^2.4.1",
+        "symfony/event-dispatcher": "~4.4.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.14",

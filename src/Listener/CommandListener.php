@@ -11,12 +11,11 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\Listener;
 
-use Hyperf\Command\Event\AfterExecute;
-use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\GoTask\Config\DomainConfig;
 use Hyperf\GoTask\WithGoTask;
 use Swoole\Process;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 class CommandListener implements ListenerInterface
 {
@@ -41,8 +40,7 @@ class CommandListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            BeforeHandle::class,
-            AfterExecute::class,
+            ConsoleCommandEvent::class
         ];
     }
 
@@ -54,7 +52,7 @@ class CommandListener implements ListenerInterface
         if (! $this->config->isEnabled()) {
             return;
         }
-        if (($event instanceof BeforeHandle) && ($event->getCommand() instanceof WithGoTask)) {
+        if (($event instanceof ConsoleCommandEvent) && ($event->getCommand() instanceof WithGoTask)) {
             $this->process = new Process(function (Process $process) {
                 $executable = $this->config->getExecutable();
                 $args = $this->config->getArgs();
@@ -62,10 +60,6 @@ class CommandListener implements ListenerInterface
             });
             $this->process->start();
             sleep(1);
-        }
-
-        if (($event instanceof AfterExecute) && ($event->getCommand() instanceof WithGoTask)) {
-            Process::kill($this->process->pid);
         }
     }
 }

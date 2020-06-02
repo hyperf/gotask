@@ -119,7 +119,7 @@ func Run() error {
 				case sig := <-termChan:
 					return fmt.Errorf("received system call:%+v, shutting down\n", sig)
 				case <-pdeadChan:
-					return fmt.Errorf("parent process dead")
+					return nil
 				case <-ticker.C:
 					checkProcess(ppid, pdeadChan)
 				case <-ctx.Done():
