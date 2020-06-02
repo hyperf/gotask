@@ -40,7 +40,7 @@ class CommandListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            ConsoleCommandEvent::class
+            ConsoleCommandEvent::class,
         ];
     }
 

@@ -39,6 +39,7 @@ class PipeGoTask implements GoTask
      * @var null|Process
      */
     private $process;
+
     /**
      * @var DomainConfig
      */
