@@ -162,4 +162,15 @@ class MongoDBTest extends AbstractTestCase
             $this->assertNotnull($result = $database->runCommandCursor(['listCollections' => 1]));
         });
     }
+
+    public function testObjectId()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $result = $collection->findOne(['_id' => $result['insertedid']]);
+            $this->assertEquals(0, $result['tid']);
+        });
+    }
 }
