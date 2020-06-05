@@ -53,7 +53,6 @@ class MongoDBTest extends AbstractTestCase
     {
         \Swoole\Coroutine\run(function () {
             $client = make(MongoClient::class);
-
             $collection = $client->database('testing')->collection('unit');
             $this->assertNotNull($collection->insertOne(['foo' => 'bar', 'tid' => 0]));
             $this->assertNotNull($collection->insertMany([['foo' => 'bar', 'tid' => 1], ['foo' => 'bar', 'tid' => 2]]));

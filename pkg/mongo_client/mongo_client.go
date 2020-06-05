@@ -2,9 +2,9 @@ package mongo_client
 
 import (
 	"context"
+	"github.com/hyperf/gotask/v2/pkg/gotask"
 	"time"
 
-	"github.com/pkg/errors"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -31,24 +31,40 @@ func NewMongoProxyWithTimeout(client *mongo.Client, timeout time.Duration) *Mong
 	}
 }
 
+func (m *MongoProxy) getHandler(i interface{}, f coreExecutor) gotask.Handler {
+	mw := stackMiddleware(i)
+	return mw(func(cmd interface{}, result *interface{}) error {
+		ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
+		defer cancel()
+		return f(ctx, result)
+	})
+}
+
+func (m *MongoProxy) exec(i interface{}, payload []byte, result *[]byte, f coreExecutor) error {
+	var r interface{}
+	defer func() {
+		*result = r.([]byte)
+	}()
+	return m.getHandler(i, f)(payload, &r)
+}
+
+type coreExecutor func(ctx context.Context, r *interface{}) error
+
 type InsertOneCmd struct {
 	Database   string
 	Collection string
-	Record     interface{}
+	Record     bson.Raw
 	Opts       []*options.InsertOneOptions
 }
 
 // InsertOne executes an insert command to insert a single document into the collection.
-func (m *MongoProxy) InsertOne(payload InsertOneCmd, result *interface{}) error {
-	doc, err := bson.Marshal(payload.Record)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	*result, err = collection.InsertOne(ctx, doc, payload.Opts...)
-	return err
+func (m *MongoProxy) InsertOne(payload []byte, result *[]byte) (err error) {
+	cmd := &InsertOneCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) error {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		*r, err = collection.InsertOne(ctx, cmd.Record, cmd.Opts...)
+		return err
+	})
 }
 
 type InsertManyCmd struct {
@@ -60,234 +76,178 @@ type InsertManyCmd struct {
 
 // InsertMany executes an insert command to insert multiple documents into the collection. If write errors occur
 // during the operation (e.g. duplicate key error), this method returns a BulkWriteException error.
-func (m *MongoProxy) InsertMany(payload InsertManyCmd, result *interface{}) error {
-	var docs []interface{}
-	for _, v := range payload.Records {
-		doc, err := bson.Marshal(v)
-		if err != nil {
-			return errors.Wrap(err, "failed to marshal bson")
-		}
-		docs = append(docs, doc)
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	var err error
-	*result, err = collection.InsertMany(ctx, docs, payload.Opts...)
-	return err
+func (m *MongoProxy) InsertMany(payload []byte, result *[]byte) (err error) {
+	cmd := &InsertManyCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) error {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		*r, err = collection.InsertMany(ctx, cmd.Records, cmd.Opts...)
+		return err
+	})
 }
 
 type FindOneCmd struct {
 	Database   string
 	Collection string
-	Filter     interface{}
+	Filter     bson.Raw
 	Opts       []*options.FindOneOptions
 }
 
 // FindOne executes a find command and returns one document in the collection.
-func (m *MongoProxy) FindOne(payload FindOneCmd, result *map[string]interface{}) error {
-	filter, err := bson.Marshal(payload.Filter)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	err = collection.FindOne(ctx, filter, payload.Opts...).Decode(result)
-	return err
+func (m *MongoProxy) FindOne(payload []byte, result *[]byte) error {
+	cmd := &FindOneCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) error {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		return collection.FindOne(ctx, cmd.Filter, cmd.Opts...).Decode(r)
+	})
 }
 
 type FindCmd struct {
 	Database   string
 	Collection string
-	Filter     interface{}
+	Filter     bson.Raw
 	Opts       []*options.FindOptions
 }
 
 // Find executes a find command and returns all the matching documents in the collection.
-func (m *MongoProxy) Find(payload FindCmd, result *[]map[string]interface{}) error {
-	filter, err := bson.Marshal(payload.Filter)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	cursor, err := collection.Find(ctx, filter, payload.Opts...)
-	if cursor != nil {
-		return cursor.All(ctx, result)
-	}
-	if err != mongo.ErrNilCursor && err != mongo.ErrNilDocument {
-		return errors.Wrap(err, "error while finding")
-	}
-	return nil
-
+func (m *MongoProxy) Find(payload []byte, result *[]byte) error {
+	cmd := &FindCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) error {
+		var rr []interface{}
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		cursor, err := collection.Find(ctx, cmd.Filter, cmd.Opts...)
+		if cursor != nil {
+			err = cursor.All(ctx, &rr)
+		}
+		*r = rr
+		return err
+	})
 }
 
 type UpdateOneCmd struct {
 	Database   string
 	Collection string
-	Filter     interface{}
-	Update     interface{}
+	Filter     bson.Raw
+	Update     bson.Raw
 	Opts       []*options.UpdateOptions
 }
 
 // UpdateOne executes an update command to update at most one document in the collection.
-func (m *MongoProxy) UpdateOne(payload UpdateOneCmd, result *interface{}) error {
-	filter, err := bson.Marshal(payload.Filter)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	update, err := bson.Marshal(payload.Update)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	*result, err = collection.UpdateOne(ctx, filter, update, payload.Opts...)
-	return err
+func (m *MongoProxy) UpdateOne(payload []byte, result *[]byte) error {
+	cmd := &UpdateOneCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		*r, err = collection.UpdateOne(ctx, cmd.Filter, cmd.Update, cmd.Opts...)
+		return err
+	})
 }
 
 type UpdateManyCmd struct {
 	Database   string
 	Collection string
-	Filter     interface{}
-	Update     interface{}
+	Filter     bson.Raw
+	Update     bson.Raw
 	Opts       []*options.UpdateOptions
 }
 
 // UpdateMany executes an update command to update documents in the collection.
-func (m *MongoProxy) UpdateMany(payload UpdateManyCmd, result *interface{}) error {
-	filter, err := bson.Marshal(payload.Filter)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	update, err := bson.Marshal(payload.Update)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	*result, err = collection.UpdateMany(ctx, filter, update, payload.Opts...)
-	return err
+func (m *MongoProxy) UpdateMany(payload []byte, result *[]byte) error {
+	cmd := &UpdateManyCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		*r, err = collection.UpdateMany(ctx, cmd.Filter, cmd.Update, cmd.Opts...)
+		return err
+	})
 }
 
 type ReplaceOneCmd struct {
 	Database   string
 	Collection string
-	Filter     interface{}
-	Replace    interface{}
+	Filter     bson.Raw
+	Replace    bson.Raw
 	Opts       []*options.ReplaceOptions
 }
 
 // ReplaceOne executes an update command to replace at most one document in the collection.
-func (m *MongoProxy) ReplaceOne(payload ReplaceOneCmd, result *interface{}) error {
-	filter, err := bson.Marshal(payload.Filter)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	replace, err := bson.Marshal(payload.Replace)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	*result, err = collection.ReplaceOne(ctx, filter, replace, payload.Opts...)
-	return err
+func (m *MongoProxy) ReplaceOne(payload []byte, result *[]byte) error {
+	cmd := &ReplaceOneCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		*r, err = collection.ReplaceOne(ctx, cmd.Filter, cmd.Replace, cmd.Opts...)
+		return err
+	})
 }
 
 type CountDocumentsCmd struct {
 	Database   string
 	Collection string
-	Filter     interface{}
+	Filter     bson.Raw
 	Opts       []*options.CountOptions
 }
 
 // CountDocuments returns the number of documents in the collection.
-func (m *MongoProxy) CountDocuments(payload CountDocumentsCmd, result *interface{}) error {
-	filter, err := bson.Marshal(payload.Filter)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	*result, err = collection.CountDocuments(ctx, filter, payload.Opts...)
-	return err
+func (m *MongoProxy) CountDocuments(payload []byte, result *[]byte) error {
+	cmd := &CountDocumentsCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		*r, err = collection.CountDocuments(ctx, cmd.Filter, cmd.Opts...)
+		return err
+	})
 }
 
 type DeleteOneCmd struct {
 	Database   string
 	Collection string
-	Filter     interface{}
+	Filter     bson.Raw
 	Opts       []*options.DeleteOptions
 }
 
 // DeleteOne executes a delete command to delete at most one document from the collection.
-func (m *MongoProxy) DeleteOne(payload DeleteOneCmd, result *interface{}) error {
-	filter, err := bson.Marshal(payload.Filter)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	*result, err = collection.DeleteOne(ctx, filter, payload.Opts...)
-	return err
+func (m *MongoProxy) DeleteOne(payload []byte, result *[]byte) error {
+	cmd := &DeleteOneCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		*r, err = collection.DeleteOne(ctx, cmd.Filter, cmd.Opts...)
+		return err
+	})
 }
 
 type DeleteManyCmd struct {
 	Database   string
 	Collection string
-	Filter     interface{}
+	Filter     bson.Raw
 	Opts       []*options.DeleteOptions
 }
 
 // DeleteMany executes a delete command to delete documents from the collection.
-func (m *MongoProxy) DeleteMany(payload DeleteManyCmd, result *interface{}) error {
-	filter, err := bson.Marshal(payload.Filter)
-	if err != nil {
-		return errors.Wrap(err, "failed to marshal bson")
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	*result, err = collection.DeleteMany(ctx, filter, payload.Opts...)
-	return err
+func (m *MongoProxy) DeleteMany(payload []byte, result *[]byte) error {
+	cmd := &DeleteManyCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		*r, err = collection.DeleteMany(ctx, cmd.Filter, cmd.Opts...)
+		return err
+	})
 }
 
 type AggregateCmd struct {
 	Database   string
 	Collection string
-	Pipeline   []interface{}
+	Pipeline   mongo.Pipeline
 	Opts       []*options.AggregateOptions
 }
 
 // Aggregate executes an aggregate command against the collection and returns all the resulting documents.
-func (m *MongoProxy) Aggregate(payload AggregateCmd, result *[]map[string]interface{}) error {
-	var pipeline = make([][]byte, len(payload.Pipeline))
-	for _, step := range payload.Pipeline {
-		s, err := bson.Marshal(step)
-		if err != nil {
-			return errors.Wrap(err, "failed to marshal bson")
+func (m *MongoProxy) Aggregate(payload []byte, result *[]byte) error {
+	cmd := &AggregateCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		var rr []interface{}
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		cursor, err := collection.Aggregate(ctx, cmd.Pipeline, cmd.Opts...)
+		if cursor != nil {
+			err = cursor.All(ctx, &rr)
 		}
-		pipeline = append(pipeline, s)
-	}
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	cursor, err := collection.Aggregate(ctx, payload.Pipeline, payload.Opts...)
-	if cursor != nil {
-		return cursor.All(ctx, result)
-	}
-	if err != mongo.ErrNilCursor && err != mongo.ErrNilDocument {
-		return errors.Wrap(err, "error while aggregating")
-	}
-	return nil
-
+		*r = rr
+		return err
+	})
 }
 
 type DropCmd struct {
@@ -297,48 +257,42 @@ type DropCmd struct {
 
 // Drop drops the collection on the server. This method ignores "namespace not found" errors so it is safe to drop
 // a collection that does not exist on the server.
-func (m *MongoProxy) Drop(payload DropCmd, result *interface{}) error {
-	collection := m.client.Database(payload.Database).Collection(payload.Collection)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	return collection.Drop(ctx)
+func (m *MongoProxy) Drop(payload []byte, result *[]byte) error {
+	cmd := &DropCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		return collection.Drop(ctx)
+	})
 }
 
 type Cmd struct {
 	Database string
-	Command  interface{}
+	Command  bson.D
 	Opts     []*options.RunCmdOptions
 }
 
 // RunCommand executes the given command against the database.
-func (m *MongoProxy) RunCommand(payload Cmd, result *map[string]interface{}) error {
-	cmd, err := bson.Marshal(payload.Command)
-	if err != nil {
-		return err
-	}
-	database := m.client.Database(payload.Database)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	return database.RunCommand(ctx, cmd, payload.Opts...).Decode(&result)
+func (m *MongoProxy) RunCommand(payload []byte, result *[]byte) error {
+	cmd := &Cmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		database := m.client.Database(cmd.Database)
+		return database.RunCommand(ctx, cmd.Command, cmd.Opts...).Decode(r)
+	})
 }
 
 // RunCommandCursor executes the given command against the database and parses the response as a slice. If the command
 // being executed does not return a slice, the command will be executed on the server and an error
 // will be returned because the server response cannot be parsed as a slice.
-func (m *MongoProxy) RunCommandCursor(payload Cmd, result *[]map[string]interface{}) error {
-	cmd, err := bson.Marshal(payload.Command)
-	if err != nil {
+func (m *MongoProxy) RunCommandCursor(payload []byte, result *[]byte) error {
+	cmd := &Cmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		var rr []interface{}
+		database := m.client.Database(cmd.Database)
+		cursor, err := database.RunCommandCursor(ctx, cmd.Command, cmd.Opts...)
+		if cursor != nil {
+			err = cursor.All(ctx, &rr)
+		}
+		*r = rr
 		return err
-	}
-	database := m.client.Database(payload.Database)
-	ctx, cancel := context.WithTimeout(context.Background(), m.timeout)
-	defer cancel()
-	cursor, err := database.RunCommandCursor(ctx, cmd, payload.Opts...)
-	if cursor != nil {
-		return cursor.All(ctx, result)
-	}
-	if err != mongo.ErrNilCursor && err != mongo.ErrNilDocument {
-		return errors.Wrap(err, "error while running command")
-	}
-	return nil
+	})
 }

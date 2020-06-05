@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Hyperf\GoTask\MongoClient;
 
 use Hyperf\Contract\ConfigInterface;
+use function MongoDB\BSON\fromPHP;
+use function MongoDB\BSON\toPHP;
 
 class Database
 {
@@ -49,23 +51,23 @@ class Database
         return new Collection($this->mongo, $this->config, $this->database, $collName);
     }
 
-    public function runCommand($command = [], $opts = []): ?array
+    public function runCommand($command = [], $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $payload = [
             'Database' => $this->database,
             'Command' => $this->sanitize($command),
             'Opts' => $this->sanitizeOpts($opts),
         ];
-        return $this->mongo->runCommand($payload);
+        return toPHP($this->mongo->runCommand(fromPHP($payload)), $typeMap);
     }
 
-    public function runCommandCursor($command = [], $opts = []): ?array
+    public function runCommandCursor($command = [], $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $payload = [
             'Database' => $this->database,
             'Command' => $this->sanitize($command),
             'Opts' => $this->sanitizeOpts($opts),
         ];
-        return $this->mongo->runCommandCursor($payload);
+        return toPHP($this->mongo->runCommandCursor(fromPHP($payload)), $typeMap);
     }
 }

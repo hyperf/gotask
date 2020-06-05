@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Hyperf\GoTask\MongoClient;
 
 use Hyperf\Contract\ConfigInterface;
+use function MongoDB\BSON\fromPHP;
+use function MongoDB\BSON\toPHP;
 
 class Collection
 {
@@ -45,114 +47,125 @@ class Collection
         $this->collection = $collection;
     }
 
-    public function insertOne($document = [], array $opts = []): array
+    public function insertOne($document = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $document = $this->sanitize($document);
-        return $this->mongo->insertOne($this->makePayload([
+        $data = $this->mongo->insertOne($this->makePayload([
             'Record' => $document,
         ], $opts));
+        return toPHP($data, $typeMap);
     }
 
-    public function insertMany($documents = [], array $opts = []): array
+    public function insertMany($documents = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $documents = $this->sanitize($documents);
-        return $this->mongo->insertMany($this->makePayload([
+        $data = $this->mongo->insertMany($this->makePayload([
             'Records' => $documents,
         ], $opts));
+        return toPHP($data, $typeMap);
     }
 
-    public function find($filter = [], array $opts = []): ?array
+    public function find($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $filter = $this->sanitize($filter);
-        return $this->mongo->find($this->makePayload([
+        $data = $this->mongo->find($this->makePayload([
             'Filter' => $filter,
         ], $opts));
+        return toPHP($data, $typeMap);
     }
 
-    public function findOne($filter = [], array $opts = []): array
+    public function findOne($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $filter = $this->sanitize($filter);
-        return $this->mongo->findOne($this->makePayload([
+        $data = $this->mongo->findOne($this->makePayload([
             'Filter' => $filter,
         ], $opts));
+        return toPHP($data, $typeMap);
     }
 
-    public function updateOne($filter = [], $update = [], array $opts = []): array
-    {
-        $filter = $this->sanitize($filter);
-        $update = $this->sanitize($update);
-        return $this->mongo->updateOne($this->makePayload([
-            'Filter' => $filter,
-            'Update' => $update,
-        ], $opts));
-    }
-
-    public function updateMany($filter = [], $update = [], array $opts = []): array
+    public function updateOne($filter = [], $update = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $filter = $this->sanitize($filter);
         $update = $this->sanitize($update);
-        return $this->mongo->updateMany($this->makePayload([
+        $data = $this->mongo->updateOne($this->makePayload([
             'Filter' => $filter,
             'Update' => $update,
         ], $opts));
+        return toPHP($data, $typeMap);
     }
 
-    public function replaceOne($filter = [], $replace = [], array $opts = []): array
+    public function updateMany($filter = [], $update = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    {
+        $filter = $this->sanitize($filter);
+        $update = $this->sanitize($update);
+        $data = $this->mongo->updateMany($this->makePayload([
+            'Filter' => $filter,
+            'Update' => $update,
+        ], $opts));
+        return toPHP($data, $typeMap);
+    }
+
+    public function replaceOne($filter = [], $replace = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $filter = $this->sanitize($filter);
         $replace = $this->sanitize($replace);
-        return $this->mongo->replaceOne($this->makePayload([
+        $data = $this->mongo->replaceOne($this->makePayload([
             'Filter' => $filter,
             'Replace' => $replace,
         ], $opts));
+        return toPHP($data, $typeMap);
     }
 
-    public function countDocuments($filter = [], array $opts = []): int
+    public function countDocuments($filter = [], array $opts = [], $typeMap = ['document' => 'int'])
     {
         $filter = $this->sanitize($filter);
-        return $this->mongo->countDocuments($this->makePayload([
+        $data = $this->mongo->countDocuments($this->makePayload([
             'Filter' => $filter,
         ], $opts));
+        return unpack('P', $data)[1];
     }
 
-    public function deleteOne($filter = [], array $opts = []): array
+    public function deleteOne($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $filter = $this->sanitize($filter);
-        return $this->mongo->deleteOne($this->makePayload([
+        $data = $this->mongo->deleteOne($this->makePayload([
             'Filter' => $filter,
         ], $opts));
+        return toPHP($data, $typeMap);
     }
 
-    public function deleteMany($filter = [], array $opts = []): array
+    public function deleteMany($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $filter = $this->sanitize($filter);
-        return $this->mongo->deleteMany($this->makePayload([
+        $data = $this->mongo->deleteMany($this->makePayload([
             'Filter' => $filter,
         ], $opts));
+        return toPHP($data, $typeMap);
     }
 
-    public function aggregate($pipeline = [], array $opts = []): ?array
+    public function aggregate($pipeline = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
     {
         $pipeline = $this->sanitize($pipeline);
-        return $this->mongo->aggregate($this->makePayload([
+        $data = $this->mongo->aggregate($this->makePayload([
             'Pipeline' => $pipeline,
         ], $opts));
+        return toPHP($data, $typeMap);
     }
 
     public function drop()
     {
-        return $this->mongo->drop([
+        return $this->mongo->drop(fromPHP([
             'Database' => $this->database,
             'Collection' => $this->collection,
-        ]);
+        ]));
     }
 
-    private function makePayload(array $partial, array $opts): array
+    private function makePayload(array $partial, array $opts): string
     {
-        return array_merge($partial, [
+        return fromPHP(array_merge($partial, [
             'Database' => $this->database,
             'Collection' => $this->collection,
             'Opts' => $this->sanitizeOpts($opts),
-        ]);
+        ]));
     }
 }

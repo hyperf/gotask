@@ -11,133 +11,134 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\MongoClient;
 
+use Hyperf\GoTask\GoTask;
 use Hyperf\GoTask\GoTaskProxy;
 
 class MongoProxy extends GoTaskProxy
 {
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function aggregate($payload)
+    public function aggregate(string $payload) : string
     {
-        return parent::call('MongoProxy.Aggregate', $payload, 0);
+        return (string)parent::call("MongoProxy.Aggregate", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function countDocuments($payload)
+    public function countDocuments(string $payload) : string
     {
-        return parent::call('MongoProxy.CountDocuments', $payload, 0);
+        return (string)parent::call("MongoProxy.CountDocuments", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function deleteMany($payload)
+    public function deleteMany(string $payload) : string
     {
-        return parent::call('MongoProxy.DeleteMany', $payload, 0);
+        return (string)parent::call("MongoProxy.DeleteMany", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function deleteOne($payload)
+    public function deleteOne(string $payload) : string
     {
-        return parent::call('MongoProxy.DeleteOne', $payload, 0);
+        return (string)parent::call("MongoProxy.DeleteOne", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function drop($payload)
+    public function drop(string $payload) : string
     {
-        return parent::call('MongoProxy.Drop', $payload, 0);
+        return (string)parent::call("MongoProxy.Drop", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function find($payload)
+    public function find(string $payload) : string
     {
-        return parent::call('MongoProxy.Find', $payload, 0);
+        return (string)parent::call("MongoProxy.Find", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function findOne($payload)
+    public function findOne(string $payload) : string
     {
-        return parent::call('MongoProxy.FindOne', $payload, 0);
+        return (string)parent::call("MongoProxy.FindOne", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function insertMany($payload)
+    public function insertMany(string $payload) : string
     {
-        return parent::call('MongoProxy.InsertMany', $payload, 0);
+        return (string)parent::call("MongoProxy.InsertMany", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function insertOne($payload)
+    public function insertOne(string $payload) : string
     {
-        return parent::call('MongoProxy.InsertOne', $payload, 0);
+        return (string)parent::call("MongoProxy.InsertOne", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function replaceOne($payload)
+    public function replaceOne(string $payload) : string
     {
-        return parent::call('MongoProxy.ReplaceOne', $payload, 0);
+        return (string)parent::call("MongoProxy.ReplaceOne", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function runCommand($payload)
+    public function runCommand(string $payload) : string
     {
-        return parent::call('MongoProxy.RunCommand', $payload, 0);
+        return (string)parent::call("MongoProxy.RunCommand", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function runCommandCursor($payload)
+    public function runCommandCursor(string $payload) : string
     {
-        return parent::call('MongoProxy.RunCommandCursor', $payload, 0);
+        return (string)parent::call("MongoProxy.RunCommandCursor", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function updateMany($payload)
+    public function updateMany(string $payload) : string
     {
-        return parent::call('MongoProxy.UpdateMany', $payload, 0);
+        return (string)parent::call("MongoProxy.UpdateMany", $payload, GoTask::PAYLOAD_RAW);
     }
 
     /**
-     * @param  $payload
-     * @return mixed
+     * @param string $payload
+     * @return string
      */
-    public function updateOne($payload)
+    public function updateOne(string $payload) : string
     {
-        return parent::call('MongoProxy.UpdateOne', $payload, 0);
+        return (string)parent::call("MongoProxy.UpdateOne", $payload, GoTask::PAYLOAD_RAW);
     }
 }

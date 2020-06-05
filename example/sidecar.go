@@ -4,10 +4,9 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
+	"github.com/hyperf/gotask/v2/pkg/gotask"
 	"io/ioutil"
 	"log"
-
-	"github.com/hyperf/gotask/v2/pkg/gotask"
 )
 
 // App sample
