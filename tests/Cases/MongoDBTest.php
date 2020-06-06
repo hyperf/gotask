@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use Hyperf\GoTask\MongoClient\MongoClient;
+use MongoDB\BSON\ObjectId;
 use Swoole\Process;
 
 /**
@@ -60,6 +61,7 @@ class MongoDBTest extends AbstractTestCase
         });
     }
 
+
     public function testFind()
     {
         \Swoole\Coroutine\run(function () {
@@ -78,6 +80,10 @@ class MongoDBTest extends AbstractTestCase
             $result = $collection->find(['foo' => 'bar'], ['skip' => 1, 'limit' => 1]);
             $this->assertCount(1, $result);
             $this->assertEquals(1, $result[0]['tid']);
+
+            $collection->insertOne(['Upper' => 'Case']);
+            $result = $collection->findOne(['Upper' => 'Case']);
+            $this->assertEquals('Case', $result['Upper']);
         });
     }
 
@@ -169,8 +175,13 @@ class MongoDBTest extends AbstractTestCase
             $client = make(MongoClient::class);
             $collection = $client->database('testing')->collection('unit');
             $result = $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
-            $result = $collection->findOne(['_id' => $result['insertedid']]);
+            $this->assertInstanceOf(ObjectId::class, $result);
+            $result = $collection->findOne(['_id' => $result]);
             $this->assertEquals(0, $result['tid']);
+            $result = $collection->insertMany([['foo' => 'baz', 'tid' => 1]]);
+            $this->assertInstanceOf(ObjectId::class, $result[0]);
+            $result = $collection->findOne(['_id' => $result[0]]);
+            $this->assertEquals(1, $result['tid']);
         });
     }
 }

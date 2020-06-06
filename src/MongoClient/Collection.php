@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\GoTask\MongoClient;
 
 use Hyperf\Contract\ConfigInterface;
+use MongoDB\BSON\ObjectId;
 use function MongoDB\BSON\fromPHP;
 use function MongoDB\BSON\toPHP;
 
@@ -47,22 +48,24 @@ class Collection
         $this->collection = $collection;
     }
 
-    public function insertOne($document = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function insertOne($document = [], array $opts = []) : ?ObjectId
     {
         $document = $this->sanitize($document);
         $data = $this->mongo->insertOne($this->makePayload([
             'Record' => $document,
         ], $opts));
-        return toPHP($data, $typeMap);
+        $typeMap = ['document' => 'array',  'root' => 'array'];
+        return toPHP($data, $typeMap)['insertedid'];
     }
 
-    public function insertMany($documents = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function insertMany($documents = [], array $opts = []) : ?array
     {
         $documents = $this->sanitize($documents);
         $data = $this->mongo->insertMany($this->makePayload([
             'Records' => $documents,
         ], $opts));
-        return toPHP($data, $typeMap);
+        $typeMap = ['document' => 'array',  'root' => 'array'];
+        return toPHP($data, $typeMap)['insertedids'];
     }
 
     public function find($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])

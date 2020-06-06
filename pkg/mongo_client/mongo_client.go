@@ -95,9 +95,10 @@ type FindOneCmd struct {
 // FindOne executes a find command and returns one document in the collection.
 func (m *MongoProxy) FindOne(payload []byte, result *[]byte) error {
 	cmd := &FindOneCmd{}
-	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) error {
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
-		return collection.FindOne(ctx, cmd.Filter, cmd.Opts...).Decode(r)
+		err = collection.FindOne(ctx, cmd.Filter, cmd.Opts...).Decode(r)
+		return err
 	})
 }
 
