@@ -223,16 +223,16 @@ class MongoDBTest extends AbstractTestCase
             $client = make(MongoClient::class);
             $collection = $client->database('testing')->collection('unit');
             $result = $collection->bulkWrite([
-                [ 'insertOne'  => [ ['foo' => 'bar' ] ] ],
-                [ 'insertOne'  => [ ['foo' => 'baz' ] ] ],
-                [ 'replaceOne'  => [ ['foo' => 'baz' ], ['foo' => 'bar'] ] ],
+                ['insertOne' => [['foo' => 'bar']]],
+                ['insertOne' => [['foo' => 'baz']]],
+                ['replaceOne' => [['foo' => 'baz'], ['foo' => 'bar']]],
             ]);
             $this->assertEquals(1, $result->getMatchedCount());
             $this->assertCount(2, $collection->find());
             $result = $collection->bulkWrite([
-                [ 'deleteMany'  => [ ['foo' => 'bar' ] ] ],
-                [ 'replaceOne'  => [ ['foo' => 'baz' ], ['zoo' => 'zoz'], ['upsert' => true] ] ],
-                [ 'updateOne'  => [ ['zoo' => 'zoz' ], [ '$set' => [ 'name' => 'hyperf' ] ] ] ],
+                ['deleteMany' => [['foo' => 'bar']]],
+                ['replaceOne' => [['foo' => 'baz'], ['zoo' => 'zoz'], ['upsert' => true]]],
+                ['updateOne' => [['zoo' => 'zoz'], ['$set' => ['name' => 'hyperf']]]],
             ]);
             $this->assertEquals(2, $result->getDeletedCount());
             $this->assertCount(1, $collection->find(['name' => 'hyperf']));

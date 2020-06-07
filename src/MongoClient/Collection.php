@@ -44,12 +44,18 @@ class Collection
      */
     private $config;
 
-    public function __construct(MongoProxy $mongo, ConfigInterface $config, string $database, string $collection)
+    /**
+     * @var array
+     */
+    private $typeMap;
+
+    public function __construct(MongoProxy $mongo, ConfigInterface $config, string $database, string $collection, array $typeMap)
     {
         $this->mongo = $mongo;
         $this->config = $config;
         $this->database = $database;
         $this->collection = $collection;
+        $this->typeMap = $typeMap;
     }
 
     public function insertOne($document = [], array $opts = []): InsertOneResult
@@ -70,22 +76,24 @@ class Collection
         return toPHP($data, ['root' => InsertManyResult::class]);
     }
 
-    public function find($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function find($filter = [], array $opts = [])
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->find($this->makePayload([
             'Filter' => $filter,
         ], $opts));
+        $typeMap = $opts['typeMap'] ?? $this->typeMap;
         return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
-    public function findOne($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function findOne($filter = [], array $opts = [])
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->findOne($this->makePayload([
             'Filter' => $filter,
         ], $opts));
-        return $data !== '' ? toPHP($data, $typeMap): [];
+        $typeMap = $opts['typeMap'] ?? $this->typeMap;
+        return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
     public function updateOne($filter = [], $update = [], array $opts = []): UpdateResult
@@ -148,16 +156,17 @@ class Collection
         return toPHP($data, ['root' => DeleteResult::class]);
     }
 
-    public function aggregate($pipeline = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function aggregate($pipeline = [], array $opts = [])
     {
         $pipeline = $this->sanitize($pipeline);
         $data = $this->mongo->aggregate($this->makePayload([
             'Pipeline' => $pipeline,
         ], $opts));
+        $typeMap = $opts['typeMap'] ?? $this->typeMap;
         return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
-    public function bulkWrite($operations = [], array $opts = []) : BulkWriteResult
+    public function bulkWrite($operations = [], array $opts = []): BulkWriteResult
     {
         $operations = $this->sanitize($operations);
         $data = $this->mongo->bulkWrite($this->makePayload([
