@@ -12,7 +12,11 @@ declare(strict_types=1);
 namespace Hyperf\GoTask\MongoClient;
 
 use Hyperf\Contract\ConfigInterface;
-use MongoDB\BSON\ObjectId;
+use Hyperf\GoTask\MongoClient\Type\BulkWriteResult;
+use Hyperf\GoTask\MongoClient\Type\DeleteResult;
+use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
+use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
+use Hyperf\GoTask\MongoClient\Type\UpdateResult;
 use function MongoDB\BSON\fromPHP;
 use function MongoDB\BSON\toPHP;
 
@@ -48,24 +52,22 @@ class Collection
         $this->collection = $collection;
     }
 
-    public function insertOne($document = [], array $opts = []) : ?ObjectId
+    public function insertOne($document = [], array $opts = []): InsertOneResult
     {
         $document = $this->sanitize($document);
         $data = $this->mongo->insertOne($this->makePayload([
             'Record' => $document,
         ], $opts));
-        $typeMap = ['document' => 'array',  'root' => 'array'];
-        return toPHP($data, $typeMap)['insertedid'];
+        return toPHP($data, ['root' => InsertOneResult::class]);
     }
 
-    public function insertMany($documents = [], array $opts = []) : ?array
+    public function insertMany($documents = [], array $opts = []): InsertManyResult
     {
         $documents = $this->sanitize($documents);
         $data = $this->mongo->insertMany($this->makePayload([
             'Records' => $documents,
         ], $opts));
-        $typeMap = ['document' => 'array',  'root' => 'array'];
-        return toPHP($data, $typeMap)['insertedids'];
+        return toPHP($data, ['root' => InsertManyResult::class]);
     }
 
     public function find($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
@@ -74,7 +76,7 @@ class Collection
         $data = $this->mongo->find($this->makePayload([
             'Filter' => $filter,
         ], $opts));
-        return toPHP($data, $typeMap);
+        return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
     public function findOne($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
@@ -83,10 +85,10 @@ class Collection
         $data = $this->mongo->findOne($this->makePayload([
             'Filter' => $filter,
         ], $opts));
-        return toPHP($data, $typeMap);
+        return $data !== '' ? toPHP($data, $typeMap): [];
     }
 
-    public function updateOne($filter = [], $update = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function updateOne($filter = [], $update = [], array $opts = []): UpdateResult
     {
         $filter = $this->sanitize($filter);
         $update = $this->sanitize($update);
@@ -94,10 +96,10 @@ class Collection
             'Filter' => $filter,
             'Update' => $update,
         ], $opts));
-        return toPHP($data, $typeMap);
+        return toPHP($data, ['root' => UpdateResult::class]);
     }
 
-    public function updateMany($filter = [], $update = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function updateMany($filter = [], $update = [], array $opts = []): UpdateResult
     {
         $filter = $this->sanitize($filter);
         $update = $this->sanitize($update);
@@ -105,10 +107,10 @@ class Collection
             'Filter' => $filter,
             'Update' => $update,
         ], $opts));
-        return toPHP($data, $typeMap);
+        return toPHP($data, ['root' => UpdateResult::class]);
     }
 
-    public function replaceOne($filter = [], $replace = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function replaceOne($filter = [], $replace = [], array $opts = []): UpdateResult
     {
         $filter = $this->sanitize($filter);
         $replace = $this->sanitize($replace);
@@ -116,10 +118,10 @@ class Collection
             'Filter' => $filter,
             'Replace' => $replace,
         ], $opts));
-        return toPHP($data, $typeMap);
+        return toPHP($data, ['root' => UpdateResult::class]);
     }
 
-    public function countDocuments($filter = [], array $opts = [], $typeMap = ['document' => 'int'])
+    public function countDocuments($filter = [], array $opts = []): int
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->countDocuments($this->makePayload([
@@ -128,22 +130,22 @@ class Collection
         return unpack('P', $data)[1];
     }
 
-    public function deleteOne($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function deleteOne($filter = [], array $opts = []): DeleteResult
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->deleteOne($this->makePayload([
             'Filter' => $filter,
         ], $opts));
-        return toPHP($data, $typeMap);
+        return toPHP($data, ['root' => DeleteResult::class]);
     }
 
-    public function deleteMany($filter = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
+    public function deleteMany($filter = [], array $opts = []): DeleteResult
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->deleteMany($this->makePayload([
             'Filter' => $filter,
         ], $opts));
-        return toPHP($data, $typeMap);
+        return toPHP($data, ['root' => DeleteResult::class]);
     }
 
     public function aggregate($pipeline = [], array $opts = [], $typeMap = ['document' => 'array',  'root' => 'array'])
@@ -152,7 +154,16 @@ class Collection
         $data = $this->mongo->aggregate($this->makePayload([
             'Pipeline' => $pipeline,
         ], $opts));
-        return toPHP($data, $typeMap);
+        return $data !== '' ? toPHP($data, $typeMap) : [];
+    }
+
+    public function bulkWrite($operations = [], array $opts = []) : BulkWriteResult
+    {
+        $operations = $this->sanitize($operations);
+        $data = $this->mongo->bulkWrite($this->makePayload([
+            'Operations' => $operations,
+        ], $opts));
+        return toPHP($data, ['root' => BulkWriteResult::class]);
     }
 
     public function drop()

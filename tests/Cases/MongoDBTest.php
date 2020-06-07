@@ -12,7 +12,8 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use Hyperf\GoTask\MongoClient\MongoClient;
-use MongoDB\BSON\ObjectId;
+use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
+use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
 use Swoole\Process;
 
 /**
@@ -60,7 +61,6 @@ class MongoDBTest extends AbstractTestCase
             $this->assertEquals(3, $collection->countDocuments());
         });
     }
-
 
     public function testFind()
     {
@@ -175,13 +175,67 @@ class MongoDBTest extends AbstractTestCase
             $client = make(MongoClient::class);
             $collection = $client->database('testing')->collection('unit');
             $result = $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
-            $this->assertInstanceOf(ObjectId::class, $result);
-            $result = $collection->findOne(['_id' => $result]);
+            $this->assertInstanceOf(InsertOneResult::class, $result);
+            $result = $collection->findOne(['_id' => $result->getInsertedId()]);
             $this->assertEquals(0, $result['tid']);
             $result = $collection->insertMany([['foo' => 'baz', 'tid' => 1]]);
-            $this->assertInstanceOf(ObjectId::class, $result[0]);
-            $result = $collection->findOne(['_id' => $result[0]]);
+            $this->assertInstanceOf(InsertManyResult::class, $result);
+            $result = $collection->findOne(['_id' => $result->getInsertedIDs()[0]]);
             $this->assertEquals(1, $result['tid']);
+        });
+    }
+
+    public function testDeleteReturnValue()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->deleteOne(['foo' => 'bar']);
+            $this->assertEquals(0, $result->getDeletedCount());
+            $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $result = $collection->deleteOne(['foo' => 'bar']);
+            $this->assertEquals(1, $result->getDeletedCount());
+            $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $result = $collection->deleteMany();
+            $this->assertEquals(2, $result->getDeletedCount());
+        });
+    }
+
+    public function testUpdateReturnValue()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->replaceOne(['foo' => 'bar'], ['foo' => 'baz']);
+            $this->assertEquals(0, $result->getMatchedCount());
+            $this->assertEquals(0, $result->getModifiedCount());
+            $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $result = $collection->replaceOne(['foo' => 'bar'], ['foo' => 'baz']);
+            $this->assertEquals(1, $result->getMatchedCount());
+            $this->assertEquals(1, $result->getModifiedCount());
+        });
+    }
+
+    public function testBulkWrite()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->bulkWrite([
+                [ 'insertOne'  => [ ['foo' => 'bar' ] ] ],
+                [ 'insertOne'  => [ ['foo' => 'baz' ] ] ],
+                [ 'replaceOne'  => [ ['foo' => 'baz' ], ['foo' => 'bar'] ] ],
+            ]);
+            $this->assertEquals(1, $result->getMatchedCount());
+            $this->assertCount(2, $collection->find());
+            $result = $collection->bulkWrite([
+                [ 'deleteMany'  => [ ['foo' => 'bar' ] ] ],
+                [ 'replaceOne'  => [ ['foo' => 'baz' ], ['zoo' => 'zoz'], ['upsert' => true] ] ],
+                [ 'updateOne'  => [ ['zoo' => 'zoz' ], [ '$set' => [ 'name' => 'hyperf' ] ] ] ],
+            ]);
+            $this->assertEquals(2, $result->getDeletedCount());
+            $this->assertCount(1, $collection->find(['name' => 'hyperf']));
         });
     }
 }

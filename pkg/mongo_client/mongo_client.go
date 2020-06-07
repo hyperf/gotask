@@ -251,6 +251,23 @@ func (m *MongoProxy) Aggregate(payload []byte, result *[]byte) error {
 	})
 }
 
+type BulkWriteCmd struct {
+	Database   string
+	Collection string
+	Operations []map[string][]bson.Raw
+	Opts       []*options.BulkWriteOptions
+}
+
+func (m *MongoProxy) BulkWrite(payload []byte, result *[]byte) error {
+	cmd := &BulkWriteCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		models := parseModels(cmd.Operations)
+		*r, err = collection.BulkWrite(ctx, models, cmd.Opts...)
+		return err
+	})
+}
+
 type DropCmd struct {
 	Database   string
 	Collection string

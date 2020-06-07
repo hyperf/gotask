@@ -11,8 +11,6 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\MongoClient;
 
-use function MongoDB\BSON\toPHP;
-
 trait MongoTrait
 {
     private function sanitize($input)

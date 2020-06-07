@@ -85,4 +85,9 @@ class MongoProxy extends GoTaskProxy
     {
         return (string) parent::call('MongoProxy.UpdateOne', $payload, GoTask::PAYLOAD_RAW);
     }
+
+    public function bulkWrite(string $payload): string
+    {
+        return (string) parent::call('MongoProxy.BulkWrite', $payload, GoTask::PAYLOAD_RAW);
+    }
 }
