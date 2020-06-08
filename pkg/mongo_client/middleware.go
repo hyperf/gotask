@@ -45,6 +45,9 @@ func BsonSerialize() gotask.Middleware {
 					binary.LittleEndian.PutUint64(b, uint64((*r).(int64)))
 					*r = b
 					return
+				case string:
+					*r = []byte((*r).(string))
+					return
 				default:
 					_, *r, e = bson.MarshalValue(r)
 					if e != nil {

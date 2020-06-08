@@ -1,7 +1,6 @@
 package mongo_client
 
 import (
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -133,6 +132,5 @@ func getOptions(v bson.Raw) *option {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(o)
 	return &o
 }

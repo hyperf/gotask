@@ -9,9 +9,12 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace HyperfTest\Cases;
 
+use Cassandra\Index;
 use Hyperf\GoTask\MongoClient\MongoClient;
+use Hyperf\GoTask\MongoClient\Type\IndexInfo;
 use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
 use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
 use Swoole\Process;
@@ -236,6 +239,36 @@ class MongoDBTest extends AbstractTestCase
             ]);
             $this->assertEquals(2, $result->getDeletedCount());
             $this->assertCount(1, $collection->find(['name' => 'hyperf']));
+        });
+    }
+
+    public function testIndexes()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->createIndex(['borough' => 1, 'cuisine' => 1]);
+            $this->assertEquals('borough_1_cuisine_1', $result);
+            $result = $collection->createIndexes([
+                    ['keys' => ['foo' => 1], 'options' => ['name' => 'foo', 'unique' => true, 'sparse' => true]],
+                    ['keys' => ['bar' => 1], 'options' => ['name' => 'bar']],
+            ]);
+            $this->assertCount(2, $result);
+            $this->assertEquals('foo', $result[0]);
+            $this->assertEquals('bar', $result[1]);
+            $result = $collection->listIndexes();
+            $this->assertCount(4, $result);
+            $this->assertEquals(2, $result[1]->getVersion());
+            $this->assertIsArray($result[1]->getKey());
+            $this->assertNotInstanceOf(IndexInfo::class, $result[1]->getKey());
+            $result = $collection->dropIndex('foo');
+            $this->assertEquals(4, $result['nIndexesWas']);
+            $result = $collection->listIndexes();
+            $this->assertCount(3, $result);
+            $result = $collection->dropIndexes();
+            $this->assertEquals(3, $result['nIndexesWas']);
+            $result = $collection->listIndexes();
+            $this->assertCount(1, $result);
         });
     }
 }

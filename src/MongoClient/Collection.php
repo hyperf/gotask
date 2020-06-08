@@ -14,6 +14,7 @@ namespace Hyperf\GoTask\MongoClient;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\GoTask\MongoClient\Type\BulkWriteResult;
 use Hyperf\GoTask\MongoClient\Type\DeleteResult;
+use Hyperf\GoTask\MongoClient\Type\IndexInfo;
 use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
 use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
 use Hyperf\GoTask\MongoClient\Type\UpdateResult;
@@ -173,6 +174,47 @@ class Collection
             'Operations' => $operations,
         ], $opts));
         return toPHP($data, ['root' => BulkWriteResult::class]);
+    }
+
+    public function createIndex($index = [], array $opts = []): string
+    {
+        $index = $this->sanitize($index);
+        $data = $this->mongo->createIndex($this->makePayload([
+            'IndexKeys' => $index,
+        ], $opts));
+        return $data;
+    }
+
+    public function createIndexes($indexes = [], array $opts = []): array
+    {
+        $indexes = $this->sanitize($indexes);
+        $data = $this->mongo->createIndexes($this->makePayload([
+            'Models' => $indexes,
+        ], $opts));
+        return $data === '' ? [] : toPHP($data, ['root' => 'array']);
+    }
+
+    public function listIndexes($indexes = [], array $opts = []): array
+    {
+        $data = $this->mongo->listIndexes($this->makePayload([], $opts));
+        return $data === '' ? [] : toPHP($data, ['root' => 'array', 'document' => IndexInfo::class, 'fieldPaths' => ['$.key' => 'array']]);
+    }
+
+    public function dropIndex(string $name, array $opts = [])
+    {
+        $data = $this->mongo->dropIndex($this->makePayload([
+            'Name' => $name,
+        ], $opts));
+        $typeMap = $opts['typeMap'] ?? $this->typeMap;
+        return $data === '' ? [] : toPHP($data, $typeMap);
+    }
+
+    public function dropIndexes(array $opts = [])
+    {
+        $data = $this->mongo->dropIndexes($this->makePayload([
+        ], $opts));
+        $typeMap = $opts['typeMap'] ?? $this->typeMap;
+        return $data === '' ? [] : toPHP($data, $typeMap);
     }
 
     public function drop()

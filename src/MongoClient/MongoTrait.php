@@ -20,6 +20,6 @@ trait MongoTrait
 
     private function sanitizeOpts($opts)
     {
-        return [$this->sanitize($opts)];
+        return $this->sanitize($opts);
     }
 }
