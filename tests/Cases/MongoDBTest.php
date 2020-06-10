@@ -271,4 +271,20 @@ class MongoDBTest extends AbstractTestCase
             $this->assertCount(1, $result);
         });
     }
+
+    public function testDistinct() {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $collection->insertMany([
+                ['foo' => 'bar', 'tid' => 1],
+                ['foo' => 'bar', 'tid' => 2],
+                ['foo' => 'baz', 'tid' => 3],
+            ]);
+            $distinct = $collection->distinct('foo');
+            $this->assertEquals(['bar', 'baz'], $distinct);;
+            $distinct = $collection->distinct('foo', ['tid' => 1]);
+            $this->assertEquals(['bar'], $distinct);;
+        });
+    }
 }

@@ -83,6 +83,15 @@ class MongoProxy extends GoTaskProxy
      * @param string $payload
      * @return string
      */
+    public function distinct(string $payload) : string
+    {
+        return (string)parent::call("MongoProxy.Distinct", $payload, GoTask::PAYLOAD_RAW);
+    }
+
+    /**
+     * @param string $payload
+     * @return string
+     */
     public function drop(string $payload) : string
     {
         return (string)parent::call("MongoProxy.Drop", $payload, GoTask::PAYLOAD_RAW);

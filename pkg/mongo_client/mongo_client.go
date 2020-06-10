@@ -268,6 +268,26 @@ func (m *MongoProxy) BulkWrite(payload []byte, result *[]byte) error {
 	})
 }
 
+type DistinctCmd struct {
+	Database   string
+	Collection string
+	FieldName  string
+	Filter     bson.Raw
+	Opts       *options.DistinctOptions
+}
+
+// Distinct executes a distinct command to find the unique values for a specified field in the collection.
+func (m *MongoProxy) Distinct(payload []byte, result *[]byte) error {
+	cmd := &DistinctCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		var rr []interface{}
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		rr, err = collection.Distinct(ctx, cmd.FieldName, cmd.Filter, cmd.Opts)
+		*r = rr
+		return err
+	})
+}
+
 type CreateIndexCmd struct {
 	Database   string
 	Collection string

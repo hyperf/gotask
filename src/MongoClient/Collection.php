@@ -176,6 +176,18 @@ class Collection
         return toPHP($data, ['root' => BulkWriteResult::class]);
     }
 
+    public function distinct(string $fieldName, $filter = [], array $opts = [])
+    {
+        $filter = $this->sanitize($filter);
+        $data = $this->mongo->distinct($this->makePayload([
+            'FieldName' => $fieldName,
+            'Filter' => $filter,
+        ], $opts));
+        $typeMap = $opts['typeMap'] ?? $this->typeMap;
+        return $data !== '' ? toPHP($data, $typeMap) : [];
+    }
+
+
     public function createIndex($index = [], array $opts = []): string
     {
         $index = $this->sanitize($index);
