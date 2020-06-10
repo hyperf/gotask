@@ -1,6 +1,7 @@
 package mongo_client
 
 import (
+	"flag"
 	"os"
 	"time"
 )
@@ -32,6 +33,9 @@ func getTimeout(env string, fallback time.Duration) (result time.Duration) {
 // LoadConfig loads Configurations from environmental variables or config file in PHP.
 // Environmental variables takes priority.
 func LoadConfig() Config {
+	if !flag.Parsed() {
+		flag.Parse()
+	}
 	return Config{
 		*globalMongoUri,
 		*globalMongoConnectTimeout,
