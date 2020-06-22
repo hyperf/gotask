@@ -26,7 +26,7 @@ before_install:
 install:
   - cd $TRAVIS_BUILD_DIR
   - bash ./tests/swoole.install.sh
-  - pecl install mongodb
+  - pecl install mongodb || echo "mongodb extension installed"
   - phpenv config-rm xdebug.ini || echo "xdebug not available"
   - phpenv config-add ./tests/ci.ini
 
