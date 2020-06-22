@@ -64,8 +64,12 @@ class Database
             'Command' => $this->sanitize($command),
             'Opts' => $this->sanitizeOpts($opts),
         ];
-        $typeMap = $opts['typeMap'] ?? $this->typeMap;
-        return toPHP($this->mongo->runCommand(fromPHP($payload)), $typeMap);
+        $result = $this->mongo->runCommand(fromPHP($payload));
+        if ($result !== '') {
+            $typeMap = $opts['typeMap'] ?? $this->typeMap;
+            return toPHP($result, $typeMap);
+        }
+        return '';
     }
 
     public function runCommandCursor($command = [], $opts = [])
@@ -75,10 +79,10 @@ class Database
             'Command' => $this->sanitize($command),
             'Opts' => $this->sanitizeOpts($opts),
         ];
-        $typeMap = $opts['typeMap'] ?? $this->typeMap;
         $result = $this->mongo->runCommandCursor(fromPHP($payload));
         if ($result !== '') {
-            return toPHP($this->mongo->runCommandCursor(fromPHP($payload)), $typeMap);
+            $typeMap = $opts['typeMap'] ?? $this->typeMap;
+            return toPHP($result, $typeMap);
         }
         return '';
     }
