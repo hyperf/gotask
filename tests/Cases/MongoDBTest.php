@@ -284,7 +284,7 @@ class MongoDBTest extends AbstractTestCase
             $distinct = $collection->distinct('foo');
             $this->assertEquals(['bar', 'baz'], $distinct);;
             $distinct = $collection->distinct('foo', ['tid' => 1]);
-            $this->assertEquals(['bar'], $distinct);;
+            $this->assertEquals(['bar'], $distinct);
         });
     }
 }
