@@ -76,6 +76,10 @@ class Database
             'Opts' => $this->sanitizeOpts($opts),
         ];
         $typeMap = $opts['typeMap'] ?? $this->typeMap;
-        return toPHP($this->mongo->runCommandCursor(fromPHP($payload)), $typeMap);
+        $result = $this->mongo->runCommandCursor(fromPHP($payload));
+        if ($result !== '') {
+            return toPHP($this->mongo->runCommandCursor(fromPHP($payload)), $typeMap);
+        }
+        return '';
     }
 }

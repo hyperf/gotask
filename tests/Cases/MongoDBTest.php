@@ -168,7 +168,7 @@ class MongoDBTest extends AbstractTestCase
             $result = $database->runCommand(['ping' => 1]);
             $this->assertCount(1, $result);
             $this->assertEquals(1, $result['ok']);
-            $this->assertNotnull($result = $database->runCommandCursor(['listCollections' => 1]));
+            $this->assertNotnull($database->runCommandCursor(['listCollections' => 1]));
         });
     }
 
