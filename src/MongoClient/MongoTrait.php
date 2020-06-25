@@ -13,15 +13,6 @@ namespace Hyperf\GoTask\MongoClient;
 
 trait MongoTrait
 {
-    private function ucFirstKeys(array $arr)
-    {
-        foreach ($arr as $key => $value) {
-            unset($arr[$key]);
-            $arr[ucfirst($key)] = $value;
-        }
-        return $arr;
-    }
-
     private function sanitize($input)
     {
         return $input ?: new \stdClass();
@@ -29,6 +20,6 @@ trait MongoTrait
 
     private function sanitizeOpts($opts)
     {
-        return [$this->sanitize($this->ucFirstKeys($opts))];
+        return $this->sanitize($opts);
     }
 }

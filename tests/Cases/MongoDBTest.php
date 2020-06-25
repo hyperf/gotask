@@ -12,6 +12,9 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use Hyperf\GoTask\MongoClient\MongoClient;
+use Hyperf\GoTask\MongoClient\Type\IndexInfo;
+use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
+use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
 use Swoole\Process;
 
 /**
@@ -53,7 +56,6 @@ class MongoDBTest extends AbstractTestCase
     {
         \Swoole\Coroutine\run(function () {
             $client = make(MongoClient::class);
-
             $collection = $client->database('testing')->collection('unit');
             $this->assertNotNull($collection->insertOne(['foo' => 'bar', 'tid' => 0]));
             $this->assertNotNull($collection->insertMany([['foo' => 'bar', 'tid' => 1], ['foo' => 'bar', 'tid' => 2]]));
@@ -79,6 +81,10 @@ class MongoDBTest extends AbstractTestCase
             $result = $collection->find(['foo' => 'bar'], ['skip' => 1, 'limit' => 1]);
             $this->assertCount(1, $result);
             $this->assertEquals(1, $result[0]['tid']);
+
+            $collection->insertOne(['Upper' => 'Case']);
+            $result = $collection->findOne(['Upper' => 'Case']);
+            $this->assertEquals('Case', $result['Upper']);
         });
     }
 
@@ -103,6 +109,8 @@ class MongoDBTest extends AbstractTestCase
             $collection->replaceOne(['tid' => 1], ['foo' => 'baz', 'tid' => 3]);
             $result = $collection->findOne(['foo' => 'baz']);
             $this->assertEquals(3, $result['tid']);
+            $result = $collection->findOneAndReplace(['foo' => 'baz'], ['foo' => 'bar'], ['ReturnDocument' => 1]);
+            $this->assertEquals('bar', $result['foo']);
         });
     }
 
@@ -120,6 +128,8 @@ class MongoDBTest extends AbstractTestCase
             $this->assertEquals(7, $result['tid']);
             $result = $collection->findOne(['tid' => 11]);
             $this->assertEquals(11, $result['tid']);
+            $result = $collection->findOneAndUpdate(['tid' => 11], ['$inc' => ['tid' => 5]], ['ReturnDocument' => 1]);
+            $this->assertEquals(16, $result['tid']);
         });
     }
 
@@ -132,6 +142,8 @@ class MongoDBTest extends AbstractTestCase
             $this->assertNotNull($collection->deleteOne(['foo' => 'bar']));
             $this->assertEquals(1, $collection->countDocuments());
             $collection->insertMany([['foo' => 'bar', 'tid' => 1], ['foo' => 'bar', 'tid' => 2]]);
+            $collection->findOneAndDelete(['foo' => 'bar']);
+            $this->assertEquals(2, $collection->countDocuments());
             $this->assertNotNull($collection->deleteMany(['foo' => 'bar']));
             $this->assertEquals(0, $collection->countDocuments());
         });
@@ -160,7 +172,124 @@ class MongoDBTest extends AbstractTestCase
             $result = $database->runCommand(['ping' => 1]);
             $this->assertCount(1, $result);
             $this->assertEquals(1, $result['ok']);
-            $this->assertNotnull($result = $database->runCommandCursor(['listCollections' => 1]));
+            $this->assertNotnull($database->runCommandCursor(['listCollections' => 1]));
+        });
+    }
+
+    public function testObjectId()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $this->assertInstanceOf(InsertOneResult::class, $result);
+            $result = $collection->findOne(['_id' => $result->getInsertedId()]);
+            $this->assertEquals(0, $result['tid']);
+            $result = $collection->insertMany([['foo' => 'baz', 'tid' => 1]]);
+            $this->assertInstanceOf(InsertManyResult::class, $result);
+            $result = $collection->findOne(['_id' => $result->getInsertedIDs()[0]]);
+            $this->assertEquals(1, $result['tid']);
+        });
+    }
+
+    public function testDeleteReturnValue()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->deleteOne(['foo' => 'bar']);
+            $this->assertEquals(0, $result->getDeletedCount());
+            $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $result = $collection->deleteOne(['foo' => 'bar']);
+            $this->assertEquals(1, $result->getDeletedCount());
+            $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $result = $collection->deleteMany();
+            $this->assertEquals(2, $result->getDeletedCount());
+        });
+    }
+
+    public function testUpdateReturnValue()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->replaceOne(['foo' => 'bar'], ['foo' => 'baz']);
+            $this->assertEquals(0, $result->getMatchedCount());
+            $this->assertEquals(0, $result->getModifiedCount());
+            $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
+            $result = $collection->replaceOne(['foo' => 'bar'], ['foo' => 'baz']);
+            $this->assertEquals(1, $result->getMatchedCount());
+            $this->assertEquals(1, $result->getModifiedCount());
+        });
+    }
+
+    public function testBulkWrite()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->bulkWrite([
+                ['insertOne' => [['foo' => 'bar']]],
+                ['insertOne' => [['foo' => 'baz']]],
+                ['replaceOne' => [['foo' => 'baz'], ['foo' => 'bar']]],
+            ]);
+            $this->assertEquals(1, $result->getMatchedCount());
+            $this->assertCount(2, $collection->find());
+            $result = $collection->bulkWrite([
+                ['deleteMany' => [['foo' => 'bar']]],
+                ['replaceOne' => [['foo' => 'baz'], ['zoo' => 'zoz'], ['upsert' => true]]],
+                ['updateOne' => [['zoo' => 'zoz'], ['$set' => ['name' => 'hyperf']]]],
+            ]);
+            $this->assertEquals(2, $result->getDeletedCount());
+            $this->assertCount(1, $collection->find(['name' => 'hyperf']));
+        });
+    }
+
+    public function testIndexes()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $result = $collection->createIndex(['borough' => 1, 'cuisine' => 1]);
+            $this->assertEquals('borough_1_cuisine_1', $result);
+            $result = $collection->createIndexes([
+                ['keys' => ['foo' => 1], 'options' => ['name' => 'foo', 'unique' => true, 'sparse' => true]],
+                ['keys' => ['bar' => 1], 'options' => ['name' => 'bar']],
+            ]);
+            $this->assertCount(2, $result);
+            $this->assertEquals('foo', $result[0]);
+            $this->assertEquals('bar', $result[1]);
+            $result = $collection->listIndexes();
+            $this->assertCount(4, $result);
+            $this->assertEquals(2, $result[1]->getVersion());
+            $this->assertIsArray($result[1]->getKey());
+            $this->assertNotInstanceOf(IndexInfo::class, $result[1]->getKey());
+            $result = $collection->dropIndex('foo');
+            $this->assertEquals(4, $result['nIndexesWas']);
+            $result = $collection->listIndexes();
+            $this->assertCount(3, $result);
+            $result = $collection->dropIndexes();
+            $this->assertEquals(3, $result['nIndexesWas']);
+            $result = $collection->listIndexes();
+            $this->assertCount(1, $result);
+        });
+    }
+
+    public function testDistinct()
+    {
+        \Swoole\Coroutine\run(function () {
+            $client = make(MongoClient::class);
+            $collection = $client->database('testing')->collection('unit');
+            $collection->insertMany([
+                ['foo' => 'bar', 'tid' => 1],
+                ['foo' => 'bar', 'tid' => 2],
+                ['foo' => 'baz', 'tid' => 3],
+            ]);
+            $distinct = $collection->distinct('foo');
+            $this->assertEquals(['bar', 'baz'], $distinct);
+            $distinct = $collection->distinct('foo', ['tid' => 1]);
+            $this->assertEquals(['bar'], $distinct);
         });
     }
 }

@@ -71,7 +71,6 @@ trait SocketTransporter
                 $readBytes -= strlen($buffer);
             }
         }
-
         return $result;
     }
 
