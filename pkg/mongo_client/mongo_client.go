@@ -109,7 +109,8 @@ type FindOneAndDeleteCmd struct {
 	Opts       *options.FindOneAndDeleteOptions
 }
 
-// FindOne executes a find command and returns one document in the collection.
+// FindOneAndDelete executes a findAndModify command to delete at most one document in the collection. and returns the
+// document as it appeared before deletion.
 func (m *MongoProxy) FindOneAndDelete(payload []byte, result *[]byte) error {
 	cmd := &FindOneAndDeleteCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
@@ -127,7 +128,8 @@ type FindOneAndUpdateCmd struct {
 	Opts       *options.FindOneAndUpdateOptions
 }
 
-// FindOne executes a find command and returns one document in the collection.
+// FindOneAndUpdate executes a findAndModify command to update at most one document in the collection and returns the
+// document as it appeared before updating.
 func (m *MongoProxy) FindOneAndUpdate(payload []byte, result *[]byte) error {
 	cmd := &FindOneAndUpdateCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
@@ -145,7 +147,8 @@ type FindOneAndReplaceCmd struct {
 	Opts       *options.FindOneAndReplaceOptions
 }
 
-// FindOne executes a find command and returns one document in the collection.
+// FindOneAndReplace executes a findAndModify command to replace at most one document in the collection
+// and returns the document as it appeared before replacement.
 func (m *MongoProxy) FindOneAndReplace(payload []byte, result *[]byte) error {
 	cmd := &FindOneAndReplaceCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
