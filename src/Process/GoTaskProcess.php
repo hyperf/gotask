@@ -34,12 +34,12 @@ class GoTaskProcess extends AbstractProcess
         $this->name = $this->config->getProcessName();
     }
 
-    public function isEnable(): bool
+    public function isEnable($server): bool
     {
         return $this->config->isEnabled();
     }
 
-    public function bind(Server $server): void
+    public function bind($server): void
     {
         if ($this->config->shouldBuild()) {
             chdir($this->config->getBuildWorkdir());
