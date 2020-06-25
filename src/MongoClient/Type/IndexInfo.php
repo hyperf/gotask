@@ -1,38 +1,50 @@
 <?php
 
-
+declare(strict_types=1);
+/**
+ * This file is part of Hyperf/GoTask.
+ *
+ * @link     https://www.github.com/hyperf/gotask
+ * @document  https://www.github.com/hyperf/gotask
+ * @contact  guxi99@gmail.com
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ */
 namespace Hyperf\GoTask\MongoClient\Type;
-
 
 use MongoDB\BSON\Unserializable;
 
 class IndexInfo implements Unserializable
 {
-
     /**
      * @var int
      */
     private $v;
+
     /**
      * @var array
      */
     private $key;
+
     /**
      * @var string
      */
     private $name;
+
     /**
      * @var string
      */
     private $ns;
+
     /**
      * @var bool
      */
     private $sparse;
+
     /**
      * @var bool
      */
     private $unique;
+
     /**
      * @var bool
      */
@@ -49,33 +61,21 @@ class IndexInfo implements Unserializable
         $this->ttl = $data['ttl'] ?? false;
     }
 
-    /**
-     * @return array
-     */
     public function getKey(): array
     {
         return $this->key;
     }
 
-    /**
-     * @return int
-     */
     public function getVersion(): int
     {
         return $this->v;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
     public function getNamespace(): string
     {
         return $this->ns;

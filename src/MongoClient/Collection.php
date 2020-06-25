@@ -97,6 +97,38 @@ class Collection
         return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
+    public function findOneAndDelete($filter = [], array $opts = [])
+    {
+        $filter = $this->sanitize($filter);
+        $data = $this->mongo->findOneAndDelete($this->makePayload([
+            'Filter' => $filter,
+        ], $opts));
+        $typeMap = $opts['typeMap'] ?? $this->typeMap;
+        return $data !== '' ? toPHP($data, $typeMap) : [];
+    }
+
+    public function findOneAndUpdate($filter = [], $update = [], array $opts = [])
+    {
+        $filter = $this->sanitize($filter);
+        $data = $this->mongo->findOneAndUpdate($this->makePayload([
+            'Filter' => $filter,
+            'Update' => $update,
+        ], $opts));
+        $typeMap = $opts['typeMap'] ?? $this->typeMap;
+        return $data !== '' ? toPHP($data, $typeMap) : [];
+    }
+
+    public function findOneAndReplace($filter = [], $replace = [], array $opts = [])
+    {
+        $filter = $this->sanitize($filter);
+        $data = $this->mongo->findOneAndReplace($this->makePayload([
+            'Filter' => $filter,
+            'Replace' => $replace,
+        ], $opts));
+        $typeMap = $opts['typeMap'] ?? $this->typeMap;
+        return $data !== '' ? toPHP($data, $typeMap) : [];
+    }
+
     public function updateOne($filter = [], $update = [], array $opts = []): UpdateResult
     {
         $filter = $this->sanitize($filter);
@@ -187,14 +219,12 @@ class Collection
         return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
-
     public function createIndex($index = [], array $opts = []): string
     {
         $index = $this->sanitize($index);
-        $data = $this->mongo->createIndex($this->makePayload([
+        return $this->mongo->createIndex($this->makePayload([
             'IndexKeys' => $index,
         ], $opts));
-        return $data;
     }
 
     public function createIndexes($indexes = [], array $opts = []): array

@@ -9,10 +9,8 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace HyperfTest\Cases;
 
-use Cassandra\Index;
 use Hyperf\GoTask\MongoClient\MongoClient;
 use Hyperf\GoTask\MongoClient\Type\IndexInfo;
 use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
@@ -111,6 +109,8 @@ class MongoDBTest extends AbstractTestCase
             $collection->replaceOne(['tid' => 1], ['foo' => 'baz', 'tid' => 3]);
             $result = $collection->findOne(['foo' => 'baz']);
             $this->assertEquals(3, $result['tid']);
+            $result = $collection->findOneAndReplace(['foo' => 'baz'], ['foo' => 'bar'], ['ReturnDocument' => 1]);
+            $this->assertEquals('bar', $result['foo']);
         });
     }
 
@@ -128,6 +128,8 @@ class MongoDBTest extends AbstractTestCase
             $this->assertEquals(7, $result['tid']);
             $result = $collection->findOne(['tid' => 11]);
             $this->assertEquals(11, $result['tid']);
+            $result = $collection->findOneAndUpdate(['tid' => 11], ['$inc' => ['tid' => 5]], ['ReturnDocument' => 1]);
+            $this->assertEquals(16, $result['tid']);
         });
     }
 
@@ -140,6 +142,8 @@ class MongoDBTest extends AbstractTestCase
             $this->assertNotNull($collection->deleteOne(['foo' => 'bar']));
             $this->assertEquals(1, $collection->countDocuments());
             $collection->insertMany([['foo' => 'bar', 'tid' => 1], ['foo' => 'bar', 'tid' => 2]]);
+            $collection->findOneAndDelete(['foo' => 'bar']);
+            $this->assertEquals(2, $collection->countDocuments());
             $this->assertNotNull($collection->deleteMany(['foo' => 'bar']));
             $this->assertEquals(0, $collection->countDocuments());
         });
@@ -250,8 +254,8 @@ class MongoDBTest extends AbstractTestCase
             $result = $collection->createIndex(['borough' => 1, 'cuisine' => 1]);
             $this->assertEquals('borough_1_cuisine_1', $result);
             $result = $collection->createIndexes([
-                    ['keys' => ['foo' => 1], 'options' => ['name' => 'foo', 'unique' => true, 'sparse' => true]],
-                    ['keys' => ['bar' => 1], 'options' => ['name' => 'bar']],
+                ['keys' => ['foo' => 1], 'options' => ['name' => 'foo', 'unique' => true, 'sparse' => true]],
+                ['keys' => ['bar' => 1], 'options' => ['name' => 'bar']],
             ]);
             $this->assertCount(2, $result);
             $this->assertEquals('foo', $result[0]);
@@ -272,7 +276,8 @@ class MongoDBTest extends AbstractTestCase
         });
     }
 
-    public function testDistinct() {
+    public function testDistinct()
+    {
         \Swoole\Coroutine\run(function () {
             $client = make(MongoClient::class);
             $collection = $client->database('testing')->collection('unit');
@@ -282,9 +287,9 @@ class MongoDBTest extends AbstractTestCase
                 ['foo' => 'baz', 'tid' => 3],
             ]);
             $distinct = $collection->distinct('foo');
-            $this->assertEquals(['bar', 'baz'], $distinct);;
+            $this->assertEquals(['bar', 'baz'], $distinct);
             $distinct = $collection->distinct('foo', ['tid' => 1]);
-            $this->assertEquals(['bar'], $distinct);;
+            $this->assertEquals(['bar'], $distinct);
         });
     }
 }

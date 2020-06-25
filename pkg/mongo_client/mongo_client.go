@@ -102,6 +102,59 @@ func (m *MongoProxy) FindOne(payload []byte, result *[]byte) error {
 	})
 }
 
+type FindOneAndDeleteCmd struct {
+	Database   string
+	Collection string
+	Filter     bson.Raw
+	Opts       *options.FindOneAndDeleteOptions
+}
+
+// FindOne executes a find command and returns one document in the collection.
+func (m *MongoProxy) FindOneAndDelete(payload []byte, result *[]byte) error {
+	cmd := &FindOneAndDeleteCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		err = collection.FindOneAndDelete(ctx, cmd.Filter, cmd.Opts).Decode(r)
+		return err
+	})
+}
+
+type FindOneAndUpdateCmd struct {
+	Database   string
+	Collection string
+	Filter     bson.Raw
+	Update     bson.Raw
+	Opts       *options.FindOneAndUpdateOptions
+}
+
+// FindOne executes a find command and returns one document in the collection.
+func (m *MongoProxy) FindOneAndUpdate(payload []byte, result *[]byte) error {
+	cmd := &FindOneAndUpdateCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		err = collection.FindOneAndUpdate(ctx, cmd.Filter, cmd.Update, cmd.Opts).Decode(r)
+		return err
+	})
+}
+
+type FindOneAndReplaceCmd struct {
+	Database   string
+	Collection string
+	Filter     bson.Raw
+	Replace    bson.Raw
+	Opts       *options.FindOneAndReplaceOptions
+}
+
+// FindOne executes a find command and returns one document in the collection.
+func (m *MongoProxy) FindOneAndReplace(payload []byte, result *[]byte) error {
+	cmd := &FindOneAndReplaceCmd{}
+	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
+		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
+		err = collection.FindOneAndReplace(ctx, cmd.Filter, cmd.Replace, cmd.Opts).Decode(r)
+		return err
+	})
+}
+
 type FindCmd struct {
 	Database   string
 	Collection string
