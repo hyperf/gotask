@@ -9,8 +9,11 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-use Reasno\GoTask\GoTask;
-use Reasno\GoTask\IPC\SocketIPCSender;
+
+use Hyperf\Config\Config;
+use Hyperf\GoTask\IPC\SocketIPCSender;
+use Hyperf\GoTask\MongoClient\MongoClient;
+use Hyperf\GoTask\MongoClient\MongoProxy;
 use Swoole\Process;
 use function Swoole\Coroutine\run;
 
@@ -28,8 +31,7 @@ sleep(1);
 
 run(function () {
     $task = new SocketIPCSender(ADDR);
-    for ($i = 0; $i < 5; ++$i) {
-        $task->call('MongoProxy.InsertOne', ['Database' => 'testing', 'Collection' => 'colors', 'Record' => ['Blue' => 'Red', 'number' => $i]]);
-    }
-    var_dump($task->call('MongoProxy.Find', ['Database' => 'testing', 'Collection' => 'colors', 'Filter' => ['Blue' => 'Red'], 'Opts' => [['Skip' => 1, 'Limit' => 2]]]));
+    $client = new MongoClient(new MongoProxy($task), new Config([]));
+    $collection = $client->database('testing')->collection('unit');
+    $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
 });
