@@ -134,7 +134,7 @@ class CoroutineSocketRelay implements RelayInterface
                 throw new RelayException(sprintf('%s (%s)', $this->socket->errMsg, $this->socket->errCode));
             }
         } catch (\Exception $e) {
-            throw new RelayException("unable to establish connection {$this}", 0, $e);
+            throw new RelayException("unable to establish connection {$this}: {$e->getMessage()}", 0, $e);
         }
 
         return true;
