@@ -86,6 +86,7 @@ func Run() error {
 		if err != nil {
 			return errors.Wrap(err, "Unable to listen")
 		}
+		defer clearAddr(network, addr)
 
 		g.Add(func() error {
 			for {
