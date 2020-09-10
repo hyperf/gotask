@@ -49,7 +49,7 @@ class PipeGoTask implements GoTask
     {
         $this->process = $process;
         $this->config = $config;
-        $this->lock = new Lock(SWOOLE_SEM);
+        $this->lock = new Lock();
     }
 
     public function call(string $method, $payload, int $flags = 0)
