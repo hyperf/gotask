@@ -37,7 +37,7 @@ class DomainConfig
 
     public function isEnabled(): bool
     {
-        return $this->config->get('gotask.enabled', false);
+        return $this->config->get('gotask.enable', false) || $this->config->get('gotask.enabled', false);
     }
 
     public function getAddress(): string
