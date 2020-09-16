@@ -66,8 +66,11 @@ class Go2PhpListener implements ListenerInterface
             }
             $addr = $addrArr[$event->workerId];
         }
-        $server = make(SocketIPCReceiver::class, [$addr]);
-        $server->start();
+
+        go(function ()use ($addr){
+            $server = make(SocketIPCReceiver::class, [$addr]);
+            $server->start();
+        });
     }
 
     private function isUnix(string $addr): bool
