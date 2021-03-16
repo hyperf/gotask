@@ -15,7 +15,6 @@ import (
 	"github.com/oklog/run"
 	"github.com/pkg/errors"
 	"github.com/spiral/goridge/v2"
-	"golang.org/x/sys/unix"
 )
 
 var g run.Group
@@ -81,9 +80,6 @@ func Run() error {
 
 	if *address != "" {
 		network, addr := parseAddr(*address)
-		if err := unix.Access(addr, unix.W_OK); err != nil {
-			return errors.Wrap(err, "socket path is not writable")
-		}
 		cleanup, err := checkAddr(network, addr)
 		if err != nil {
 			return errors.Wrap(err, "cannot remove existing unix socket")
