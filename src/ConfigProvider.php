@@ -71,8 +71,14 @@ class ConfigProvider
 
     public static function address()
     {
+        if (defined(BASE_PATH)) {
+            $root = BASE_PATH . '/runtime';
+        } else {
+            $root = '/tmp';
+        }
+
         $appName = env('APP_NAME');
         $socketName = $appName . '_' . uniqid();
-        return "/tmp/{$socketName}.sock";
+        return $root . "/{$socketName}.sock";
     }
 }
