@@ -27,7 +27,7 @@ use function Swoole\Coroutine\run;
 require __DIR__ . '/../vendor/autoload.php';
 define('BASE_PATH', __DIR__);
 
-const ADDR = '/tmp/test.sock';
+const ADDR = __DIR__ . '/test.sock';
 @unlink(ADDR);
 $container = new Container(new DefinitionSource([], new ScanConfig()));
 $container->set(ConfigInterface::class, new Config([

@@ -8,6 +8,7 @@ import (
 	"net/rpc"
 	"os"
 	"os/signal"
+	"path"
 	"syscall"
 	"time"
 
@@ -79,14 +80,16 @@ func Run() error {
 
 	if *address != "" {
 		network, addr := parseAddr(*address)
-		if err := clearAddr(network, addr); err != nil {
-			return errors.Wrap(err, "Cannot remove existing unix socket")
+		cleanup, err := checkAddr(network, addr)
+		if err != nil {
+			return errors.Wrap(err, "cannot remove existing unix socket")
 		}
+		defer cleanup()
+
 		ln, err := net.Listen(network, addr)
 		if err != nil {
-			return errors.Wrap(err, "Unable to listen")
+			return errors.Wrap(err, "unable to listen")
 		}
-		defer clearAddr(network, addr)
 
 		g.Add(func() error {
 			for {
@@ -135,16 +138,6 @@ func Run() error {
 	return g.Run()
 }
 
-func clearAddr(network string, addr string) error {
-	if network != "unix" {
-		return nil
-	}
-	if _, err := os.Stat(addr); os.IsNotExist(err) {
-		return nil
-	}
-	return os.Remove(addr)
-}
-
 // Add an actor (function) to the group. Each actor must be pre-emptable by an
 // interrupt function. That is, if interrupt is invoked, execute should return.
 // Also, it must be safe to call interrupt even after execute has returned.
@@ -153,4 +146,48 @@ func clearAddr(network string, addr string) error {
 // The error is passed to the interrupt functions, and is returned by Run.
 func Add(execute func() error, interrupt func(error)) {
 	g.Add(execute, interrupt)
+}
+
+func checkAddr(network, addr string) (func(), error) {
+	if network != "unix" {
+		return func() {}, nil
+	}
+	if _, err := os.Stat(addr); !os.IsNotExist(err) {
+		return func() {}, os.Remove(addr)
+	}
+	if err := os.MkdirAll(path.Dir(addr), os.ModePerm); err != nil {
+		return func() {}, err
+	}
+	if ok, err := isWritable(path.Dir(addr)); err != nil || !ok {
+		return func() {}, errors.Wrap(err, "socket directory is not writable")
+	}
+	return func() { os.Remove(addr) }, nil
+}
+
+func isWritable(path string) (isWritable bool, err error) {
+	info, err := os.Stat(path)
+	if err != nil {
+		return false, err
+	}
+
+	if !info.IsDir() {
+		return false, fmt.Errorf("%s isn't a directory", path)
+	}
+
+	// Check if the user bit is enabled in file permission
+	if info.Mode().Perm()&(1<<(uint(7))) == 0 {
+		return false, fmt.Errorf("write permission bit is not set on this %s for user", path)
+	}
+
+	var stat syscall.Stat_t
+	if err = syscall.Stat(path, &stat); err != nil {
+		return false, err
+	}
+
+	err = nil
+	if uint32(os.Geteuid()) != stat.Uid {
+		return false, errors.Errorf("user doesn't have permission to write to %s", path)
+	}
+
+	return true, nil
 }

@@ -24,7 +24,7 @@ use Swoole\Process;
  */
 class CoroutineSocketTest extends AbstractTestCase
 {
-    const UNIX_SOCKET = '/tmp/test.sock';
+    const UNIX_SOCKET = __DIR__ . '/test.sock';
 
     /**
      * @var Process

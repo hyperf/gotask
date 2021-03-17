@@ -17,7 +17,7 @@ func testInfo(t *testing.T) {
 
 func TestAll(t *testing.T) {
 	t.Parallel()
-	gotask.SetGo2PHPAddress("/tmp/test.sock")
+	gotask.SetGo2PHPAddress("../../tests/test.sock")
 	for i := 0; i < 50; i++ {
 		t.Run("testAll", func(t *testing.T) {
 			t.Parallel()
