@@ -17,8 +17,8 @@ do
     if [ $GOOS = "windows" ]; then
         output_name+='.exe'
     fi
-    echo GOOS=$GOOS GOARCH=$GOARCH go build -o $output_name $package
-    GOOS=$GOOS GOARCH=$GOARCH go build -o $output_name $package
+    echo GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="-s -w" -o $output_name $package
+    GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="-s -w" -o $output_name $package
     if [ $? -ne 0 ]; then
         echo 'An error has occurred! Aborting the script execution...'
         exit 1
