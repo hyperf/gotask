@@ -71,7 +71,9 @@ class LogRedirectListener implements ListenerInterface
                     if ($recv === false && $sock->errCode !== SOCKET_ETIMEDOUT) {
                         throw new SocketAcceptException('Socket is closed', $sock->errCode);
                     }
-                    $this->logOutput((string) $recv);
+                    if ($recv !== false) {
+                        $this->logOutput((string) $recv);
+                    }
                 } catch (\Throwable $exception) {
                     $this->logThrowable($exception);
                     if ($exception instanceof SocketAcceptException) {
