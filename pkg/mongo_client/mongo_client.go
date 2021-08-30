@@ -97,7 +97,7 @@ func (m *MongoProxy) FindOne(payload []byte, result *[]byte) error {
 	cmd := &FindOneCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
-		*r, err = collection.FindOne(ctx, cmd.Filter, cmd.Opts).DecodeBytes()
+		err = collection.FindOne(ctx, cmd.Filter, cmd.Opts).Decode(r)
 		return err
 	})
 }
@@ -115,7 +115,7 @@ func (m *MongoProxy) FindOneAndDelete(payload []byte, result *[]byte) error {
 	cmd := &FindOneAndDeleteCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
-		*r, err = collection.FindOneAndDelete(ctx, cmd.Filter, cmd.Opts).DecodeBytes()
+		err = collection.FindOneAndDelete(ctx, cmd.Filter, cmd.Opts).Decode(r)
 		return err
 	})
 }
@@ -134,7 +134,7 @@ func (m *MongoProxy) FindOneAndUpdate(payload []byte, result *[]byte) error {
 	cmd := &FindOneAndUpdateCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
-		*r, err = collection.FindOneAndUpdate(ctx, cmd.Filter, cmd.Update, cmd.Opts).DecodeBytes()
+		err = collection.FindOneAndUpdate(ctx, cmd.Filter, cmd.Update, cmd.Opts).Decode(r)
 		return err
 	})
 }
@@ -153,7 +153,7 @@ func (m *MongoProxy) FindOneAndReplace(payload []byte, result *[]byte) error {
 	cmd := &FindOneAndReplaceCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
-		*r, err = collection.FindOneAndReplace(ctx, cmd.Filter, cmd.Replace, cmd.Opts).DecodeBytes()
+		err = collection.FindOneAndReplace(ctx, cmd.Filter, cmd.Replace, cmd.Opts).Decode(r)
 		return err
 	})
 }
@@ -169,7 +169,7 @@ type FindCmd struct {
 func (m *MongoProxy) Find(payload []byte, result *[]byte) error {
 	cmd := &FindCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) error {
-		var rr bson.Raw
+		var rr []interface{}
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
 		cursor, err := collection.Find(ctx, cmd.Filter, cmd.Opts)
 		if cursor != nil {
@@ -297,7 +297,7 @@ type AggregateCmd struct {
 func (m *MongoProxy) Aggregate(payload []byte, result *[]byte) error {
 	cmd := &AggregateCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
-		var rr bson.Raw
+		var rr []interface{}
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
 		cursor, err := collection.Aggregate(ctx, cmd.Pipeline, cmd.Opts)
 		if cursor != nil {
@@ -424,7 +424,7 @@ type ListIndexesCmd struct {
 func (m *MongoProxy) ListIndexes(payload []byte, result *[]byte) error {
 	cmd := &ListIndexesCmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
-		var rr bson.Raw
+		var rr []interface{}
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
 		cursor, err := collection.Indexes().List(ctx, cmd.Opts)
 		if cursor != nil {
@@ -462,8 +462,7 @@ func (m *MongoProxy) RunCommand(payload []byte, result *[]byte) error {
 	cmd := &Cmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
 		database := m.client.Database(cmd.Database)
-		*r, err = database.RunCommand(ctx, cmd.Command, cmd.Opts).DecodeBytes()
-		return err
+		return database.RunCommand(ctx, cmd.Command, cmd.Opts).Decode(r)
 	})
 }
 
@@ -473,7 +472,7 @@ func (m *MongoProxy) RunCommand(payload []byte, result *[]byte) error {
 func (m *MongoProxy) RunCommandCursor(payload []byte, result *[]byte) error {
 	cmd := &Cmd{}
 	return m.exec(cmd, payload, result, func(ctx context.Context, r *interface{}) (err error) {
-		var rr bson.Raw
+		var rr []interface{}
 		database := m.client.Database(cmd.Database)
 		cursor, err := database.RunCommandCursor(ctx, cmd.Command, cmd.Opts)
 		if cursor != nil {
