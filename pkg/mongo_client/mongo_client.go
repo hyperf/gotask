@@ -173,6 +173,7 @@ func (m *MongoProxy) Find(payload []byte, result *[]byte) error {
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
 		cursor, err := collection.Find(ctx, cmd.Filter, cmd.Opts)
 		if cursor != nil {
+			defer cursor.Close(ctx)
 			err = cursor.All(ctx, &rr)
 		}
 		*r = rr
@@ -300,6 +301,7 @@ func (m *MongoProxy) Aggregate(payload []byte, result *[]byte) error {
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
 		cursor, err := collection.Aggregate(ctx, cmd.Pipeline, cmd.Opts)
 		if cursor != nil {
+			defer cursor.Close(ctx)
 			err = cursor.All(ctx, &rr)
 		}
 		*r = rr
@@ -426,6 +428,7 @@ func (m *MongoProxy) ListIndexes(payload []byte, result *[]byte) error {
 		collection := m.client.Database(cmd.Database).Collection(cmd.Collection)
 		cursor, err := collection.Indexes().List(ctx, cmd.Opts)
 		if cursor != nil {
+			defer cursor.Close(ctx)
 			err = cursor.All(ctx, &rr)
 			*r = rr
 		}
@@ -473,6 +476,7 @@ func (m *MongoProxy) RunCommandCursor(payload []byte, result *[]byte) error {
 		database := m.client.Database(cmd.Database)
 		cursor, err := database.RunCommandCursor(ctx, cmd.Command, cmd.Opts)
 		if cursor != nil {
+			defer cursor.Close(ctx)
 			err = cursor.All(ctx, &rr)
 		}
 		*r = rr

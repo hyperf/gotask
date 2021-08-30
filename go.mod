@@ -8,5 +8,4 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/spiral/goridge/v2 v2.4.4
 	go.mongodb.org/mongo-driver v1.3.3
-	golang.org/x/sys v0.0.0-20190531175056-4c3a928424d2
 )
