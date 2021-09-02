@@ -35,7 +35,7 @@ func checkProcess(pid int, quit chan bool) {
 }
 
 // Register a net/rpc compatible service
-func Register(receiver interface{}) error {
+func Register(receiver interface{}) interface{} {
 	if !flag.Parsed() {
 		flag.Parse()
 	}
