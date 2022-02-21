@@ -43,7 +43,11 @@ func (m *MongoProxy) getHandler(i interface{}, f coreExecutor) gotask.Handler {
 func (m *MongoProxy) exec(i interface{}, payload []byte, result *[]byte, f coreExecutor) error {
 	var r interface{}
 	defer func() {
-		*result = r.([]byte)
+		if r == nil {
+			*result = nil
+		} else {
+			*result = r.([]byte)
+		}
 	}()
 	return m.getHandler(i, f)(payload, &r)
 }
