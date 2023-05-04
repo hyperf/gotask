@@ -29,6 +29,7 @@ class PipeIPCSender implements IPCSenderInterface, GoTask
     /**
      * PipeIPC constructor.
      * @mixin RPC
+     * @param mixed $process
      */
     public function __construct($process)
     {

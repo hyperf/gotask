@@ -11,8 +11,8 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask;
 
+use Hyperf\Context\Context;
 use Hyperf\GoTask\Exception\InvalidGoTaskConnectionException;
-use Hyperf\Utils\Context;
 
 /**
  * Class SocketGoTask uses sockets to communicate.

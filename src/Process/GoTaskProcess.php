@@ -18,7 +18,7 @@ use Psr\Container\ContainerInterface;
 
 class GoTaskProcess extends AbstractProcess
 {
-    public $enableCoroutine = true;
+    public bool $enableCoroutine = true;
 
     /**
      * @var DomainConfig
