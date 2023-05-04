@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\GoTask\MongoClient;
 
 use Hyperf\Contract\ConfigInterface;
+
 use function MongoDB\BSON\fromPHP;
 use function MongoDB\BSON\toPHP;
 

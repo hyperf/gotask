@@ -67,7 +67,7 @@ class Go2PhpListener implements ListenerInterface
             $addr = $addrArr[$event->workerId];
         }
 
-        go(function ()use ($addr){
+        go(function () use ($addr) {
             $server = make(SocketIPCReceiver::class, [$addr]);
             $server->start();
         });

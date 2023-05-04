@@ -17,6 +17,7 @@ use Hyperf\GoTask\SocketGoTask;
 use Hyperf\Utils\WaitGroup;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Swoole\Process;
+use Throwable;
 
 /**
  * @internal
@@ -24,7 +25,7 @@ use Swoole\Process;
  */
 class CoroutineSocketTest extends AbstractTestCase
 {
-    const UNIX_SOCKET = __DIR__ . '/test.sock';
+    public const UNIX_SOCKET = __DIR__ . '/test.sock';
 
     /**
      * @var Process
@@ -81,7 +82,7 @@ class CoroutineSocketTest extends AbstractTestCase
             $task = make(SocketGoTask::class);
             try {
                 $task->call('App.HelloPanic', '');
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->assertInstanceOf(ServiceException::class, $e);
             }
         });
@@ -116,7 +117,7 @@ class CoroutineSocketTest extends AbstractTestCase
         );
         try {
             $task->call('App.HelloError', 'Hyperf');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(ServiceException::class, $e);
         }
     }

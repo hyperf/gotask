@@ -14,13 +14,13 @@ namespace Hyperf\GoTask\IPC;
 interface IPCSenderInterface
 {
     /** Payload flags.*/
-    const PAYLOAD_NONE = 2;
+    public const PAYLOAD_NONE = 2;
 
-    const PAYLOAD_RAW = 4;
+    public const PAYLOAD_RAW = 4;
 
-    const PAYLOAD_ERROR = 8;
+    public const PAYLOAD_ERROR = 8;
 
-    const PAYLOAD_CONTROL = 16;
+    public const PAYLOAD_CONTROL = 16;
 
     /**
      * @param mixed $payload an binary data or array of arguments for complex types

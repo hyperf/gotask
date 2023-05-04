@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 use Hyperf\GoTask\IPC\SocketIPCReceiver;
 use Swoole\Process;
+
 use function Swoole\Coroutine\run;
 
 require __DIR__ . '/../../vendor/autoload.php';

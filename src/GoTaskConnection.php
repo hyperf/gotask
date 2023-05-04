@@ -18,6 +18,7 @@ use Hyperf\Pool\Exception\ConnectionException;
 use Hyperf\Pool\Pool;
 use Psr\Container\ContainerInterface;
 use Spiral\Goridge\RPC;
+use Throwable;
 
 /**
  * Class GoTaskConnection.
@@ -46,7 +47,7 @@ class GoTaskConnection extends Connection implements ConnectionInterface
     {
         try {
             $result = $this->connection->{$name}(...$arguments);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $result = $this->retry($name, $arguments, $exception);
         }
 
@@ -79,7 +80,7 @@ class GoTaskConnection extends Connection implements ConnectionInterface
         return $this;
     }
 
-    protected function retry($name, $arguments, \Throwable $exception)
+    protected function retry($name, $arguments, Throwable $exception)
     {
         $logger = $this->container->get(StdoutLoggerInterface::class);
         $logger->warning(sprintf('RemoteGoTask::__call failed, because ' . $exception->getMessage()));
@@ -87,7 +88,7 @@ class GoTaskConnection extends Connection implements ConnectionInterface
         try {
             $this->reconnect();
             $result = $this->connection->{$name}(...$arguments);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             $this->lastUseTime = 0.0;
             throw $exception;
         }

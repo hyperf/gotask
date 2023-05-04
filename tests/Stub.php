@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace HyperfTest;
 
+use Exception;
+
 class Stub
 {
     public function echo($payload)
@@ -40,6 +42,6 @@ class Stub
 
     public function HelloError(array $payload)
     {
-        throw new \Exception();
+        throw new Exception();
     }
 }

@@ -64,7 +64,7 @@ trait SocketTransporter
             $readBytes = $prefix['size'];
             $buffer = null;
 
-            //Add ability to write to stream in a future
+            // Add ability to write to stream in a future
             while ($readBytes > 0) {
                 $buffer = $this->socket->recv(min(self::BUFFER_SIZE, $readBytes));
                 $result .= $buffer;
@@ -95,8 +95,8 @@ trait SocketTransporter
     }
 
     /**
-     * @throws PrefixException
      * @return array Prefix [flag, length]
+     * @throws PrefixException
      */
     private function fetchPrefix(): array
     {

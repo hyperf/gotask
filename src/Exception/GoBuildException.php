@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\Exception;
 
-class GoBuildException extends \RuntimeException
+use RuntimeException;
+
+class GoBuildException extends RuntimeException
 {
 }

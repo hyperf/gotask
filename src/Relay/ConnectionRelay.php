@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\Relay;
 
+use Error;
 use Spiral\Goridge\Exceptions\RelayException;
 use Swoole\Coroutine\Server\Connection;
 use Swoole\Coroutine\Socket;
@@ -36,7 +37,7 @@ class ConnectionRelay implements RelayInterface
      * or have already been connected.
      *
      * @throws RelayException
-     * @throws \Error when sockets are used in unsupported environment
+     * @throws Error when sockets are used in unsupported environment
      */
     public function connect(): bool
     {

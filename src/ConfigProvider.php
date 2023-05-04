@@ -71,7 +71,7 @@ class ConfigProvider
 
     public static function address()
     {
-        if (defined("BASE_PATH")) {
+        if (defined('BASE_PATH')) {
             $root = BASE_PATH . '/runtime';
         } else {
             $root = '/tmp';

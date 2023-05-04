@@ -9,12 +9,12 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 use Hyperf\Config\Config;
 use Hyperf\GoTask\IPC\SocketIPCSender;
 use Hyperf\GoTask\MongoClient\MongoClient;
 use Hyperf\GoTask\MongoClient\MongoProxy;
 use Swoole\Process;
+
 use function Swoole\Coroutine\run;
 
 require __DIR__ . '/../../vendor/autoload.php';

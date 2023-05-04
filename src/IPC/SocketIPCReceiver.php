@@ -21,6 +21,7 @@ use Spiral\Goridge\Exceptions\ServiceException;
 use Spiral\Goridge\Exceptions\TransportException;
 use Spiral\Goridge\RelayInterface as Relay;
 use Swoole\Coroutine\Server\Connection;
+use Throwable;
 
 class SocketIPCReceiver
 {
@@ -52,7 +53,7 @@ class SocketIPCReceiver
             $this->port = 0;
         } else {
             $this->address = $split[0];
-            $this->port = (int) ($split[1]);
+            $this->port = (int) $split[1];
         }
     }
 
@@ -84,7 +85,7 @@ class SocketIPCReceiver
                 try {
                     $response = $this->dispatch($method, $payload);
                     $error = null;
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $response = null;
                     $error = $e;
                 }
@@ -144,8 +145,8 @@ class SocketIPCReceiver
      *
      * @param string $body
      *
-     * @throws ServiceException
      * @return mixed
+     * @throws ServiceException
      */
     protected function handleBody($body, int $flags)
     {
@@ -160,7 +161,7 @@ class SocketIPCReceiver
         return json_decode($body, true);
     }
 
-    private function formatError(\Throwable $error)
+    private function formatError(Throwable $error)
     {
         $simpleFormat = $error->getMessage() . ':' . $error->getTraceAsString();
         if (! ApplicationContext::hasContainer()) {

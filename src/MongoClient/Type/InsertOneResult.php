@@ -16,7 +16,7 @@ use MongoDB\BSON\ObjectId;
 class InsertOneResult implements \MongoDB\BSON\Unserializable
 {
     /**
-     * @var ObjectId | null
+     * @var null|ObjectId
      */
     private $insertedId;
 

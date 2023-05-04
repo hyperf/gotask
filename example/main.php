@@ -12,6 +12,7 @@ declare(strict_types=1);
 use Hyperf\GoTask\GoTask;
 use Hyperf\GoTask\IPC\SocketIPCSender;
 use Swoole\Process;
+
 use function Swoole\Coroutine\run;
 
 require __DIR__ . '/../vendor/autoload.php';

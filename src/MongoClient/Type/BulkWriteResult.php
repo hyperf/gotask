@@ -46,7 +46,7 @@ class BulkWriteResult implements Unserializable
      */
     private $upsertedIds;
 
-    public function bsonUnserialize(array $data) : void
+    public function bsonUnserialize(array $data): void
     {
         $this->matchedCount = $data['matchedcount'];
         $this->modifiedCount = $data['modifiedcount'];
@@ -85,5 +85,4 @@ class BulkWriteResult implements Unserializable
     {
         return $this->insertedCount;
     }
-
 }

@@ -16,6 +16,7 @@ use Hyperf\GoTask\IPC\SocketIPCSender;
 use Hyperf\GoTask\Relay\RelayInterface;
 use Hyperf\Utils\WaitGroup;
 use Spiral\Goridge\Exceptions\ServiceException;
+use Throwable;
 
 /**
  * @internal
@@ -32,7 +33,7 @@ class SocketIPCReceiverTest extends AbstractTestCase
                 try {
                     $receiver = new SocketIPCReceiver(self::UNIX_SOCKET);
                     $receiver->start();
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Not Reachable
                     $this->assertTrue(false);
                 }
@@ -52,7 +53,7 @@ class SocketIPCReceiverTest extends AbstractTestCase
                 try {
                     $receiver = new SocketIPCReceiver(self::UNIX_SOCKET);
                     $receiver->start();
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     // Not Reachable
                     var_dump($e);
                     $this->assertTrue(false);
@@ -111,7 +112,7 @@ class SocketIPCReceiverTest extends AbstractTestCase
         );
         try {
             $task->call('HyperfTest\\Stub::HelloError', 'Hyperf');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(ServiceException::class, $e);
         }
     }

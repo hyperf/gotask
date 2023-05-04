@@ -88,11 +88,12 @@ class MongoDBTest extends AbstractTestCase
         });
     }
 
-    public function testLimit() {
+    public function testLimit()
+    {
         \Swoole\Coroutine\run(function () {
             $client = make(MongoClient::class);
             $collection = $client->database('testing')->collection('unit');
-            for ($i = 0; $i < 75; $i++) {
+            for ($i = 0; $i < 75; ++$i) {
                 $collection->insertOne(['foo' => 'bar', 'tid' => 0]);
             }
             $result = $collection->find(['foo' => 'bar'], ['skip' => 0, 'limit' => 15]);

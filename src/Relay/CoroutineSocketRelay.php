@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\Relay;
 
+use Error;
+use Exception;
 use Spiral\Goridge\Exceptions\GoridgeException;
 use Spiral\Goridge\Exceptions\InvalidArgumentException;
 use Spiral\Goridge\Exceptions\RelayException;
@@ -30,12 +32,12 @@ class CoroutineSocketRelay implements RelayInterface
     use SocketTransporter;
 
     /** Supported socket types. */
-    const SOCK_TCP = 0;
+    public const SOCK_TCP = 0;
 
-    const SOCK_UNIX = 1;
+    public const SOCK_UNIX = 1;
 
     // @deprecated
-    const SOCK_TPC = self::SOCK_TCP;
+    public const SOCK_TPC = self::SOCK_TCP;
 
     /** @var string */
     private $address;
@@ -119,7 +121,7 @@ class CoroutineSocketRelay implements RelayInterface
      * or have already been connected.
      *
      * @throws RelayException
-     * @throws \Error when sockets are used in unsupported environment
+     * @throws Error when sockets are used in unsupported environment
      */
     public function connect(): bool
     {
@@ -133,7 +135,7 @@ class CoroutineSocketRelay implements RelayInterface
             if ($this->socket->connect($this->address, $this->port ?? 0) === false) {
                 throw new RelayException(sprintf('%s (%s)', $this->socket->errMsg, $this->socket->errCode));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new RelayException("unable to establish connection {$this}: {$e->getMessage()}", 0, $e);
         }
 
@@ -141,8 +143,8 @@ class CoroutineSocketRelay implements RelayInterface
     }
 
     /**
-     * @throws GoridgeException
      * @return Socket
+     * @throws GoridgeException
      */
     private function createSocket()
     {

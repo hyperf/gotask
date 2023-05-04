@@ -15,7 +15,6 @@ use Hyperf\GoTask\Config\DomainConfig;
 use Hyperf\GoTask\Exception\GoBuildException;
 use Hyperf\Process\AbstractProcess;
 use Psr\Container\ContainerInterface;
-use Swoole\Server;
 
 class GoTaskProcess extends AbstractProcess
 {

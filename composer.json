@@ -26,8 +26,7 @@
         "symfony/event-dispatcher": "^5.1"
     },
     "require-dev": {
-        "ext-mongodb": "*",
-        "friendsofphp/php-cs-fixer": "^2.14",
+        "friendsofphp/php-cs-fixer": "^3.0",
         "hyperf/command": "^2.0.0",
         "hyperf/config": "^2.0.0",
         "hyperf/di": "^2.0.0",

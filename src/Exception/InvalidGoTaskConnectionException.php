@@ -11,6 +11,8 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\Exception;
 
-class InvalidGoTaskConnectionException extends \RuntimeException
+use RuntimeException;
+
+class InvalidGoTaskConnectionException extends RuntimeException
 {
 }

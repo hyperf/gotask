@@ -28,7 +28,7 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class AbstractTestCase extends TestCase
 {
-    const UNIX_SOCKET = __DIR__ . '/test.sock';
+    public const UNIX_SOCKET = __DIR__ . '/test.sock';
 
     public function setUp(): void
     {

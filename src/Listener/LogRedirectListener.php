@@ -20,6 +20,7 @@ use Hyperf\Process\Exception\SocketAcceptException;
 use Hyperf\Process\ProcessCollector;
 use Psr\Container\ContainerInterface;
 use Swoole\Coroutine;
+use Throwable;
 
 class LogRedirectListener implements ListenerInterface
 {
@@ -74,7 +75,7 @@ class LogRedirectListener implements ListenerInterface
                     if ($recv !== false) {
                         $this->logOutput((string) $recv);
                     }
-                } catch (\Throwable $exception) {
+                } catch (Throwable $exception) {
                     $this->logThrowable($exception);
                     if ($exception instanceof SocketAcceptException) {
                         break;
@@ -84,7 +85,7 @@ class LogRedirectListener implements ListenerInterface
         });
     }
 
-    protected function logThrowable(\Throwable $throwable): void
+    protected function logThrowable(Throwable $throwable): void
     {
         if ($this->container->has(StdoutLoggerInterface::class) && $this->container->has(FormatterInterface::class)) {
             $logger = $this->container->get(StdoutLoggerInterface::class);

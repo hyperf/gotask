@@ -11,6 +11,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\Relay;
 
+use Error;
 use Spiral\Goridge\Exceptions\GoridgeException;
 use Spiral\Goridge\Exceptions\RelayException;
 use Swoole\Coroutine\Socket;
@@ -56,7 +57,7 @@ class ProcessPipeRelay implements RelayInterface
      * or have already been connected.
      *
      * @throws RelayException
-     * @throws \Error when sockets are used in unsupported environment
+     * @throws Error when sockets are used in unsupported environment
      */
     public function connect(): bool
     {
@@ -69,8 +70,8 @@ class ProcessPipeRelay implements RelayInterface
     }
 
     /**
-     * @throws GoridgeException
      * @return Socket
+     * @throws GoridgeException
      */
     private function createSocket()
     {

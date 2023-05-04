@@ -19,6 +19,7 @@ use Hyperf\Framework\Logger\StdoutLogger;
 use Hyperf\GoTask\IPC\SocketIPCReceiver;
 use Hyperf\Utils\ApplicationContext;
 use Swoole\Process;
+
 use function Swoole\Coroutine\run;
 
 require __DIR__ . '/../../vendor/autoload.php';

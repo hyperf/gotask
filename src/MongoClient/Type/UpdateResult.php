@@ -31,7 +31,7 @@ class UpdateResult implements Unserializable
     private $upsertedCount;
 
     /**
-     * @var string | null
+     * @var null|string
      */
     private $upsertedId;
 

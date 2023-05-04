@@ -17,6 +17,7 @@ use Hyperf\GoTask\Relay\RelayInterface;
 use Hyperf\Utils\WaitGroup;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Swoole\Process;
+use Throwable;
 
 /**
  * @internal
@@ -103,7 +104,7 @@ class ProcessPipeTest extends AbstractTestCase
         );
         try {
             $task->call('App.HelloError', 'Hyperf');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->assertInstanceOf(ServiceException::class, $e);
         }
     }

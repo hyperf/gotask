@@ -11,11 +11,13 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\MongoClient;
 
+use stdClass;
+
 trait MongoTrait
 {
     private function sanitize($input)
     {
-        return $input ?: new \stdClass();
+        return $input ?: new stdClass();
     }
 
     private function sanitizeOpts($opts)

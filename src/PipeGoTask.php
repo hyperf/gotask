@@ -17,6 +17,7 @@ use Hyperf\Process\ProcessCollector;
 use Swoole\Coroutine\Channel;
 use Swoole\Lock;
 use Swoole\Process;
+use Throwable;
 
 /**
  * Class PipeGoTask uses stdin/stdout pipes to communicate.
@@ -30,9 +31,6 @@ class PipeGoTask implements GoTask
      */
     public $lock;
 
-    /**
-     * @var
-     */
     private $taskChannel;
 
     /**
@@ -63,7 +61,7 @@ class PipeGoTask implements GoTask
         $returnChannel = new Channel(1);
         $this->taskChannel->push([$method, $payload, $flags, $returnChannel]);
         $result = $returnChannel->pop();
-        if ($result instanceof \Throwable) {
+        if ($result instanceof Throwable) {
             throw $result;
         }
         return $result;
@@ -86,8 +84,8 @@ class PipeGoTask implements GoTask
             try {
                 $result = $task->call($method, $payload, $flag);
                 $returnChannel->push($result);
-            } catch (\Throwable $e) {
-                if (! ($returnChannel instanceof Channel)) {
+            } catch (Throwable $e) {
+                if (! $returnChannel instanceof Channel) {
                     throw $e;
                 }
                 $returnChannel->push($e);

@@ -22,6 +22,7 @@ use Hyperf\GoTask\IPC\SocketIPCReceiver;
 use Hyperf\Utils\ApplicationContext;
 use Psr\Log\LoggerInterface;
 use Swoole\Timer;
+
 use function Swoole\Coroutine\run;
 
 require __DIR__ . '/../vendor/autoload.php';
