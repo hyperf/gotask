@@ -30,7 +30,7 @@ class ConfigWrapper
         return $this->config->has($payload);
     }
 
-    public function set(string $payload): ?mixed
+    public function set(string $payload): mixed
     {
         $this->config->set($payload['key'], $payload['value']);
         return null;
