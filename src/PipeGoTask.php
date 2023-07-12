@@ -19,6 +19,9 @@ use Swoole\Lock;
 use Swoole\Process;
 use Throwable;
 
+use function Hyperf\Coroutine\go;
+use function Hyperf\Support\make;
+
 /**
  * Class PipeGoTask uses stdin/stdout pipes to communicate.
  * This class can be used as a singleton.
@@ -26,31 +29,18 @@ use Throwable;
  */
 class PipeGoTask implements GoTask
 {
-    /**
-     * @var Lock
-     */
-    public $lock;
+    public Lock $lock;
 
-    private $taskChannel;
+    private ?Channel $taskChannel;
 
-    /**
-     * @var null|Process
-     */
-    private $process;
-
-    /**
-     * @var DomainConfig
-     */
-    private $config;
-
-    public function __construct(DomainConfig $config, ?Process $process = null)
-    {
-        $this->process = $process;
-        $this->config = $config;
+    public function __construct(
+        private DomainConfig $config,
+        private ?Process $process = null
+    ) {
         $this->lock = new Lock();
     }
 
-    public function call(string $method, $payload, int $flags = 0)
+    public function call(string $method, mixed $payload, int $flags = 0): mixed
     {
         if ($this->taskChannel == null) {
             $this->taskChannel = new Channel(100);
@@ -67,7 +57,7 @@ class PipeGoTask implements GoTask
         return $result;
     }
 
-    private function start()
+    private function start(): void
     {
         if ($this->process == null) {
             $processName = $this->config->getProcessName();

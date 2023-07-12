@@ -14,9 +14,11 @@ namespace HyperfTest\Cases;
 use Hyperf\GoTask\IPC\SocketIPCReceiver;
 use Hyperf\GoTask\IPC\SocketIPCSender;
 use Hyperf\GoTask\Relay\RelayInterface;
-use Hyperf\Utils\WaitGroup;
+use Hyperf\Coroutine\WaitGroup;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Throwable;
+
+use function Hyperf\Coroutine\go;
 
 /**
  * @internal
@@ -33,7 +35,7 @@ class SocketIPCReceiverTest extends AbstractTestCase
                 try {
                     $receiver = new SocketIPCReceiver(self::UNIX_SOCKET);
                     $receiver->start();
-                } catch (Throwable $e) {
+                } catch (Throwable) {
                     // Not Reachable
                     $this->assertTrue(false);
                 }

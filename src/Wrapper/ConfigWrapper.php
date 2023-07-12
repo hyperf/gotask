@@ -15,27 +15,22 @@ use Hyperf\Contract\ConfigInterface;
 
 class ConfigWrapper
 {
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
-    public function __construct(ConfigInterface $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        private ConfigInterface $config
+    ) {
     }
 
-    public function get($payload)
+    public function get(string $payload)
     {
         return $this->config->get($payload, null);
     }
 
-    public function has($payload)
+    public function has(string $payload): bool
     {
         return $this->config->has($payload);
     }
 
-    public function set($payload)
+    public function set(string $payload): ?mixed
     {
         $this->config->set($payload['key'], $payload['value']);
         return null;

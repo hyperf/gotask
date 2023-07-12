@@ -16,7 +16,7 @@ use Psr\Container\ContainerInterface;
 
 class GoTaskFactory
 {
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): GoTask
     {
         $config = $container->get(DomainConfig::class);
         if ($config->getAddress()) {

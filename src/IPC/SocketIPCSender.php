@@ -21,10 +21,7 @@ use Spiral\Goridge\RPC;
  */
 class SocketIPCSender implements IPCSenderInterface, GoTask
 {
-    /**
-     * @var RPC
-     */
-    private $handler;
+    private RPC $handler;
 
     /**
      * PipeIPC constructor.
@@ -45,12 +42,12 @@ class SocketIPCSender implements IPCSenderInterface, GoTask
         );
     }
 
-    public function __call($name, $arguments)
+    public function __call($name, $arguments): void
     {
         $this->handler->{$name}(...$arguments);
     }
 
-    public function call(string $method, $payload, int $flags = 0)
+    public function call(string $method, $payload, int $flags = 0): mixed
     {
         return $this->handler->call($method, $payload, $flags);
     }

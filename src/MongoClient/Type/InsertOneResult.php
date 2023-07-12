@@ -15,19 +15,13 @@ use MongoDB\BSON\ObjectId;
 
 class InsertOneResult implements \MongoDB\BSON\Unserializable
 {
-    /**
-     * @var null|ObjectId
-     */
-    private $insertedId;
+    private ?ObjectId $insertedId;
 
-    public function bsonUnserialize(array $data)
+    public function bsonUnserialize(array $data): void
     {
         $this->insertedId = $data['insertedid'];
     }
 
-    /**
-     * @return ?string
-     */
     public function getInsertedId(): ?ObjectId
     {
         return $this->insertedId;

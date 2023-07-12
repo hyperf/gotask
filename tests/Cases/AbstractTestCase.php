@@ -12,15 +12,14 @@ declare(strict_types=1);
 namespace HyperfTest\Cases;
 
 use Hyperf\Config\Config;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Container;
 use Hyperf\Di\Definition\DefinitionSource;
-use Hyperf\Di\Definition\ScanConfig;
 use Hyperf\Framework\Logger\StdoutLogger;
 use Hyperf\GoTask\GoTask;
 use Hyperf\GoTask\SocketGoTask;
-use Hyperf\Utils\ApplicationContext;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -34,7 +33,7 @@ abstract class AbstractTestCase extends TestCase
     {
         ! defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
         @unlink(self::UNIX_SOCKET);
-        $container = new Container(new DefinitionSource([], new ScanConfig()));
+        $container = new Container(new DefinitionSource([]));
         $container->set(ConfigInterface::class, new Config([
             'gotask' => [
                 'enable' => true,

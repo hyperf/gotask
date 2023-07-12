@@ -54,9 +54,6 @@ class GoTaskProcess extends AbstractProcess
         parent::bind($server);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handle(): void
     {
         $executable = $this->config->getExecutable();

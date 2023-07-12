@@ -27,10 +27,7 @@ trait SocketTransporter
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function send($payload, int $flags = null)
+    public function send(?string $payload, int $flags = null)
     {
         $this->connect();
 
@@ -49,10 +46,7 @@ trait SocketTransporter
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function receiveSync(int &$flags = null)
+    public function receiveSync(int &$flags = null): ?string
     {
         $this->connect();
 
@@ -84,7 +78,7 @@ trait SocketTransporter
      *
      * @throws RelayException
      */
-    public function close()
+    public function close(): void
     {
         if (! $this->isConnected()) {
             throw new RelayException("unable to close socket '{$this}', socket already closed");

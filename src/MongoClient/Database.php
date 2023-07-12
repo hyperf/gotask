@@ -20,45 +20,25 @@ class Database
 {
     use MongoTrait;
 
-    /**
-     * @var string
-     */
-    protected $database;
-
-    /**
-     * @var MongoProxy
-     */
-    private $mongo;
-
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
-    /**
-     * @var array
-     */
-    private $typeMap;
-
-    public function __construct(MongoProxy $mongo, ConfigInterface $config, string $database, array $typeMap)
-    {
-        $this->mongo = $mongo;
-        $this->config = $config;
-        $this->database = $database;
-        $this->typeMap = $typeMap;
+    public function __construct(
+        private MongoProxy $mongo,
+        private ConfigInterface $config,
+        protected string $database,
+        private array $typeMap,
+    ) {
     }
 
-    public function __get($collName)
+    public function __get(string $collName): Collection
     {
         return new Collection($this->mongo, $this->config, $this->database, $collName, $this->typeMap);
     }
 
-    public function collection($collName)
+    public function collection(string $collName): Collection
     {
         return new Collection($this->mongo, $this->config, $this->database, $collName, $this->typeMap);
     }
 
-    public function runCommand($command = [], $opts = [])
+    public function runCommand(array $command = [], array $opts = []): array|object|string
     {
         $payload = [
             'Database' => $this->database,
@@ -73,7 +53,7 @@ class Database
         return '';
     }
 
-    public function runCommandCursor($command = [], $opts = [])
+    public function runCommandCursor(array $command = [], array $opts = []): array|object|string
     {
         $payload = [
             'Database' => $this->database,

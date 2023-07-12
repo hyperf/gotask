@@ -13,10 +13,8 @@ namespace Hyperf\GoTask\Wrapper;
 
 class ByteWrapper
 {
-    public $byte;
-
-    public function __construct(string $s)
-    {
-        $this->byte = $s;
+    public function __construct(
+        public string $byte
+    ) {
     }
 }

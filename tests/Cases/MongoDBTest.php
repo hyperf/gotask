@@ -17,21 +17,17 @@ use Hyperf\GoTask\MongoClient\Type\InsertManyResult;
 use Hyperf\GoTask\MongoClient\Type\InsertOneResult;
 use Swoole\Process;
 
+use function Hyperf\Support\make;
+
 /**
  * @internal
  * @coversNothing
  */
 class MongoDBTest extends AbstractTestCase
 {
-    /**
-     * @var Process
-     */
-    private $p;
+    private Process $p;
 
-    /**
-     * @var mixed|MongoClient
-     */
-    private $client;
+    private MongoClient $client;
 
     public function setUp(): void
     {

@@ -14,6 +14,7 @@ namespace Hyperf\GoTask\IPC;
 use Hyperf\GoTask\GoTask;
 use Hyperf\GoTask\Relay\ProcessPipeRelay;
 use Spiral\Goridge\RPC;
+use Swoole\Process;
 
 /**
  * Class PipeIPC uses pipes to communicate.
@@ -21,29 +22,25 @@ use Spiral\Goridge\RPC;
  */
 class PipeIPCSender implements IPCSenderInterface, GoTask
 {
-    /**
-     * @var RPC
-     */
-    private $handler;
+    private RPC $handler;
 
     /**
      * PipeIPC constructor.
      * @mixin RPC
-     * @param mixed $process
      */
-    public function __construct($process)
+    public function __construct(Process $process)
     {
         $this->handler = new RPC(
             new ProcessPipeRelay($process)
         );
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): void
     {
         $this->handler->{$name}(...$arguments);
     }
 
-    public function call(string $method, $payload, int $flags = 0)
+    public function call(string $method, $payload, int $flags = 0): mixed
     {
         return $this->handler->call($method, $payload, $flags);
     }

@@ -24,33 +24,19 @@ use Throwable;
 
 class LogRedirectListener implements ListenerInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private DomainConfig $config;
 
-    /**
-     * @var DomainConfig
-     */
-    private $config;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        private ContainerInterface $container
+    ) {
         $this->config = $container->get(DomainConfig::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function listen(): array
     {
         return [MainWorkerStart::class];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(object $event): void
     {
         if (! $this->config->shouldLogRedirect()) {

@@ -11,39 +11,28 @@ declare(strict_types=1);
  */
 namespace Hyperf\GoTask\IPC;
 
+use Hyperf\Context\ApplicationContext;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\GoTask\GoTask;
 use Hyperf\GoTask\Relay\ConnectionRelay;
 use Hyperf\GoTask\Wrapper\ByteWrapper;
-use Hyperf\Utils\ApplicationContext;
 use Spiral\Goridge\Exceptions\PrefixException;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Spiral\Goridge\Exceptions\TransportException;
 use Spiral\Goridge\RelayInterface as Relay;
+use Swoole\Coroutine\Server;
 use Swoole\Coroutine\Server\Connection;
 use Throwable;
 
 class SocketIPCReceiver
 {
-    /**
-     * @var string
-     */
-    private $address;
+    private string $address;
 
-    /**
-     * @var \Swoole\Coroutine\Server
-     */
-    private $server;
+    private ?Server $server = null;
 
-    /**
-     * @var int
-     */
-    private $port;
+    private int $port;
 
-    /**
-     * @var bool
-     */
-    private $quit;
+    private bool $quit;
 
     public function __construct(string $address = '127.0.0.1:6001')
     {
@@ -114,7 +103,7 @@ class SocketIPCReceiver
         return true;
     }
 
-    public function close()
+    public function close(): void
     {
         if ($this->server !== null) {
             $this->quit = true;
@@ -123,7 +112,7 @@ class SocketIPCReceiver
         $this->server = null;
     }
 
-    protected function dispatch($method, $payload)
+    protected function dispatch(string $method, mixed $payload): mixed
     {
         [$class, $handler] = explode('::', $method);
         if (ApplicationContext::hasContainer()) {
@@ -135,7 +124,7 @@ class SocketIPCReceiver
         return $instance->{$handler}($payload);
     }
 
-    protected function isStarted()
+    protected function isStarted(): bool
     {
         return $this->server !== null;
     }
@@ -143,12 +132,9 @@ class SocketIPCReceiver
     /**
      * Handle response body.
      *
-     * @param string $body
-     *
-     * @return mixed
      * @throws ServiceException
      */
-    protected function handleBody($body, int $flags)
+    protected function handleBody(string $body, int $flags): mixed
     {
         if ($flags & GoTask::PAYLOAD_ERROR && $flags & GoTask::PAYLOAD_RAW) {
             throw new ServiceException("error '{$body}' on '{$this->server}'");
@@ -161,7 +147,7 @@ class SocketIPCReceiver
         return json_decode($body, true);
     }
 
-    private function formatError(Throwable $error)
+    private function formatError(Throwable $error): string
     {
         $simpleFormat = $error->getMessage() . ':' . $error->getTraceAsString();
         if (! ApplicationContext::hasContainer()) {

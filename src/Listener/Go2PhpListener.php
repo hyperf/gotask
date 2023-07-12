@@ -17,37 +17,22 @@ use Hyperf\Framework\Event\AfterWorkerStart;
 use Hyperf\GoTask\Config\DomainConfig;
 use Hyperf\GoTask\IPC\SocketIPCReceiver;
 use Hyperf\GoTask\WithGoTask;
-use Psr\Container\ContainerInterface;
+
+use function Hyperf\Coroutine\go;
+use function Hyperf\Support\make;
 
 class Go2PhpListener implements ListenerInterface
 {
-    /**
-     * @var DomainConfig
-     */
-    private $config;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->config = $container->get(DomainConfig::class);
+    public function __construct(
+        private DomainConfig $config
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function listen(): array
     {
         return [AfterWorkerStart::class, BeforeHandle::class];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(object $event): void
     {
         if (! $this->config->shouldEnableGo2Php()) {

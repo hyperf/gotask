@@ -15,14 +15,9 @@ use Hyperf\Contract\ConfigInterface;
 
 class DomainConfig
 {
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
-    public function __construct(ConfigInterface $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        private ConfigInterface $config
+    ) {
     }
 
     public function getProcessName(): string

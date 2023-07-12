@@ -25,8 +25,6 @@ interface IPCSenderInterface
     /**
      * @param mixed $payload an binary data or array of arguments for complex types
      * @param int $flags payload control flags
-     *
-     * @return mixed
      */
-    public function call(string $method, $payload, int $flags = 0);
+    public function call(string $method, mixed $payload, int $flags = 0): mixed;
 }

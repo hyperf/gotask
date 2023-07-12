@@ -16,35 +16,20 @@ use MongoDB\BSON\Unserializable;
 
 class BulkWriteResult implements Unserializable
 {
-    /**
-     * @var int
-     */
-    private $matchedCount;
+    private int $matchedCount;
 
-    /**
-     * @var int
-     */
-    private $modifiedCount;
+    private int $modifiedCount;
 
-    /**
-     * @var int
-     */
-    private $upsertedCount;
+    private int $upsertedCount;
 
-    /**
-     * @var int
-     */
-    private $deletedCount;
+    private int $deletedCount;
 
-    /**
-     * @var int
-     */
-    private $insertedCount;
+    private int $insertedCount;
 
     /**
      * @var array<ObjectId>
      */
-    private $upsertedIds;
+    private array $upsertedIds;
 
     public function bsonUnserialize(array $data): void
     {

@@ -30,21 +30,14 @@ class ProcessPipeRelay implements RelayInterface
 {
     use SocketTransporter;
 
-    /** @var Socket */
-    private $socket;
-
-    /**
-     * @var Process
-     */
-    private $process;
+    private ?Socket $socket = null;
 
     /**
      * export a socket from swoole process.
      */
-    public function __construct(Process $process)
-    {
-        $this->process = $process;
-        $this->socket = null;
+    public function __construct(
+        private Process $process
+    ) {
     }
 
     public function __toString(): string
@@ -70,10 +63,9 @@ class ProcessPipeRelay implements RelayInterface
     }
 
     /**
-     * @return Socket
      * @throws GoridgeException
      */
-    private function createSocket()
+    private function createSocket(): Socket
     {
         return $this->process->exportSocket();
     }

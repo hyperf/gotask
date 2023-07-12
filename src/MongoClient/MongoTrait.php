@@ -15,12 +15,12 @@ use stdClass;
 
 trait MongoTrait
 {
-    private function sanitize($input)
+    private function sanitize(mixed $input): mixed
     {
         return $input ?: new stdClass();
     }
 
-    private function sanitizeOpts($opts)
+    private function sanitizeOpts(mixed $opts): mixed
     {
         return $this->sanitize($opts);
     }

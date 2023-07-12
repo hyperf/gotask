@@ -15,42 +15,21 @@ use MongoDB\BSON\Unserializable;
 
 class IndexInfo implements Unserializable
 {
-    /**
-     * @var int
-     */
-    private $v;
+    private int $v;
 
-    /**
-     * @var array
-     */
-    private $key;
+    private array $key;
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var string
-     */
-    private $ns;
+    private string $ns;
 
-    /**
-     * @var bool
-     */
-    private $sparse;
+    private bool $sparse;
 
-    /**
-     * @var bool
-     */
-    private $unique;
+    private bool $unique;
 
-    /**
-     * @var bool
-     */
-    private $ttl;
+    private bool $ttl;
 
-    public function bsonUnserialize(array $data)
+    public function bsonUnserialize(array $data): void
     {
         $this->v = $data['v'] ?? 0;
         $this->key = $data['key'] ?? [];

@@ -19,24 +19,13 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 class CommandListener implements ListenerInterface
 {
-    /**
-     * @var Process
-     */
-    private $process;
+    private Process $process;
 
-    /**
-     * @var DomainConfig
-     */
-    private $config;
-
-    public function __construct(DomainConfig $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        private DomainConfig $config
+    ) {
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function listen(): array
     {
         return [
@@ -44,9 +33,6 @@ class CommandListener implements ListenerInterface
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(object $event): void
     {
         if (! $this->config->isEnabled()) {

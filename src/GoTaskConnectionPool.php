@@ -17,6 +17,8 @@ use Hyperf\Pool\Frequency;
 use Hyperf\Pool\Pool;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Support\make;
+
 class GoTaskConnectionPool extends Pool
 {
     public function __construct(ContainerInterface $container, DomainConfig $config)

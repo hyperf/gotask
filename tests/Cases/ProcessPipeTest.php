@@ -11,13 +11,16 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
+use Hyperf\Coroutine\WaitGroup;
 use Hyperf\GoTask\IPC\PipeIPCSender;
 use Hyperf\GoTask\PipeGoTask;
 use Hyperf\GoTask\Relay\RelayInterface;
-use Hyperf\Utils\WaitGroup;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Swoole\Process;
 use Throwable;
+
+use function Hyperf\Coroutine\go;
+use function Hyperf\Support\make;
 
 /**
  * @internal
@@ -25,10 +28,7 @@ use Throwable;
  */
 class ProcessPipeTest extends AbstractTestCase
 {
-    /**
-     * @var Process
-     */
-    private $p;
+    private Process $p;
 
     public function setUp(): void
     {
