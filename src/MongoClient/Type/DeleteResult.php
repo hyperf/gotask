@@ -15,10 +15,7 @@ use MongoDB\BSON\Unserializable;
 
 class DeleteResult implements Unserializable
 {
-    /**
-     * @var int
-     */
-    private $n;
+    private int $n;
 
     public function bsonUnserialize(array $data): void
     {

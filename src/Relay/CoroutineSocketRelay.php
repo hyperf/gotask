@@ -39,17 +39,7 @@ class CoroutineSocketRelay implements RelayInterface
     // @deprecated
     public const SOCK_TPC = self::SOCK_TCP;
 
-    /** @var string */
-    private $address;
-
-    /** @var null|int */
-    private $port;
-
-    /** @var int */
-    private $type;
-
-    /** @var Socket */
-    private $socket;
+    private ?Socket $socket = null;
 
     /**
      * Example:
@@ -62,8 +52,11 @@ class CoroutineSocketRelay implements RelayInterface
      *
      * @throws InvalidArgumentException
      */
-    public function __construct(string $address, int $port = null, int $type = self::SOCK_TCP)
-    {
+    public function __construct(
+        private string $address,
+        private ?int $port = null,
+        private int $type = self::SOCK_TCP
+    ) {
         switch ($type) {
             case self::SOCK_TCP:
                 if ($port === null) {
@@ -83,10 +76,6 @@ class CoroutineSocketRelay implements RelayInterface
                     $address
                 ));
         }
-
-        $this->address = $address;
-        $this->port = $port;
-        $this->type = $type;
     }
 
     public function __toString(): string
@@ -103,10 +92,7 @@ class CoroutineSocketRelay implements RelayInterface
         return $this->address;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getPort()
+    public function getPort(): ?int
     {
         return $this->port;
     }
@@ -143,10 +129,9 @@ class CoroutineSocketRelay implements RelayInterface
     }
 
     /**
-     * @return Socket
      * @throws GoridgeException
      */
-    private function createSocket()
+    private function createSocket(): Socket
     {
         if ($this->type === self::SOCK_UNIX) {
             if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {

@@ -15,25 +15,13 @@ use MongoDB\BSON\Unserializable;
 
 class UpdateResult implements Unserializable
 {
-    /**
-     * @var int
-     */
-    private $matchedCount;
+    private int $matchedCount;
 
-    /**
-     * @var int
-     */
-    private $modifiedCount;
+    private int $modifiedCount;
 
-    /**
-     * @var int
-     */
-    private $upsertedCount;
+    private int $upsertedCount;
 
-    /**
-     * @var null|string
-     */
-    private $upsertedId;
+    private ?string $upsertedId;
 
     public function bsonUnserialize(array $data): void
     {

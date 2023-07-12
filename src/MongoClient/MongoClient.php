@@ -17,34 +17,21 @@ class MongoClient
 {
     use MongoTrait;
 
-    /**
-     * @var MongoProxy
-     */
-    private $mongo;
+    private array $typeMap;
 
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
-    /**
-     * @var array
-     */
-    private $typeMap;
-
-    public function __construct(MongoProxy $mongo, ConfigInterface $config)
-    {
-        $this->mongo = $mongo;
-        $this->config = $config;
+    public function __construct(
+        private MongoProxy $mongo,
+        private ConfigInterface $config,
+    ) {
         $this->typeMap = $this->config->get('mongodb.type_map', ['document' => 'array', 'root' => 'array']);
     }
 
-    public function __get($dbName)
+    public function __get(string $dbName): Database
     {
         return new Database($this->mongo, $this->config, $dbName, $this->typeMap);
     }
 
-    public function database(string $dbName)
+    public function database(string $dbName): Database
     {
         return new Database($this->mongo, $this->config, $dbName, $this->typeMap);
     }

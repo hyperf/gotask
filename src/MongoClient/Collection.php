@@ -26,38 +26,13 @@ class Collection
 {
     use MongoTrait;
 
-    /**
-     * @var string
-     */
-    protected $database;
-
-    /**
-     * @var string
-     */
-    protected $collection;
-
-    /**
-     * @var MongoProxy
-     */
-    private $mongo;
-
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
-    /**
-     * @var array
-     */
-    private $typeMap;
-
-    public function __construct(MongoProxy $mongo, ConfigInterface $config, string $database, string $collection, array $typeMap)
-    {
-        $this->mongo = $mongo;
-        $this->config = $config;
-        $this->database = $database;
-        $this->collection = $collection;
-        $this->typeMap = $typeMap;
+    public function __construct(
+        private MongoProxy $mongo,
+        private ConfigInterface $config,
+        protected string $database,
+        protected string $collection,
+        private array $typeMap,
+    ) {
     }
 
     public function insertOne($document = [], array $opts = []): InsertOneResult
@@ -78,7 +53,7 @@ class Collection
         return toPHP($data, ['root' => InsertManyResult::class]);
     }
 
-    public function find($filter = [], array $opts = [])
+    public function find($filter = [], array $opts = []): array|object
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->find($this->makePayload([
@@ -88,7 +63,7 @@ class Collection
         return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
-    public function findOne($filter = [], array $opts = [])
+    public function findOne($filter = [], array $opts = []): array|object
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->findOne($this->makePayload([
@@ -98,7 +73,7 @@ class Collection
         return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
-    public function findOneAndDelete($filter = [], array $opts = [])
+    public function findOneAndDelete($filter = [], array $opts = []): array|object
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->findOneAndDelete($this->makePayload([
@@ -108,7 +83,7 @@ class Collection
         return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
-    public function findOneAndUpdate($filter = [], $update = [], array $opts = [])
+    public function findOneAndUpdate($filter = [], $update = [], array $opts = []): array|object
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->findOneAndUpdate($this->makePayload([
@@ -119,7 +94,7 @@ class Collection
         return $data !== '' ? toPHP($data, $typeMap) : [];
     }
 
-    public function findOneAndReplace($filter = [], $replace = [], array $opts = [])
+    public function findOneAndReplace($filter = [], $replace = [], array $opts = []): array|object
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->findOneAndReplace($this->makePayload([
@@ -190,7 +165,7 @@ class Collection
         return toPHP($data, ['root' => DeleteResult::class]);
     }
 
-    public function aggregate($pipeline = [], array $opts = [])
+    public function aggregate($pipeline = [], array $opts = []): array|object
     {
         $pipeline = $this->sanitize($pipeline);
         $data = $this->mongo->aggregate($this->makePayload([
@@ -209,7 +184,7 @@ class Collection
         return toPHP($data, ['root' => BulkWriteResult::class]);
     }
 
-    public function distinct(string $fieldName, $filter = [], array $opts = [])
+    public function distinct(string $fieldName, $filter = [], array $opts = []): array|object
     {
         $filter = $this->sanitize($filter);
         $data = $this->mongo->distinct($this->makePayload([
@@ -228,7 +203,7 @@ class Collection
         ], $opts));
     }
 
-    public function createIndexes($indexes = [], array $opts = []): array
+    public function createIndexes($indexes = [], array $opts = []): array|object
     {
         $indexes = $this->sanitize($indexes);
         $data = $this->mongo->createIndexes($this->makePayload([
@@ -237,13 +212,13 @@ class Collection
         return $data === '' ? [] : toPHP($data, ['root' => 'array']);
     }
 
-    public function listIndexes($indexes = [], array $opts = []): array
+    public function listIndexes($indexes = [], array $opts = []): array|object
     {
         $data = $this->mongo->listIndexes($this->makePayload([], $opts));
         return $data === '' ? [] : toPHP($data, ['root' => 'array', 'document' => IndexInfo::class, 'fieldPaths' => ['$.key' => 'array']]);
     }
 
-    public function dropIndex(string $name, array $opts = [])
+    public function dropIndex(string $name, array $opts = []): array|object
     {
         $data = $this->mongo->dropIndex($this->makePayload([
             'Name' => $name,
@@ -252,7 +227,7 @@ class Collection
         return $data === '' ? [] : toPHP($data, $typeMap);
     }
 
-    public function dropIndexes(array $opts = [])
+    public function dropIndexes(array $opts = []): array|object
     {
         $data = $this->mongo->dropIndexes($this->makePayload([
         ], $opts));
@@ -260,7 +235,7 @@ class Collection
         return $data === '' ? [] : toPHP($data, $typeMap);
     }
 
-    public function drop()
+    public function drop(): string
     {
         return $this->mongo->drop(fromPHP([
             'Database' => $this->database,

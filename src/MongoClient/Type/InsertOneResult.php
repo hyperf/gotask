@@ -22,9 +22,6 @@ class InsertOneResult implements \MongoDB\BSON\Unserializable
         $this->insertedId = $data['insertedid'];
     }
 
-    /**
-     * @return ?string
-     */
     public function getInsertedId(): ?ObjectId
     {
         return $this->insertedId;

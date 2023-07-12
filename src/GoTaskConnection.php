@@ -13,6 +13,7 @@ namespace Hyperf\GoTask;
 
 use Hyperf\Contract\ConnectionInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\GoTask\IPC\SocketIPCSender;
 use Hyperf\Pool\Connection;
 use Hyperf\Pool\Exception\ConnectionException;
 use Hyperf\Pool\Pool;
@@ -26,24 +27,15 @@ use Throwable;
  */
 class GoTaskConnection extends Connection implements ConnectionInterface
 {
-    /**
-     * @var RPC
-     */
-    private $connection;
+    private SocketIPCSender $connection;
 
-    /**
-     * @var SocketIPCFactory
-     */
-    private $factory;
-
-    public function __construct(ContainerInterface $container, Pool $pool, SocketIPCFactory $factory)
+    public function __construct(ContainerInterface $container, Pool $pool, private SocketIPCFactory $factory)
     {
         parent::__construct($container, $pool);
-        $this->factory = $factory;
         $this->reconnect();
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): mixed
     {
         try {
             $result = $this->connection->{$name}(...$arguments);
@@ -67,7 +59,7 @@ class GoTaskConnection extends Connection implements ConnectionInterface
         return true;
     }
 
-    public function getActiveConnection()
+    public function getActiveConnection(): self
     {
         if ($this->check()) {
             return $this;
@@ -80,7 +72,7 @@ class GoTaskConnection extends Connection implements ConnectionInterface
         return $this;
     }
 
-    protected function retry($name, $arguments, Throwable $exception)
+    protected function retry($name, $arguments, Throwable $exception): mixed
     {
         $logger = $this->container->get(StdoutLoggerInterface::class);
         $logger->warning(sprintf('RemoteGoTask::__call failed, because ' . $exception->getMessage()));

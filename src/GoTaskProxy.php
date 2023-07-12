@@ -13,17 +13,12 @@ namespace Hyperf\GoTask;
 
 class GoTaskProxy implements GoTask
 {
-    /**
-     * @var GoTask
-     */
-    private $goTask;
-
-    public function __construct(GoTask $goTask)
-    {
-        $this->goTask = $goTask;
+    public function __construct(
+        private GoTask $goTask
+    ) {
     }
 
-    public function __call($name, $arguments)
+    public function __call(string $name, array $arguments): mixed
     {
         $method = ucfirst($name);
         $path = explode('\\', static::class);
@@ -31,7 +26,7 @@ class GoTaskProxy implements GoTask
         return $this->call($class . '.' . $method, ...$arguments);
     }
 
-    public function call(string $method, $payload, int $flags = 0)
+    public function call(string $method, mixed $payload, int $flags = 0): mixed
     {
         return $this->goTask->call($method, $payload, $flags);
     }

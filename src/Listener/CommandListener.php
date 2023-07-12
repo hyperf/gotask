@@ -19,19 +19,11 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
 
 class CommandListener implements ListenerInterface
 {
-    /**
-     * @var Process
-     */
-    private $process;
+    private Process $process;
 
-    /**
-     * @var DomainConfig
-     */
-    private $config;
-
-    public function __construct(DomainConfig $config)
-    {
-        $this->config = $config;
+    public function __construct(
+        private DomainConfig $config
+    ) {
     }
 
     public function listen(): array

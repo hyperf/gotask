@@ -12,17 +12,17 @@ declare(strict_types=1);
 namespace HyperfTest;
 
 use Hyperf\Config\Config;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Container;
 use Hyperf\Di\Definition\DefinitionSource;
-use Hyperf\Di\Definition\ScanConfig;
 use Hyperf\Framework\Logger\StdoutLogger;
 use Hyperf\GoTask\IPC\SocketIPCReceiver;
-use Hyperf\Utils\ApplicationContext;
 use Psr\Log\LoggerInterface;
 use Swoole\Timer;
 
+use function Hyperf\Support\env;
 use function Swoole\Coroutine\run;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -30,7 +30,7 @@ define('BASE_PATH', __DIR__);
 
 const ADDR = __DIR__ . '/test.sock';
 @unlink(ADDR);
-$container = new Container(new DefinitionSource([], new ScanConfig()));
+$container = new Container(new DefinitionSource([]));
 $container->set(ConfigInterface::class, new Config([
     'gotask' => [
         'enable' => true,

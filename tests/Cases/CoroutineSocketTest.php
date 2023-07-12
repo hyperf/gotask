@@ -11,13 +11,16 @@ declare(strict_types=1);
  */
 namespace HyperfTest\Cases;
 
+use Hyperf\Coroutine\WaitGroup;
 use Hyperf\GoTask\IPC\SocketIPCSender;
 use Hyperf\GoTask\Relay\RelayInterface;
 use Hyperf\GoTask\SocketGoTask;
-use Hyperf\Utils\WaitGroup;
 use Spiral\Goridge\Exceptions\ServiceException;
 use Swoole\Process;
 use Throwable;
+
+use function Hyperf\Coroutine\go;
+use function Hyperf\Support\make;
 
 /**
  * @internal
@@ -27,10 +30,7 @@ class CoroutineSocketTest extends AbstractTestCase
 {
     public const UNIX_SOCKET = __DIR__ . '/test.sock';
 
-    /**
-     * @var Process
-     */
-    private $p;
+    private Process $p;
 
     public function setUp(): void
     {

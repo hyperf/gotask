@@ -14,6 +14,8 @@ namespace Hyperf\GoTask;
 use Hyperf\Context\Context;
 use Hyperf\GoTask\Exception\InvalidGoTaskConnectionException;
 
+use function Hyperf\Coroutine\defer;
+
 /**
  * Class SocketGoTask uses sockets to communicate.
  * This class can be used as a singleton.
@@ -21,17 +23,12 @@ use Hyperf\GoTask\Exception\InvalidGoTaskConnectionException;
  */
 class SocketGoTask implements GoTask
 {
-    /**
-     * @var GoTaskConnectionPool
-     */
-    private $pool;
-
-    public function __construct(GoTaskConnectionPool $pool)
-    {
-        $this->pool = $pool;
+    public function __construct(
+        private GoTaskConnectionPool $pool
+    ) {
     }
 
-    public function call(string $method, $payload, int $flags = 0)
+    public function call(string $method, mixed $payload, int $flags = 0): mixed
     {
         $hasContextConnection = Context::has($this->getContextKey());
         $connection = $this->getConnection($hasContextConnection);
@@ -53,9 +50,8 @@ class SocketGoTask implements GoTask
 
     /**
      * Get a connection from coroutine context, or from redis connectio pool.
-     * @param mixed $hasContextConnection
      */
-    private function getConnection($hasContextConnection): GoTaskConnection
+    private function getConnection(mixed $hasContextConnection): GoTaskConnection
     {
         $connection = null;
         if ($hasContextConnection) {

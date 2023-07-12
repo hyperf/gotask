@@ -17,6 +17,8 @@ use Hyperf\GoTask\Listener\LogRedirectListener;
 use Hyperf\GoTask\Listener\PipeLockListener;
 use Hyperf\GoTask\Process\GoTaskProcess;
 
+use function Hyperf\Support\env;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -69,7 +71,7 @@ class ConfigProvider
         ];
     }
 
-    public static function address()
+    public static function address(): string
     {
         if (defined('BASE_PATH')) {
             $root = BASE_PATH . '/runtime';

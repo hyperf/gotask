@@ -20,16 +20,11 @@ class ConnectionRelay implements RelayInterface
 {
     use SocketTransporter;
 
-    private $conn;
+    private ?Socket $socket = null;
 
-    /**
-     * @var Socket
-     */
-    private $socket;
-
-    public function __construct(Connection $conn)
-    {
-        $this->conn = $conn;
+    public function __construct(
+        private Connection $conn
+    ) {
     }
 
     /**

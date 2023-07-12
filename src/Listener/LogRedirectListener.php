@@ -24,19 +24,11 @@ use Throwable;
 
 class LogRedirectListener implements ListenerInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private DomainConfig $config;
 
-    /**
-     * @var DomainConfig
-     */
-    private $config;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
+    public function __construct(
+        private ContainerInterface $container
+    ) {
         $this->config = $container->get(DomainConfig::class);
     }
 
