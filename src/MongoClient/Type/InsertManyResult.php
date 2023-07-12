@@ -21,7 +21,7 @@ class InsertManyResult implements Unserializable
      */
     private $insertedIDs;
 
-    public function bsonUnserialize(array $data)
+    public function bsonUnserialize(array $data): void
     {
         $this->insertedIDs = $data['insertedids'];
     }

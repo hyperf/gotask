@@ -35,7 +35,7 @@ class UpdateResult implements Unserializable
      */
     private $upsertedId;
 
-    public function bsonUnserialize(array $data)
+    public function bsonUnserialize(array $data): void
     {
         $this->matchedCount = $data['matchedcount'];
         $this->modifiedCount = $data['modifiedcount'];

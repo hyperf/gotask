@@ -50,7 +50,7 @@ class IndexInfo implements Unserializable
      */
     private $ttl;
 
-    public function bsonUnserialize(array $data)
+    public function bsonUnserialize(array $data): void
     {
         $this->v = $data['v'] ?? 0;
         $this->key = $data['key'] ?? [];
