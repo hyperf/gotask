@@ -27,9 +27,6 @@ trait SocketTransporter
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function send($payload, int $flags = null)
     {
         $this->connect();
@@ -49,9 +46,6 @@ trait SocketTransporter
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function receiveSync(int &$flags = null)
     {
         $this->connect();

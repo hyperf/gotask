@@ -34,9 +34,6 @@ class CommandListener implements ListenerInterface
         $this->config = $config;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function listen(): array
     {
         return [
@@ -44,9 +41,6 @@ class CommandListener implements ListenerInterface
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(object $event): void
     {
         if (! $this->config->isEnabled()) {

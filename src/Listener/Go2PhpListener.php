@@ -37,17 +37,11 @@ class Go2PhpListener implements ListenerInterface
         $this->config = $container->get(DomainConfig::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function listen(): array
     {
         return [AfterWorkerStart::class, BeforeHandle::class];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(object $event): void
     {
         if (! $this->config->shouldEnableGo2Php()) {
