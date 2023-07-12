@@ -22,7 +22,7 @@
         "ext-swoole": ">=5.0",
         "hyperf/pool": "^3.0",
         "hyperf/process": "^3.0",
-        "spiral/goridge": "^2.4",
+        "spiral/goridge": "^2.4 || ^4.0",
         "symfony/event-dispatcher": "^6.3"
     },
     "require-dev": {
