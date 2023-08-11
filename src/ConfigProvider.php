@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace Hyperf\GoTask;
 
 use Hyperf\GoTask\Listener\CommandListener;
@@ -27,8 +28,7 @@ class ConfigProvider
             'dependencies' => [
                 GoTask::class => GoTaskFactory::class,
             ],
-            'commands' => [
-            ],
+            'commands' => [],
             'processes' => [
                 GoTaskProcess::class,
             ],
@@ -73,6 +73,10 @@ class ConfigProvider
 
     public static function address(): string
     {
+        if (strtoupper(substr(PHP_OS, 0, 6)) === 'CYGWIN' || strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            throw new \RuntimeException('Windows platform, please manually specify the port');
+        }
+
         if (defined('BASE_PATH')) {
             $root = BASE_PATH . '/runtime';
         } else {
