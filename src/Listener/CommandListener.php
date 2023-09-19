@@ -45,7 +45,7 @@ class CommandListener implements ListenerInterface
                 $process->exec($executable, $args);
             });
             $this->process->start();
-            sleep(1);
+            sleep(5);
         }
     }
 }
