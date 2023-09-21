@@ -117,14 +117,14 @@ class CoroutineSocketRelay implements RelayInterface
 
         $this->socket = $this->createSocket();
         try {
-            \Hyperf\Support\retry(PHP_INT_MAX, function(): void {
+            \Hyperf\Support\retry(20, function(): void {
                 // Port type needs to be int, so we convert null to 0
                 if ($this->socket->connect($this->address, $this->port ?? 0) === false) {
                     throw new RelayException(sprintf('%s (%s)', $this->socket->errMsg, $this->socket->errCode));
                 }
             }, 100);
         } catch (Exception $e) {
-            throw new RelayException("unable to establish connection (forever) {$this}: {$e->getMessage()}", 0, $e);
+            throw new RelayException("unable to establish connection (20x) {$this}: {$e->getMessage()}", 0, $e);
         }
 
         return true;
