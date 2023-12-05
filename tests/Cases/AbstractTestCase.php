@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace HyperfTest\Cases;
 
 use Hyperf\Config\Config;

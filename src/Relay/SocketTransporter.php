@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  guxi99@gmail.com
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace Hyperf\GoTask\Relay;
 
 use Spiral\Goridge\Exceptions\PrefixException;
