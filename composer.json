@@ -48,6 +48,9 @@
         "binary": "go build -o mongo example/mongo_client/*.go"
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "3.0-dev"
+        },
         "hyperf": {
             "config": "Hyperf\\GoTask\\ConfigProvider"
         }
