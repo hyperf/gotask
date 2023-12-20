@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace Hyperf\GoTask\MongoClient\Type;
 
+use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Unserializable;
 
 class UpdateResult implements Unserializable
@@ -22,7 +23,7 @@ class UpdateResult implements Unserializable
 
     private int $upsertedCount;
 
-    private ?string $upsertedId;
+    private ObjectId|string|null $upsertedId;
 
     public function bsonUnserialize(array $data): void
     {
@@ -32,10 +33,7 @@ class UpdateResult implements Unserializable
         $this->upsertedId = $data['upsertedid'];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUpsertedId(): ?string
+    public function getUpsertedId(): ObjectId|string|null
     {
         return $this->upsertedId;
     }

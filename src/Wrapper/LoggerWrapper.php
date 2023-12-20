@@ -21,7 +21,7 @@ class LoggerWrapper
     ) {
     }
 
-    public function log(array $payload): ?mixed
+    public function log(array $payload): mixed
     {
         $this->logger->log($payload['level'], $payload['message'], $payload['context']);
         return null;
