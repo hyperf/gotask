@@ -6,6 +6,7 @@ package_name=mongo-proxy
 platforms=(
 "darwin/amd64"
 "linux/amd64"
+"darwin/arm64"
 )
 
 for platform in "${platforms[@]}"
